@@ -32,7 +32,7 @@ def getExtensions():
 
 def dosetup(ext):
     r = setup(name = "imagestats",
-              version = "0.1",
+              version = "0.2.4",
               description = "Compute desired statistics values for numarray objects",
               author = "Warren Hack, Christopher Hanley",
               author_email = "help@stsci.edu",
