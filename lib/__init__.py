@@ -19,15 +19,16 @@
 # Version: 0.2.4 -- 01-Apr-2004: Placed computeMEAN in a try except block for better error handling.
 #                                Also, before building a histogram, we make sure that the entire 
 #                                data range doesn't fit into a single bin.  If that condition exists,
-#                                an exception is raised.
+#                                an exception is raised. -- CJH
+# Version: 0.2.5 -- 19-Jul-2004: Added code to ensure that the hwidth in the histogram is always 
+#                                equal to self.binwidth -- CJH
 #
-
 import numarray as N
 from histogram1d import histogram1d
 import time
 from computeMean import computeMean
 
-__version__ = '0.2.4'
+__version__ = '0.2.5'
 
 class ImageStats:
     """ Class to compute desired statistics from numarray objects."""
@@ -106,10 +107,17 @@ class ImageStats:
         if ( (self.fields.find('mode') != -1) or (self.fields.find('median') != -1) ):
             # Populate the historgram
             _hwidth = self.binwidth * _stddev
+            
+            # Special Case:  We never want the _hwidth to be smaller than the bin width.  If it is,
+            # we set the hwidth to be equal to the binwidth.
+            if _hwidth < self.binwidth:
+                _hwidth = self.binwidth
+            
             _nbins = int( (_max - _min) / _hwidth ) + 1
-            _dz = float(_nbins - 1) / float(_max - _min)
+            _dz = float(_nbins - 1) / max(self.binwidth,float(_max - _min))
             if (_dz == 0):
-                raise ValueError, "In imagestats module, the numarray object data range contained within one bin."
+                print "! WARNING: Clipped data falls within 1 histogram bin"
+                _dz = 1 / self.binwidth
             _hist = histogram1d(self.image,_nbins,1/_dz,_min)
             _bins = _hist.histogram
 
@@ -141,8 +149,8 @@ class ImageStats:
                         else:
                             _mode = _peakindex + 1 + (0.5 * (_dh1 - _dh2)/_denom)
                             _mode = _min + ((_mode - 0.5) * _hwidth)
-                    # Return the mode
-                    self.mode = _mode
+                # Return the mode
+                self.mode = _mode
 
             if (self.fields.find('median') != -1):
                 # Compute Median Value
