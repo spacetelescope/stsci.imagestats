@@ -1,10 +1,14 @@
 from distutils.core import setup, Extension
 import numarray
 from numarray.numarrayext import NumarrayExtension
-import sys
+import sys, os.path
 
 if not hasattr(sys, 'version_info') or sys.version_info < (2,2,0,'alpha',0):
     raise SystemExit, "Python 2.2 or later required to build imagestats."
+
+if numarray.__version__ < "1.1":
+    raise SystemExit, "Numarray 1.1 or later required to build imagestats."
+
 
 def dolocal():
     """Adds a command line option --local=<install-dir> which is an abbreviation for
@@ -15,16 +19,27 @@ def dolocal():
         print >>sys.stderr, "--local=<install-dir>    same as --install-lib=<install-dir>"
     for a in sys.argv:
         if a.startswith("--local="):
-            dir = a.split("=")[1]
+            dir =  os.path.abspath(a.split("=")[1])
             sys.argv.extend([
                 "--install-lib="+dir,
                 ])
             sys.argv.remove(a)
 
-def getExtensions():
+def getExtensions(args):
+    numarrayIncludeDir = './'
+    for a in args:
+        if a.startswith('--home='):
+            numarrayIncludeDir = os.path.abspath(os.path.join(a.split('=')[1], 'include', 'python', 'numarray'))
+        elif a.startswith('--prefix='):
+            numarrayIncludeDir = os.path.abspath(os.path.join(a.split('=')[1], 'include','python2.3', 'numarray'))
+        elif a.startswith('--local='):
+            numarrayIncludeDir = os.path.abspath(a.split('=')[1])
+
     ext = [NumarrayExtension('imagestats/buildHistogram',['src/buildHistogram.c'],
+                             include_dirs = [numarrayIncludeDir],
                              libraries = ['m']),
            NumarrayExtension('imagestats/computeMean', ['src/computeMean.c'],
+                             include_dirs = [numarrayIncludeDir],
                              libraries = ['m'])]
                              
     return ext
@@ -47,7 +62,7 @@ def dosetup(ext):
 def main():
     args = sys.argv
     dolocal()
-    ext = getExtensions()
+    ext = getExtensions(args)
     dosetup(ext)
 
 
