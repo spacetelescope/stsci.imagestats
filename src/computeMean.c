@@ -16,9 +16,9 @@
 #include <Python.h>
 #include <arrayobject.h>
 #include <string.h>
-#include <numarray.h>
 #include <stdio.h>
 #include <math.h>
+#include <libnumarray.h>
 
 int computeMean_(float *image, int nelements, float clipmin, float clipmax, 
                                int *numGoodPixels, float *mean, float *stddev, 
@@ -106,6 +106,6 @@ static PyMethodDef computeMean_methods[] =
 
 void initcomputeMean(void) {
 	Py_InitModule("computeMean", computeMean_methods);
-	import_array();
+	import_libnumarray();
 }
 

@@ -22,8 +22,8 @@
 #include <Python.h>
 #include <arrayobject.h>
 #include <string.h>
-#include <numarray.h>
 #include <stdio.h>
+#include <libnumarray.h>
 
 int populate1DHist_(float *image, int image_elements, 
 		    unsigned int *histogram, int histogram_elements,
@@ -99,6 +99,6 @@ static PyMethodDef buildHistogram_methods[] =
 
 void initbuildHistogram(void) {
     Py_InitModule("buildHistogram", buildHistogram_methods);
-    import_array();
+    import_libnumarray();
 }
 
