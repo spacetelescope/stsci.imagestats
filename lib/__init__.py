@@ -22,13 +22,14 @@
 #                                an exception is raised. -- CJH
 # Version: 0.2.5 -- 19-Jul-2004: Added code to ensure that the hwidth in the histogram is always 
 #                                equal to self.binwidth -- CJH
-#
+# Version: 1.0.0 -- 01-Jun-2005: Added an error condition to the clipping loop to throw an exception if
+#                                the number of pixels in the region of interest is equal to 0. -- CJH
 import numarray as N
 from histogram1d import histogram1d
 import time
 from computeMean import computeMean
 
-__version__ = '0.2.5'
+__version__ = '1.0.0'
 
 class ImageStats:
     """ Class to compute desired statistics from numarray objects."""
@@ -90,6 +91,7 @@ class ImageStats:
         _clipmin = self.lower
         _clipmax = self.upper
 
+        # Compute the clipped mean iterating the user specified numer of iterations
         for iter in xrange(self.nclip+1):
 
             try:
@@ -98,6 +100,25 @@ class ImageStats:
             except:
                 raise SystemError, "An error processing the numarray object information occured in the computeMean module of imagestats."
             
+            if _npix <= 0:
+                # Compute Global minimum and maximum
+                errormsg =  "\n##############################################\n"
+                errormsg += "#                                            #\n"
+                errormsg += "# ERROR:                                     #\n"
+                errormsg += "#  Unable to compute image statistics.  No   #\n"
+                errormsg += "#  valid pixels exist within the defined     #\n"
+                errormsg += "#  pixel value range.                        #\n"
+                errormsg += "#                                            #\n"
+                errormsg += "  Image MIN pixel value: " + str(self.min) + '\n'
+                errormsg += "  Image MAX pixel value: " + str(self.max) + '\n\n'
+                errormsg += "# Current Clipping Range                     #\n"
+                errormsg += "       for iteration " + str(iter) + '\n' 
+                errormsg += "       Excluding pixel values above: " + str(_clipmax) + '\n'
+                errormsg += "       Excluding pixel values below: " + str(_clipmin) + '\n'
+                errormsg += "#                                            #\n"
+                errormsg += "##############################################\n"
+                print errormsg
+                raise ValueError
 
             if iter < self.nclip:
                 # Re-compute limits for iterations
