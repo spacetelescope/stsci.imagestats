@@ -6,13 +6,15 @@
 #       Version 0.1.0, 15-Jan-2004: Created -- CJH --
 #       Version 0.1.1, 01-Apr-2004: Placed the call to the C function populate1DHist in a try/except block
 #                                   for better error handling.  --  CJH
+#       Version 0.1.2, 02-Nov-2005: Added 'centers' as an attribute for use
+#                                   with matplotlib.  -- WJH
 #                                    
 #
 
 import numarray as N
 import buildHistogram
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 class histogram1d:
     """Populate a 1 dimensional histogram from numarray object"""
@@ -32,6 +34,11 @@ class histogram1d:
 
         # Compute the maximum value the histogram will take on
         self.maxValue = self.minValue + (self.binWidth * self.nbins)
+        
+        # Compute the array of bin center values
+        #   This should be done lazily using the newer-style class definition
+        #   for this class.
+        self.centers = N.array(self.minValue, self.maxValue, self.binWidth)
 
         # Allocate the memory for the histogram.
         self.histogram = N.zeros([self.nbins],type=N.UInt32)
