@@ -38,7 +38,7 @@ class histogram1d:
         # Compute the array of bin center values
         #   This should be done lazily using the newer-style class definition
         #   for this class.
-        self.centers = N.array(self.minValue, self.maxValue, self.binWidth)
+        self.centers = N.array([self.minValue, self.maxValue, self.binWidth])
 
         # Allocate the memory for the histogram.
         self.histogram = N.zeros([self.nbins],type=N.UInt32)
