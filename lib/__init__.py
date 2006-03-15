@@ -29,7 +29,7 @@ from histogram1d import histogram1d
 import time
 from computeMean import computeMean
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 class ImageStats:
     """ Class to compute desired statistics from numarray objects."""
