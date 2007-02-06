@@ -24,12 +24,12 @@
 #                                equal to self.binwidth -- CJH
 # Version: 1.0.0 -- 01-Jun-2005: Added an error condition to the clipping loop to throw an exception if
 #                                the number of pixels in the region of interest is equal to 0. -- CJH
-import numarray as N
+import numerix as N
 from histogram1d import histogram1d
 import time
 from computeMean import computeMean
 
-__version__ = '1.0.1'
+__version__ = '1.1.0'
 
 class ImageStats:
     """ Class to compute desired statistics from numarray objects."""
@@ -164,18 +164,17 @@ class ImageStats:
                         _dh1 = _bins[_peakindex] - _bins[_peakindex - 1]
                         _dh2 = _bins[_peakindex] - _bins[_peakindex + 1]
                         _denom = _dh1 + _dh2
-
                         if _denom == 0:
                             _mode = _min + (_peakindex + 0.5) * _hwidth
                         else:
-                            _mode = _peakindex + 1 + (0.5 * (_dh1 - _dh2)/_denom)
+                            _mode = _peakindex + 1 + (0.5 * (long(_dh1) - long(_dh2))/_denom)
                             _mode = _min + ((_mode - 0.5) * _hwidth)
                 # Return the mode
                 self.mode = _mode
 
             if (self.fields.find('median') != -1):
                 # Compute Median Value
-                _binSum = N.cumsum(_bins).astype(N.Float32)
+                _binSum = N.cumsum(_bins).astype(N.float32)
                 _binSum = _binSum/_binSum[-1]
                 _lo = N.where(_binSum >= 0.5)[0][0]
                 _hi = _lo + 1

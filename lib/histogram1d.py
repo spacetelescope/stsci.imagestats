@@ -11,10 +11,10 @@
 #                                    
 #
 
-import numarray as N
+import numerix as N
 import buildHistogram
 
-__version__ = '0.1.2'
+__version__ = '0.2.0'
 
 class histogram1d:
     """Populate a 1 dimensional histogram from numarray object"""
@@ -41,7 +41,7 @@ class histogram1d:
         self.centers = N.array([self.minValue, self.maxValue, self.binWidth])
 
         # Allocate the memory for the histogram.
-        self.histogram = N.zeros([self.nbins],type=N.UInt32)
+        self.histogram = N.zeros([self.nbins],dtype=N.uint32)
 
         # Populate the histogram
         self.__populateHistogram()
