@@ -11,7 +11,7 @@
 #                                    
 #
 
-import numerix as N
+import numpy as N
 import buildHistogram
 
 __version__ = '0.2.0'

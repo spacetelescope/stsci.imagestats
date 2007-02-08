@@ -24,7 +24,7 @@
 #                                equal to self.binwidth -- CJH
 # Version: 1.0.0 -- 01-Jun-2005: Added an error condition to the clipping loop to throw an exception if
 #                                the number of pixels in the region of interest is equal to 0. -- CJH
-import numerix as N
+import numpy as N
 from histogram1d import histogram1d
 import time
 from computeMean import computeMean
