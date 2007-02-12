@@ -14,11 +14,19 @@
                 version of my code.  --CJH
 */
 #include <Python.h>
-#include <arrayobject.h>
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
-#include <libnumarray.h>
+
+
+#ifdef NUMPY
+    #include <numpy/arrayobject.h>
+    #include <numpy/libnumarray.h>
+#else
+    #include <arrayobject.h>
+    #include <libnumarray.h>
+#endif
+
 
 int computeMean_(float *image, int nelements, float clipmin, float clipmax, 
                                int *numGoodPixels, float *mean, float *stddev, 

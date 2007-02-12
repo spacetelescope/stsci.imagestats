@@ -20,10 +20,18 @@
 
 */
 #include <Python.h>
-#include <arrayobject.h>
 #include <string.h>
 #include <stdio.h>
-#include <libnumarray.h>
+
+
+#ifdef NUMPY
+    #include <numpy/arrayobject.h>
+    #include <numpy/libnumarray.h>
+#else
+    #include <arrayobject.h>
+    #include <libnumarray.h>
+#endif
+
 
 int populate1DHist_(float *image, int image_elements, 
 		    unsigned int *histogram, int histogram_elements,
