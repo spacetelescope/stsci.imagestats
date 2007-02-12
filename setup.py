@@ -3,26 +3,37 @@ from distutils import sysconfig
 from distutils.command.install_data import install_data
 import sys, os.path
 
+numpyStatus = False
+numarrayStatus = False
 
-if not hasattr(sys, 'version_info') or sys.version_info < (2,2,0,'alpha',0):
-    raise SystemExit, "Python 2.2 or later required to build imagestats."
+if not hasattr(sys, 'version_info') or sys.version_info < (2,3,0,'alpha',0):
+    raise SystemExit, "Python 2.3 or later required to build imagestats."
 
-#pythonlib = sysconfig.get_python_lib(plat_specific=1)
-pythoninc = sysconfig.get_python_inc()
 try:
-    import numarray
-    from numarray.numarrayext import NumarrayExtension
+    import numpy
+    import numpy.numarray as nn
+    numpyStatus = True
+    print "Building C extensions using NUMPY."
 except:
-    raise ImportError("Numarray was not found. It may not be installed or it may not be on your PYTHONPATH\n")
+    try:
+        import numarray
+        from numarray.numarrayext import NumarrayExtension
+        numarrayStatus = True
+        print "Building C extensions using NUMARRAY."
 
-if numarray.__version__ < "1.1":
-    raise SystemExit, "Numarray 1.1 or later required to build imagestats."
+    except:
+        raise ImportError("Neither NUMPY or NUMARRAY was not found. It may not be installed or it may not be on your PYTHONPATH")
+
+pythoninc = sysconfig.get_python_inc()
+
+if numpyStatus:
+    numpyinc = numpy.get_include()
+    numpynumarrayinc = nn.get_numarray_include_dirs()
 
 if sys.platform != 'win32':
-    imagestats_libs = ['m']
+    imagestats_libraries = ['m']
 else:
-    imagestats_libs = []
-
+    imagestats_libraries = ['']
 
 args = sys.argv[:]
 for a in args:
@@ -43,21 +54,41 @@ class smart_install_data(install_data):
         return install_data.run(self)
 
 
-def getExtensions(args):
-    ext = [NumarrayExtension("imagestats.buildHistogram",['src/buildHistogram.c'],
-                             include_dirs=[pythoninc],
-                             libraries=imagestats_libs),
-           NumarrayExtension("imagestats.computeMean", ['src/computeMean.c'],
-                             include_dirs=[pythoninc],
-                             libraries=imagestats_libs)]
+def getExtensions_numpy(args):
+    ext = [Extension('imagestats.buildHistogram',['src/buildHistogram.c'],
+                             define_macros=[('NUMPY', '1')],
+                             include_dirs = [pythoninc,numpyinc]+numpynumarrayinc,
+                             libraries = imagestats_libraries),
+           Extension('imagestats.computeMean', ['src/computeMean.c'],
+                             define_macros=[('NUMPY', '1')],
+                             include_dirs = [pythoninc,numpyinc]+numpynumarrayinc,
+                             libraries = imagestats_libraries)]
 
     return ext
 
+def getExtensions_numarray(args):
+    numarrayIncludeDir = './'
+    for a in args:
+        if a.startswith('--home='):
+            numarrayIncludeDir = os.path.abspath(os.path.join(a.split('=')[1], 'include', 'python', 'numarray'))
+        elif a.startswith('--prefix='):
+            numarrayIncludeDir = os.path.abspath(os.path.join(a.split('=')[1], 'include','python2.3', 'numarray'))
+        elif a.startswith('--local='):
+            numarrayIncludeDir = os.path.abspath(a.split('=')[1])
+
+    ext = [NumarrayExtension('imagestats/buildHistogram',['src/buildHistogram.c'],
+                             include_dirs = [numarrayIncludeDir],
+                             libraries = ['m']),
+           NumarrayExtension('imagestats/computeMean', ['src/computeMean.c'],
+                             include_dirs = [numarrayIncludeDir],
+                             libraries = ['m'])]
+                             
+    return ext
 
 def dosetup(ext):
     r = setup(name = "imagestats",
-              version = "0.2.5",
-              description = "Compute desired statistics values for numarray objects",
+              version = "1.1.0",
+              description = "Compute desired statistics values for array objects",
               author = "Warren Hack, Christopher Hanley",
               author_email = "help@stsci.edu",
               license = "http://www.stsci.edu/resources/software_hardware/pyraf/LICENSE",
@@ -71,7 +102,12 @@ def dosetup(ext):
 
 
 if __name__ == "__main__":
-    ext = getExtensions(args)
+    if numpyStatus:
+        ext = getExtensions_numpy(args)
+    elif numarrayStatus:
+        ext = getExtensions_numarray(args)
+    else:
+        raise SystemExit("Cannot build C extensions")
     dosetup(ext)
 
 
