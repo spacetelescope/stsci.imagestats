@@ -22,15 +22,9 @@
 #include <Python.h>
 #include <string.h>
 #include <stdio.h>
+#include <numpy/arrayobject.h>
+#include <numpy/libnumarray.h>
 
-
-#ifdef NUMPY
-    #include <numpy/arrayobject.h>
-    #include <numpy/libnumarray.h>
-#else
-    #include <arrayobject.h>
-    #include <libnumarray.h>
-#endif
 
 
 int populate1DHist_(float *image, int image_elements, 
