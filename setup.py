@@ -12,23 +12,14 @@ if not hasattr(sys, 'version_info') or sys.version_info < (2,3,0,'alpha',0):
 try:
     import numpy
     import numpy.numarray as nn
-    numpyStatus = True
-    print "Building C extensions using NUMPY."
 except:
-    try:
-        import numarray
-        from numarray.numarrayext import NumarrayExtension
-        numarrayStatus = True
-        print "Building C extensions using NUMARRAY."
+    raise ImportError("NUMPY was not found. It may not be installed or it may not be on your PYTHONPATH")
 
-    except:
-        raise ImportError("Neither NUMPY or NUMARRAY was not found. It may not be installed or it may not be on your PYTHONPATH")
-
+print "Building C extensions using NUMPY."
 pythoninc = sysconfig.get_python_inc()
 
-if numpyStatus:
-    numpyinc = numpy.get_include()
-    numpynumarrayinc = nn.get_numarray_include_dirs()
+numpyinc = numpy.get_include()
+numpynumarrayinc = nn.get_numarray_include_dirs()
 
 if sys.platform != 'win32':
     imagestats_libraries = ['m']
@@ -65,7 +56,7 @@ def getExtensions_numpy(args):
                              libraries = imagestats_libraries)]
 
     return ext
-
+"""
 def getExtensions_numarray(args):
     numarrayIncludeDir = './'
     for a in args:
@@ -84,6 +75,7 @@ def getExtensions_numarray(args):
                              libraries = ['m'])]
                              
     return ext
+"""
 
 def dosetup(ext):
     r = setup(name = "imagestats",
@@ -102,12 +94,7 @@ def dosetup(ext):
 
 
 if __name__ == "__main__":
-    if numpyStatus:
-        ext = getExtensions_numpy(args)
-    elif numarrayStatus:
-        ext = getExtensions_numarray(args)
-    else:
-        raise SystemExit("Cannot build C extensions")
+    ext = getExtensions_numpy(args)
     dosetup(ext)
 
 
