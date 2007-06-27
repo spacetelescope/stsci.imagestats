@@ -3,23 +3,15 @@
     Author:     Christopher Hanley
     Purpose:    Compute the mean, stddev, max, and min for a nnumarray object
                 while applying some upper and lower pixel clipping values.
-
-    Version:
-            Version 0.1.0, 23-Feb-2004: Created -- CJH
-            Version 0.1.1, 24-May-2004: Made sum, sumsq type double to prevent 
-                register overflow -- CJH  
-            Version 0.1.2, 27-May-2004: Removed Pydecref statments to avoid
-                pointer errors.  -- CJH
-            Version 0.1.3, 07-Jun-2004, Implemented J. Miller's cleaned up
-                version of my code.  --CJH
 */
+
 #include <Python.h>
+#include "numpy/arrayobject.h"
+
+
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
-#include <numpy/arrayobject.h>
-#include <numpy/libnumarray.h>
-
 
 
 int computeMean_(float *image, int nelements, float clipmin, float clipmax, 
@@ -82,16 +74,17 @@ static PyObject * computeMean(PyObject *obj, PyObject *args)
     if (!PyArg_ParseTuple(args,"Off:computeMean",&oimage, &clipmin, &clipmax))
 	    return NULL;
 
-    image = (PyArrayObject *)NA_InputArray(oimage, tFloat32, C_ARRAY);
+    image = (PyArrayObject *)PyArray_ContiguousFromObject(oimage, PyArray_FLOAT, 1, 2);
+
     if (!image) return NULL;
-    
+
     mean = 0;
     stddev = 0;
     numGoodPixels = 0;
     minValue = 0;
     maxValue = 0;
 
-    status = computeMean_(NA_OFFSETDATA(image), NA_elements(image), 
+    status = computeMean_((float *)image->data, PyArray_Size((PyObject*)image), 
 			  clipmin, clipmax,
 			  &numGoodPixels, &mean, &stddev, &minValue, &maxValue);
     Py_XDECREF(image); 
@@ -108,6 +101,5 @@ static PyMethodDef computeMean_methods[] =
 
 void initcomputeMean(void) {
 	Py_InitModule("computeMean", computeMean_methods);
-	import_libnumarray();
+    import_array();
 }
-
