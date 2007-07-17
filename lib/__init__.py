@@ -140,6 +140,7 @@ class ImageStats:
                 print "! WARNING: Clipped data falls within 1 histogram bin"
                 _dz = 1 / self.binwidth
             _hist = histogram1d(self.image,_nbins,1/_dz,_min)
+            self._hist = _hist
             _bins = _hist.histogram
 
             if (self.fields.find('mode') != -1):
@@ -208,7 +209,7 @@ class ImageStats:
 
     def getCenters(self):
         """ Compute the array of bin center positions."""
-        return N.arange(len(self.histogram)) * self.hwidth + self.hmin
+        return self._hist.getCenters()
 
     def printStats(self):
         """ Print the requested statistics values. """

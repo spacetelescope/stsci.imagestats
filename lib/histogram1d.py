@@ -57,3 +57,5 @@ class histogram1d:
             else:
                 raise SystemError, "An error processing the numarray object information occured in the buildHistogram module of histogram1d."
                 
+    def getCenters(self):
+        return N.arange(len(self.histogram)) * self.binWidth + self.minValue 
