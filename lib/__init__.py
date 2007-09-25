@@ -1,38 +1,17 @@
 # PROGRAM: imagestats.py
 # AUTHOR:  Warren Hack and Christopher Hanley
-# PURPOSE: Compute desired statistics values for input numarray objects.
+# PURPOSE: Compute desired statistics values for input array objects.
 #
 #
-# Version: 0.1.0 -- 17-Sep-2003: Created  -- CHanley
-# Version: 0.1.1 -- 14-Oct-2003: Modified to use 'ravel' efficiently. -- WJH
-# Version: 0.1.2 -- 04-Nov-2003: Added histogram as return value, and added
-#                                'getCenters' method to return histogram bin
-#                                 centers as an array. -- WJH
-# Version: 0.2.0 -- 17-Nov-2003: Modified imagestats to compute only the minimal
-#                                 set of requested statistical values. -- CJH
-# Version: 0.2.1 -- 20-Nov-2003: Now raises an Exception for cases where no pixels
-#                                 are found within clipping region. -- WJH
-# Version: 0.2.2 -- 15-Jan-2004: Improved performance of the mode and median
-#                                 computation by using the histogram1d class to build
-#                                 the histogram instead of the current Python code.  --CJH
-# Version: 0.2.3 -- 23-Feb-2004: C-API for computation of mean, stddev, min, and max. -- CJH
-# Version: 0.2.4 -- 01-Apr-2004: Placed computeMEAN in a try except block for better error handling.
-#                                Also, before building a histogram, we make sure that the entire 
-#                                data range doesn't fit into a single bin.  If that condition exists,
-#                                an exception is raised. -- CJH
-# Version: 0.2.5 -- 19-Jul-2004: Added code to ensure that the hwidth in the histogram is always 
-#                                equal to self.binwidth -- CJH
-# Version: 1.0.0 -- 01-Jun-2005: Added an error condition to the clipping loop to throw an exception if
-#                                the number of pixels in the region of interest is equal to 0. -- CJH
 import numpy as N
 from histogram1d import histogram1d
 import time
 from computeMean import computeMean
 
-__version__ = '1.1.0'
+__version__ = '1.2'
 
 class ImageStats:
-    """ Class to compute desired statistics from numarray objects."""
+    """ Class to compute desired statistics from array objects."""
 
     def __init__(self,
                 image,
@@ -85,7 +64,7 @@ class ImageStats:
         self.deltaTime = self.stopTime - self.startTime
 
     def _computeStats(self):
-        """ Compute all the basic statistics from the numarray object. """
+        """ Compute all the basic statistics from the array object. """
 
         # Initialize the local max and min
         _clipmin = self.lower
@@ -98,7 +77,8 @@ class ImageStats:
                 _npix,_mean,_stddev,_min,_max = computeMean(self.image,_clipmin,_clipmax)
                 #print "_npix,_mean,_stddev,_min,_max = ",_npix,_mean,_stddev,_min,_max 
             except:
-                raise SystemError, "An error processing the numarray object information occured in the computeMean module of imagestats."
+                raise SystemError, "An error processing the array object information occured in \
+                                    the computeMean module of imagestats."
             
             if _npix <= 0:
                 # Compute Global minimum and maximum
@@ -175,7 +155,7 @@ class ImageStats:
 
             if (self.fields.find('median') != -1):
                 # Compute Median Value
-                _binSum = N.cumsum(_bins).astype(N.float32)
+                _binSum = N.cumsum(_bins).astype(N.float64)
                 _binSum = _binSum/_binSum[-1]
                 _lo = N.where(_binSum >= 0.5)[0][0]
                 _hi = _lo + 1

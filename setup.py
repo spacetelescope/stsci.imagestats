@@ -1,6 +1,3 @@
-from distutils.core import setup, Extension
-from distutils import sysconfig
-from distutils.command.install_data import install_data
 import sys, os.path
 
 
@@ -11,6 +8,12 @@ try:
     import numpy
 except:
     raise ImportError("NUMPY was not found. It may not be installed or it may not be on your PYTHONPATH")
+
+
+from distutils.core import setup, Extension
+from distutils import sysconfig
+from distutils.command.install_data import install_data
+
 
 print "Building C extensions using NUMPY."
 pythoninc = sysconfig.get_python_inc()

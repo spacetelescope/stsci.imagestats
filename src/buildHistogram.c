@@ -10,9 +10,9 @@
 #include <string.h>
 #include <stdio.h>
 
-int populate1DHist_(float *image, int image_elements, 
+int populate1DHist_(double *image, int image_elements, 
 		    unsigned int *histogram, int histogram_elements,
-                    float minValue, float maxValue, float binWidth)
+                    double minValue, double maxValue, double binWidth)
 {
     int i, index=0;
     for (i = 0; i < image_elements; i++) {
@@ -41,13 +41,13 @@ static PyObject * populate1DHist(PyObject *obj, PyObject *args)
 {
     PyObject *oimage, *ohistogram;
     PyArrayObject *image, *histogram;
-    float minValue, maxValue, binWidth;
+    double minValue, maxValue, binWidth;
     int status=0;
 
-    if (!PyArg_ParseTuple(args,"OOfff:populate1DHist",&oimage,&ohistogram,&minValue,&maxValue,&binWidth))
+    if (!PyArg_ParseTuple(args,"OOddd:populate1DHist",&oimage,&ohistogram,&minValue,&maxValue,&binWidth))
 	    return NULL;
 
-    image = (PyArrayObject *)PyArray_ContiguousFromObject(oimage, PyArray_FLOAT32, 1, 2);
+    image = (PyArrayObject *)PyArray_ContiguousFromObject(oimage, PyArray_FLOAT64, 1, 2);
 
     if (!image) return NULL;
 
@@ -55,7 +55,7 @@ static PyObject * populate1DHist(PyObject *obj, PyObject *args)
 
     if (!histogram) return NULL;
     
-    status = populate1DHist_((float *)image->data, PyArray_Size((PyObject*)image),
+    status = populate1DHist_((double *)image->data, PyArray_Size((PyObject*)image),
 			     (unsigned int *)histogram->data, PyArray_Size((PyObject*)histogram),
 			     minValue, maxValue, binWidth);
 

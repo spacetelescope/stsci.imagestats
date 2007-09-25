@@ -1,26 +1,18 @@
 #   Program:    histogram1d.py
 #   Author:     Christopher Hanley
-#   Purpose:    Construct a 1 dimentional histogram from a numarray object
-#
-#   Version:
-#       Version 0.1.0, 15-Jan-2004: Created -- CJH --
-#       Version 0.1.1, 01-Apr-2004: Placed the call to the C function populate1DHist in a try/except block
-#                                   for better error handling.  --  CJH
-#       Version 0.1.2, 02-Nov-2005: Added 'centers' as an attribute for use
-#                                   with matplotlib.  -- WJH
-#                                    
+#   Purpose:    Construct a 1 dimentional histogram from an array object
 #
 
 import numpy as N
 import buildHistogram
 
-__version__ = '0.2.0'
+__version__ = '1.0'
 
 class histogram1d:
-    """Populate a 1 dimensional histogram from numarray object"""
+    """Populate a 1 dimensional histogram from array object"""
 
     def __init__(self,
-        arrayInput,         # 2D numarray object
+        arrayInput,         # 2D array object
         nbins,              # Number of bins in the histogram
         binWidth,           # Width of 1 bin in desired units
         zeroValue           # Zero value for the histogram range
@@ -53,9 +45,11 @@ class histogram1d:
                 self.minValue, self.maxValue, self.binWidth)
         except:
             if ( (self.__arrayInput.max() - self.__arrayInput.min() ) < self.binWidth ):
-                raise ValueError, "In histogram1d class, the binWidth is greater than the data range of the numarray object."
+                raise ValueError, "In histogram1d class, the binWidth is greater than the data \
+                range of the array object."
             else:
-                raise SystemError, "An error processing the numarray object information occured in the buildHistogram module of histogram1d."
+                raise SystemError, "An error processing the array object information occured \
+                in the buildHistogram module of histogram1d."
                 
     def getCenters(self):
         return N.arange(len(self.histogram)) * self.binWidth + self.minValue 
