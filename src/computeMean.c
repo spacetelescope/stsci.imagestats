@@ -14,12 +14,12 @@
 #include <math.h>
 
 
-int computeMean_(double *image, int nelements, double clipmin, double clipmax, 
-                               int *numGoodPixels, double *mean, double *stddev, 
-                                double *minValue, double *maxValue)
+int computeMean_(float *image, int nelements, float clipmin, float clipmax, 
+                               int *numGoodPixels, float *mean, float *stddev, 
+                                float *minValue, float *maxValue)
 {
     int i;
-    double tmpMinValue, tmpMaxValue;
+    float tmpMinValue, tmpMaxValue;
     double sum, sumsq;
 
     /* Initialize some local variables */
@@ -57,8 +57,8 @@ int computeMean_(double *image, int nelements, double clipmin, double clipmax,
 
     *minValue = tmpMinValue;
     *maxValue = tmpMaxValue;
-    *mean = (double)(sum / *numGoodPixels);
-    *stddev = (double)sqrt((sumsq - (*mean * sum)) / (*numGoodPixels - 1));
+    *mean = (float)(sum / *numGoodPixels);
+    *stddev = (float)sqrt((sumsq - (*mean * sum)) / (*numGoodPixels - 1));
 
     return 1;
 }
@@ -69,12 +69,12 @@ static PyObject * computeMean(PyObject *obj, PyObject *args)
     PyArrayObject *image;
     int status=0;
     int numGoodPixels;
-    double clipmin, clipmax, mean, stddev, minValue, maxValue;
+    float clipmin, clipmax, mean, stddev, minValue, maxValue;
 
     if (!PyArg_ParseTuple(args,"Off:computeMean",&oimage, &clipmin, &clipmax))
 	    return NULL;
 
-    image = (PyArrayObject *)PyArray_ContiguousFromObject(oimage, PyArray_DOUBLE, 1, 2);
+    image = (PyArrayObject *)PyArray_ContiguousFromObject(oimage, PyArray_FLOAT, 1, 2);
 
     if (!image) return NULL;
 
@@ -84,12 +84,12 @@ static PyObject * computeMean(PyObject *obj, PyObject *args)
     minValue = 0;
     maxValue = 0;
 
-    status = computeMean_((double *)image->data, PyArray_Size((PyObject*)image), 
+    status = computeMean_((float *)image->data, PyArray_Size((PyObject*)image), 
 			  clipmin, clipmax,
 			  &numGoodPixels, &mean, &stddev, &minValue, &maxValue);
     Py_XDECREF(image); 
 
-    return Py_BuildValue("idddd",numGoodPixels,mean,stddev,minValue,maxValue);
+    return Py_BuildValue("iffff",numGoodPixels,mean,stddev,minValue,maxValue);
 }
 
 static PyMethodDef computeMean_methods[] =

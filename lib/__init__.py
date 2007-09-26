@@ -155,7 +155,7 @@ class ImageStats:
 
             if (self.fields.find('median') != -1):
                 # Compute Median Value
-                _binSum = N.cumsum(_bins).astype(N.float64)
+                _binSum = N.cumsum(_bins).astype(N.float32)
                 _binSum = _binSum/_binSum[-1]
                 _lo = N.where(_binSum >= 0.5)[0][0]
                 _hi = _lo + 1
