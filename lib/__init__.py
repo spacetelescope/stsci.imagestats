@@ -28,6 +28,9 @@ class ImageStats:
         self.startTime = time.time()
 
         # Input Value
+        if image.dtype > N.float32:
+            print "Warning: Input array is being downcast to a float32 array!"
+            image = image.astype(N.float32)
         self.image = image
         self.lower = lower
         self.upper = upper
