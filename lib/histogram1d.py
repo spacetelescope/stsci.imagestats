@@ -19,7 +19,7 @@ class histogram1d:
         ):
 
         # Initialize Object Attributes
-        self.__arrayInput = arrayInput
+        self.__arrayInput = arrayInput.astype(N.float32)
         self.nbins = nbins
         self.binWidth = binWidth
         self.minValue = zeroValue
