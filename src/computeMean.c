@@ -3,6 +3,9 @@
     Author:     Christopher Hanley
     Purpose:    Compute the mean, stddev, max, and min for a nnumarray object
                 while applying some upper and lower pixel clipping values.
+		
+    Updated May 9, 2008   Fixed standard deviation computation, Megan Sosey
+    
 */
 
 #include <Python.h>
@@ -20,31 +23,32 @@ int computeMean_(float *image, int nelements, float clipmin, float clipmax,
 {
     int i;
     float tmpMinValue, tmpMaxValue;
-    double sum, sumsq;
+    double sum, sumsq, sumdiff;
 
     /* Initialize some local variables */
     sum = 0;
     sumsq = 0;
-
+    sumdiff = 0;
+    
     /*Initialize the tmpMinValue and tmpMaxValue so that we can find the 
       largest and smallest non-clipped values */
 
-    tmpMinValue = clipmax;
-    tmpMaxValue = clipmin;
+    tmpMinValue = image[0];
+    tmpMaxValue = image[0];
 
     for (i = 0; i < nelements; i++) {
         if ( (image[i] >= clipmin) && (image[i] <= clipmax) ) {
             /* Find lowest value in the clipped image */
-            if (image[i] < tmpMinValue) {
+            if (image[i] <= tmpMinValue) {
                 tmpMinValue = image[i];
             }
 
             /* Find largest value in the clipped image */
-            if (image[i] > tmpMaxValue) {
+            if (image[i] >= tmpMaxValue) {
                 tmpMaxValue = image[i];
             }
 
-            /* Increment the counter of of numGoodValues (i.e. not clipped) */
+            /* Increment the counter  of numGoodValues (i.e. not clipped) */
             *numGoodPixels = *numGoodPixels + 1;
 
             /* Compute the sum of the "good" pixels */
@@ -54,11 +58,18 @@ int computeMean_(float *image, int nelements, float clipmin, float clipmax,
             sumsq = sumsq + (image[i] * image[i]);
         }
     }
-
+ 
     *minValue = tmpMinValue;
     *maxValue = tmpMaxValue;
     *mean = (float)(sum / *numGoodPixels);
-    *stddev = (float)sqrt((sumsq - (*mean * sum)) / (*numGoodPixels - 1));
+   
+    for (i=0; i < nelements; i++) {
+        if ( (image[i] >= *minValue) && (image[i] <= *maxValue) ) {
+            sumdiff = sumdiff + ( (image[i] - *mean) * (image[i] - *mean) );
+	}
+    }
+    
+    *stddev = (float)sqrt( sumdiff  / (*numGoodPixels - 1));    
 
     return 1;
 }
