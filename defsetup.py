@@ -2,10 +2,6 @@ import sys
 import distutils
 import distutils.core
 
-
-if not hasattr(sys, 'version_info') or sys.version_info < (2,3,0,'alpha',0):
-    raise SystemExit, "Python 2.3 or later required to build imagestats."
-
 try:
     import numpy
 except:
