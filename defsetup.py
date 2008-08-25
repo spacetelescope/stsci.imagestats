@@ -7,21 +7,13 @@ try:
 except:
     raise ImportError("NUMPY was not found. It may not be installed or it may not be on your PYTHONPATH")
 
-if sys.platform != 'win32':
-    imagestats_libraries = ['m']
-else:
-    imagestats_libraries = ['']
-
-
 pythoninc = distutils.sysconfig.get_python_inc()
 numpyinc = numpy.get_include()
 
 ext = [ distutils.core.Extension('imagestats.buildHistogram',['src/buildHistogram.c'],
-                 include_dirs = [pythoninc,numpyinc],
-                 libraries = imagestats_libraries),
+                 include_dirs = [pythoninc,numpyinc]),
          distutils.core.Extension('imagestats.computeMean', ['src/computeMean.c'],
-                 include_dirs = [pythoninc,numpyinc],
-                 libraries = imagestats_libraries)
+                 include_dirs = [pythoninc,numpyinc])
     ]
 
 
