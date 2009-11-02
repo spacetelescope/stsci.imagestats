@@ -3,6 +3,8 @@
 #   Purpose:    Construct a 1 dimentional histogram from an array object
 #
 
+from __future__ import division
+
 import numpy as N
 import buildHistogram
 
@@ -26,7 +28,7 @@ class histogram1d:
 
         # Compute the maximum value the histogram will take on
         self.maxValue = self.minValue + (self.binWidth * self.nbins)
-        
+
         # Compute the array of bin center values
         #   This should be done lazily using the newer-style class definition
         #   for this class.
@@ -50,6 +52,6 @@ class histogram1d:
             else:
                 raise SystemError, "An error processing the array object information occured \
                 in the buildHistogram module of histogram1d."
-                
+
     def getCenters(self):
-        return N.arange(len(self.histogram)) * self.binWidth + self.minValue 
+        return N.arange(len(self.histogram)) * self.binWidth + self.minValue
