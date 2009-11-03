@@ -3,7 +3,7 @@
 #   Purpose:    Construct a 1 dimentional histogram from an array object
 #
 
-from __future__ import division
+from __future__ import division # confidence high
 
 import numpy as N
 import buildHistogram
