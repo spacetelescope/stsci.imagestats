@@ -3,12 +3,13 @@
 # PURPOSE: Compute desired statistics values for input array objects.
 #
 #
-import numpy as N
+import numpy as np
 from histogram1d import histogram1d
 import time
 from computeMean import computeMean
 
-__version__ = '1.2'
+__version__ = '1.3'
+__vdate__ = '11-Dec-2009'
 
 class ImageStats:
     """ Class to compute desired statistics from array objects."""
@@ -28,9 +29,9 @@ class ImageStats:
         self.startTime = time.time()
 
         # Input Value
-        if image.dtype > N.float32:
+        if image.dtype > np.float32:
             #Warning: Input array is being downcast to a float32 array
-            image = image.astype(N.float32)
+            image = image.astype(np.float32)
         self.image = image
         self.lower = lower
         self.upper = upper
@@ -46,11 +47,12 @@ class ImageStats:
         self.mean = None
         self.mode = None
         self.bins = None
-        self.median = None
+        self.median = None # numpy computed median with clipping
+        self.midpt = None  # IRAF-based pseudo-median using bins
 
         # Compute Global minimum and maximum
-        self.min = N.minimum.reduce(N.ravel(image))
-        self.max = N.maximum.reduce(N.ravel(image))
+        self.min = np.minimum.reduce(np.ravel(image))
+        self.max = np.maximum.reduce(np.ravel(image))
 
         # Apply initial mask to data: upper and lower limits
         if self.lower == None:
@@ -108,7 +110,18 @@ class ImageStats:
                 _clipmin = _mean - self.lsig * _stddev
                 _clipmax = _mean + self.usig * _stddev
 
-        if ( (self.fields.find('mode') != -1) or (self.fields.find('median') != -1) ):
+        if self.fields.find('median') != -1:
+            # Use the clip range to limit the data before computing 
+            #  the median value using numpy
+            if self.nclip > 0:
+                _image = self.image[(self.image <= _clipmax) & (self.image >= _clipmin)]
+            else:
+                _image = self.image
+            self.median = np.median(_image)
+            # clean-up intermediate product since it is no longer needed
+            del _image
+
+        if ( (self.fields.find('mode') != -1) or (self.fields.find('midpt') != -1) ):
             # Populate the historgram
             _hwidth = self.binwidth * _stddev
             
@@ -138,7 +151,7 @@ class ImageStats:
                     else:
                         _mode = _min + _hwidth
                 else:
-                    _peakindex = N.where(_bins == N.maximum.reduce(_bins))[0].tolist()[0]
+                    _peakindex = np.where(_bins == np.maximum.reduce(_bins))[0].tolist()[0]
 
                     if _peakindex == 0:
                         _mode = _min + 0.5 * _hwidth
@@ -156,11 +169,11 @@ class ImageStats:
                 # Return the mode
                 self.mode = _mode
 
-            if (self.fields.find('median') != -1):
-                # Compute Median Value
-                _binSum = N.cumsum(_bins).astype(N.float32)
+            if (self.fields.find('midpt') != -1):
+                # Compute a pseudo-Median Value using IRAF's algorithm
+                _binSum = np.cumsum(_bins).astype(np.float32)
                 _binSum = _binSum/_binSum[-1]
-                _lo = N.where(_binSum >= 0.5)[0][0]
+                _lo = np.where(_binSum >= 0.5)[0][0]
                 _hi = _lo + 1
 
                 _h1 = _min + _lo * _hwidth
@@ -170,13 +183,12 @@ class ImageStats:
                     _hdiff = _binSum[_hi-1] - _binSum[_lo-1]
 
                 if (_hdiff == 0):
-                    _median = _h1
+                    _midpt = _h1
                 elif (_lo == 0):
-                    _median = _h1 + 0.5 / _hdiff * _hwidth
+                    _midpt = _h1 + 0.5 / _hdiff * _hwidth
                 else:
-                    _median = _h1 + (0.5 - _binSum[_lo-1])/_hdiff * _hwidth
-                self.median = _median
-
+                    _midpt = _h1 + (0.5 - _binSum[_lo-1])/_hdiff * _hwidth
+                self.midpt = _midpt
 
             # These values will only be returned if the histogram is computed.
             self.hmin = _min + 0.5 * _hwidth
@@ -212,3 +224,5 @@ class ImageStats:
             print "Mode              :  ",self.mode
         if (self.fields.find('median') != -1 ):
             print "Median            :  ",self.median
+        if (self.fields.find('midpt') != -1 ):
+            print "Midpt            :  ",self.midpt
