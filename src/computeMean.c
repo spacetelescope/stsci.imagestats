@@ -33,8 +33,8 @@ int computeMean_(float *image, int nelements, float clipmin, float clipmax,
     /*Initialize the tmpMinValue and tmpMaxValue so that we can find the 
       largest and smallest non-clipped values */
 
-    tmpMinValue = image[0];
-    tmpMaxValue = image[0];
+    tmpMinValue = (clipmin > image[0]) ? clipmin : image[0];
+    tmpMaxValue = (clipmax < image[0]) ? clipmax : image[0];
 
     for (i = 0; i < nelements; i++) {
         if ( (image[i] >= clipmin) && (image[i] <= clipmax) ) {
