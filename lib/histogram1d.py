@@ -41,10 +41,15 @@ class histogram1d:
     def __populateHistogram(self):
         """Call the C-code that actually populates the histogram"""
         try :
-            buildHistogram.populate1DHist(self.__arrayInput, self.histogram,
-                self.minValue, self.maxValue, self.binWidth)
+            buildHistogram.populate1DHist(
+                self.__arrayInput, self.histogram,
+                self.minValue,
+                self.maxValue,
+                self.binWidth
+            )
+
         except:
-            if ( (self.__arrayInput.max() - self.__arrayInput.min() ) < self.binWidth ):
+            if  (self.__arrayInput.max() - self.__arrayInput.min() ) < self.binWidth:
                 raise ValueError, "In histogram1d class, the binWidth is greater than the data \
                 range of the array object."
             else:

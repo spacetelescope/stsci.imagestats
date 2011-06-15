@@ -3,10 +3,16 @@
 # PURPOSE: Compute desired statistics values for input array objects.
 #
 #
-import numpy as np
-from histogram1d import histogram1d
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+import sys
+import os
 import time
-from computeMean import computeMean
+import numpy as np
+from imagestats.histogram1d import histogram1d
+from imagestats.computeMean import computeMean
 
 __version__ = '1.4'
 __vdate__ = '14-June-2011'
@@ -81,8 +87,7 @@ class ImageStats:
             try:
                 _npix,_mean,_stddev,_min,_max = computeMean(self.image,_clipmin,_clipmax)
             except:
-                raise SystemError, "An error processing the array object information occured in \
-                                    the computeMean module of imagestats."
+                raise(SystemError, "An error processing the array object information occured in the computeMean module of imagestats.")
 
             if _npix <= 0:
                 # Compute Global minimum and maximum
@@ -101,8 +106,8 @@ class ImageStats:
                 errormsg += "       Excluding pixel values below: " + str(_clipmin) + '\n'
                 errormsg += "#                                            #\n"
                 errormsg += "##############################################\n"
-                print errormsg
-                raise ValueError
+                print(errormsg)
+                raise(ValueError)
 
             if iter < self.nclip:
                 # Re-compute limits for iterations
@@ -129,7 +134,7 @@ class ImageStats:
             if _hwidth < self.binwidth:
                 _hwidth = self.binwidth
 
-            _nbins = int( (_max - _min) / _hwidth ) + 1
+            _nbins = long( (_max - _min) / _hwidth ) + 1
             _dz = float(_nbins - 1) / max(self.binwidth,float(_max - _min))
             if (_dz == 0):
                 print("! WARNING: Clipped data falls within 1 histogram bin!")
@@ -168,7 +173,7 @@ class ImageStats:
                 # Return the mode
                 self.mode = _mode
 
-            if (self.fields.find('midpt') != -1):
+            if self.fields.find('midpt') != -1:
                 # Compute a pseudo-Median Value using IRAF's algorithm
                 _binSum = np.cumsum(_bins).astype(np.float32)
                 _binSum = _binSum/_binSum[-1]
@@ -176,14 +181,14 @@ class ImageStats:
                 _hi = _lo + 1
 
                 _h1 = _min + _lo * _hwidth
-                if (_lo == 0):
+                if _lo == 0:
                     _hdiff = _binSum[_hi-1]
                 else:
                     _hdiff = _binSum[_hi-1] - _binSum[_lo-1]
 
-                if (_hdiff == 0):
+                if _hdiff == 0:
                     _midpt = _h1
-                elif (_lo == 0):
+                elif _lo == 0:
                     _midpt = _h1 + 0.5 / _hdiff * _hwidth
                 else:
                     _midpt = _h1 + (0.5 - _binSum[_lo-1])/_hdiff * _hwidth
@@ -207,21 +212,21 @@ class ImageStats:
 
     def printStats(self):
         """ Print the requested statistics values. """
-        print "--- Imagestats Results ---"
+        print("--- Imagestats Results ---")
 
-        if (self.fields.find('npix') != -1 ):
-            print "Number of pixels  :  ",self.npix
-        if (self.fields.find('min') != -1 ):
-            print "Minimum value     :  ",self.min
-        if (self.fields.find('max') != -1 ):
-            print "Maximum value     :  ",self.max
-        if (self.fields.find('stddev') != -1 ):
-            print "Standard Deviation:  ",self.stddev
-        if (self.fields.find('mean') != -1 ):
-            print "Mean              :  ",self.mean
-        if (self.fields.find('mode') != -1 ):
-            print "Mode              :  ",self.mode
-        if (self.fields.find('median') != -1 ):
-            print "Median            :  ",self.median
-        if (self.fields.find('midpt') != -1 ):
-            print "Midpt            :  ",self.midpt
+        if self.fields.find('npix') != -1:
+            print("Number of pixels  :  "+str(self.npix))
+        if self.fields.find('min') != -1:
+            print("Minimum value     :  "+str(self.min))
+        if self.fields.find('max') != -1:
+            print("Maximum value     :  "+str(self.max))
+        if self.fields.find('stddev') != -1:
+            print("Standard Deviation:  "+str(self.stddev))
+        if self.fields.find('mean') != -1:
+            print("Mean              :  "+str(self.mean))
+        if self.fields.find('mode') != -1:
+            print("Mode              :  "+str(self.mode))
+        if self.fields.find('median') != -1:
+            print("Median            :  "+str(self.median))
+        if self.fields.find('midpt') != -1:
+            print("Midpt            :  "+str(self.midpt))
