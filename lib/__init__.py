@@ -8,8 +8,8 @@ from histogram1d import histogram1d
 import time
 from computeMean import computeMean
 
-__version__ = '1.3'
-__vdate__ = '11-Dec-2009'
+__version__ = '1.4'
+__vdate__ = '14-June-2011'
 
 class ImageStats:
     """ Class to compute desired statistics from array objects."""
@@ -80,11 +80,10 @@ class ImageStats:
 
             try:
                 _npix,_mean,_stddev,_min,_max = computeMean(self.image,_clipmin,_clipmax)
-                #print "_npix,_mean,_stddev,_min,_max = ",_npix,_mean,_stddev,_min,_max 
             except:
                 raise SystemError, "An error processing the array object information occured in \
                                     the computeMean module of imagestats."
-            
+
             if _npix <= 0:
                 # Compute Global minimum and maximum
                 errormsg =  "\n##############################################\n"
@@ -97,7 +96,7 @@ class ImageStats:
                 errormsg += "  Image MIN pixel value: " + str(self.min) + '\n'
                 errormsg += "  Image MAX pixel value: " + str(self.max) + '\n\n'
                 errormsg += "# Current Clipping Range                     #\n"
-                errormsg += "       for iteration " + str(iter) + '\n' 
+                errormsg += "       for iteration " + str(iter) + '\n'
                 errormsg += "       Excluding pixel values above: " + str(_clipmax) + '\n'
                 errormsg += "       Excluding pixel values below: " + str(_clipmin) + '\n'
                 errormsg += "#                                            #\n"
@@ -111,7 +110,7 @@ class ImageStats:
                 _clipmax = _mean + self.usig * _stddev
 
         if self.fields.find('median') != -1:
-            # Use the clip range to limit the data before computing 
+            # Use the clip range to limit the data before computing
             #  the median value using numpy
             if self.nclip > 0:
                 _image = self.image[(self.image <= _clipmax) & (self.image >= _clipmin)]
@@ -124,16 +123,16 @@ class ImageStats:
         if ( (self.fields.find('mode') != -1) or (self.fields.find('midpt') != -1) ):
             # Populate the historgram
             _hwidth = self.binwidth * _stddev
-            
+
             # Special Case:  We never want the _hwidth to be smaller than the bin width.  If it is,
             # we set the hwidth to be equal to the binwidth.
             if _hwidth < self.binwidth:
                 _hwidth = self.binwidth
-            
+
             _nbins = int( (_max - _min) / _hwidth ) + 1
             _dz = float(_nbins - 1) / max(self.binwidth,float(_max - _min))
             if (_dz == 0):
-                print "! WARNING: Clipped data falls within 1 histogram bin"
+                print("! WARNING: Clipped data falls within 1 histogram bin!")
                 _dz = 1 / self.binwidth
             _hist = histogram1d(self.image,_nbins,1/_dz,_min)
             self._hist = _hist

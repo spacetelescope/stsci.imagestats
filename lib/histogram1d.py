@@ -8,8 +8,6 @@ from __future__ import division # confidence high
 import numpy as N
 import buildHistogram
 
-__version__ = '1.0'
-
 class histogram1d:
     """Populate a 1 dimensional histogram from array object"""
 
@@ -21,7 +19,7 @@ class histogram1d:
         ):
 
         # Initialize Object Attributes
-        self.__arrayInput = arrayInput.astype(N.float32)
+        self.__arrayInput = arrayInput.astype(np.float32)
         self.nbins = nbins
         self.binWidth = binWidth
         self.minValue = zeroValue
@@ -32,10 +30,10 @@ class histogram1d:
         # Compute the array of bin center values
         #   This should be done lazily using the newer-style class definition
         #   for this class.
-        self.centers = N.array([self.minValue, self.maxValue, self.binWidth])
+        self.centers = np.array([self.minValue, self.maxValue, self.binWidth])
 
         # Allocate the memory for the histogram.
-        self.histogram = N.zeros([self.nbins],dtype=N.uint32)
+        self.histogram = np.zeros([self.nbins],dtype=np.uint32)
 
         # Populate the histogram
         self.__populateHistogram()
@@ -54,4 +52,4 @@ class histogram1d:
                 in the buildHistogram module of histogram1d."
 
     def getCenters(self):
-        return N.arange(len(self.histogram)) * self.binWidth + self.minValue
+        return np.arange(len(self.histogram)) * self.binWidth + self.minValue
