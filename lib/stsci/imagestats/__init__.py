@@ -12,8 +12,98 @@ __version__ = '1.3'
 __vdate__ = '11-Dec-2009'
 
 class ImageStats:
-    """ Class to compute desired statistics from array objects."""
+    """
+Class to compute desired statistics from array objects.
 
+
+Examples
+--------
+This class can can be instantiated using the following syntax::
+
+    >>> import stsci.imagestats as imagestats
+    >>> i = imagestats.ImageStats(image,
+                fields="npix,min,max,mean,stddev",
+                nclip=3,
+                lsig=3.0,
+                usig=3.0,
+                binwidth=0.1
+                )
+    >>> i.printStats()
+    >>> i.mean
+
+The statistical quantities specified by the parameter *fields* are
+computed and printed for the input *image* array. The results are available
+as attributes of the class object as well.
+
+
+Parameters
+----------
+image : str
+    input image data array.
+
+fields : str
+    comma-separated list of values to be computed. The available fields are the following.
+
+    ======    ======
+    ======    ======
+    image     image data array
+    npix      the number of pixels used to do the statistics
+    mean      the mean of the pixel distribution
+    midpt     estimate of the median of the pixel distribution
+    mode      the mode of the pixel distribution
+    stddev    the standard deviation of the pixel distribution
+    min       the minimum pixel value
+    max       the maximum pixel value
+    ======    ======
+
+    **WARNING**
+        Only those fields specified upon instantiation will be computed and available
+        as an output value.
+
+lower : float
+    Lowest valid value in the input array to be used for computing the statistical values
+
+upper : float
+    Largest valid value in the input array to be used in computing the statistical values
+
+nclip : int
+    Number of clipping iterations to apply in computing the results
+
+lsig : float
+    Lower sigma clipping limit (in sigma)
+
+usig : float
+    Upper sigma clipping limit (in sigma)
+
+binwidth : float
+    Width of bins (in sigma) to use in generating histograms for computing
+    median-related values
+
+NOTES
+-----
+The mean, standard deviation, min and max are computed in a
+single pass through the image using the expressions listed below.
+Only the quantities selected by the fields parameter are actually computed.
+::
+
+        mean = sum (x1,...,xN) / N
+           y = x - mean
+    variance = sum (y1 ** 2,...,yN ** 2) / (N-1)
+      stddev = sqrt (variance)
+
+The midpoint and mode are computed in two passes through the image. In the
+first pass the standard deviation of the pixels is calculated and used
+with the *binwidth* parameter to compute the resolution of the data
+histogram. The midpoint is estimated by integrating the histogram and
+computing by interpolation the data value at which exactly half the
+pixels are below that data value and half are above it. The mode is
+computed by locating the maximum of the data histogram and fitting the
+peak by parabolic interpolation.
+
+**Warning**
+    This data will be promoted down to float32 if provided as 64-bit datatype.
+
+    """
     def __init__(self,
                 image,
                 fields="npix,min,max,mean,stddev",
@@ -80,11 +170,11 @@ class ImageStats:
 
             try:
                 _npix,_mean,_stddev,_min,_max = computeMean(self.image,_clipmin,_clipmax)
-                #print "_npix,_mean,_stddev,_min,_max = ",_npix,_mean,_stddev,_min,_max 
+                #print "_npix,_mean,_stddev,_min,_max = ",_npix,_mean,_stddev,_min,_max
             except:
                 raise SystemError, "An error processing the array object information occured in \
                                     the computeMean module of imagestats."
-            
+
             if _npix <= 0:
                 # Compute Global minimum and maximum
                 errormsg =  "\n##############################################\n"
@@ -97,7 +187,7 @@ class ImageStats:
                 errormsg += "  Image MIN pixel value: " + str(self.min) + '\n'
                 errormsg += "  Image MAX pixel value: " + str(self.max) + '\n\n'
                 errormsg += "# Current Clipping Range                     #\n"
-                errormsg += "       for iteration " + str(iter) + '\n' 
+                errormsg += "       for iteration " + str(iter) + '\n'
                 errormsg += "       Excluding pixel values above: " + str(_clipmax) + '\n'
                 errormsg += "       Excluding pixel values below: " + str(_clipmin) + '\n'
                 errormsg += "#                                            #\n"
@@ -111,7 +201,7 @@ class ImageStats:
                 _clipmax = _mean + self.usig * _stddev
 
         if self.fields.find('median') != -1:
-            # Use the clip range to limit the data before computing 
+            # Use the clip range to limit the data before computing
             #  the median value using numpy
             if self.nclip > 0:
                 _image = self.image[(self.image <= _clipmax) & (self.image >= _clipmin)]
@@ -124,12 +214,12 @@ class ImageStats:
         if ( (self.fields.find('mode') != -1) or (self.fields.find('midpt') != -1) ):
             # Populate the historgram
             _hwidth = self.binwidth * _stddev
-            
+
             # Special Case:  We never want the _hwidth to be smaller than the bin width.  If it is,
             # we set the hwidth to be equal to the binwidth.
             if _hwidth < self.binwidth:
                 _hwidth = self.binwidth
-            
+
             _nbins = int( (_max - _min) / _hwidth ) + 1
             _dz = float(_nbins - 1) / max(self.binwidth,float(_max - _min))
             if (_dz == 0):
@@ -207,7 +297,7 @@ class ImageStats:
         return self._hist.getCenters()
 
     def printStats(self):
-        """ Print the requested statistics values. """
+        """ Print the requested statistics values for those fields specified on input. """
         print "--- Imagestats Results ---"
 
         if (self.fields.find('npix') != -1 ):
