@@ -1,17 +1,5 @@
 #!/usr/bin/env python
+from __future__ import division # confidence high
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distribute_setup import use_setuptools
-    use_setuptools()
-    from setuptools import setup
-
-
-setup(
-    setup_requires=['d2to1>=0.2.5', 'stsci.distutils>=0.3.dev'],
-    namespace_packages=['stsci'], packages=['stsci'],
-    d2to1=True,
-    use_2to3=True,
-    zip_safe=False
-)
+import stsci.tools.stsci_distutils_hack as H
+H.run()
