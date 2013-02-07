@@ -8,8 +8,7 @@ from histogram1d import histogram1d
 import time
 from computeMean import computeMean
 
-__version__ = '1.3'
-__vdate__ = '11-Dec-2009'
+from .version import *
 
 class ImageStats:
     """
