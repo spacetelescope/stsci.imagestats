@@ -196,8 +196,8 @@ peak by parabolic interpolation.
 
             if iter < self.nclip:
                 # Re-compute limits for iterations
-                _clipmin = _mean - self.lsig * _stddev
-                _clipmax = _mean + self.usig * _stddev
+                _clipmin = max(self.lower, _mean - self.lsig * _stddev)
+                _clipmax = min(self.upper, _mean + self.usig * _stddev)
 
         if self.fields.find('median') != -1:
             # Use the clip range to limit the data before computing
