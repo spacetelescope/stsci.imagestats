@@ -121,6 +121,12 @@ peak by parabolic interpolation.
         if image.dtype > np.float32:
             #Warning: Input array is being downcast to a float32 array
             image = image.astype(np.float32)
+
+        assert(nclip >= 0)
+        assert(lsig > 0.0)
+        assert(usig > 0.0)
+        assert(binwidth > 0.0)
+
         self.image = image
         self.lower = lower
         self.upper = upper
@@ -146,9 +152,19 @@ peak by parabolic interpolation.
         # Apply initial mask to data: upper and lower limits
         if self.lower == None:
             self.lower = self.min
+        elif lower > self.max:
+            raise ValueError("Not enough data points to compute statistics.\n"
+                             "Lower data cutoff is larger than maximum pixel value.")
+        elif upper is not None and lower > upper:
+            raise ValueError("Lower data cutoff must be smaller than upper cutoff limit.")
 
         if self.upper == None:
             self.upper = self.max
+        elif upper < self.min:
+            raise ValueError("Not enough data points to compute statistics.\n"
+                             "Upper data cutoff is smaller than minimum pixel value.")
+        elif upper is not None and lower > upper:
+            raise ValueError("Upper data cutoff must be larger than lower cutoff limit.")
 
         # Compute the image statistics
         self._computeStats()
@@ -156,6 +172,26 @@ peak by parabolic interpolation.
         # Initialize the end time of the program
         self.stopTime = time.time()
         self.deltaTime = self.stopTime - self.startTime
+
+
+    def _error_no_valid_pixels(self, clipiter, minval, maxval, minclip, maxclip):
+        errormsg =  "\n##############################################\n"
+        errormsg += "#                                            #\n"
+        errormsg += "# ERROR:                                     #\n"
+        errormsg += "#  Unable to compute image statistics.  No   #\n"
+        errormsg += "#  valid pixels exist within the defined     #\n"
+        errormsg += "#  pixel value range.                        #\n"
+        errormsg += "#                                            #\n"
+        errormsg += "  Image MIN pixel value: " + str(minval) + '\n'
+        errormsg += "  Image MAX pixel value: " + str(maxval) + '\n\n'
+        errormsg += "# Current Clipping Range                     #\n"
+        errormsg += "       for iteration " + str(clipiter) + '\n'
+        errormsg += "       Excluding pixel values above: " + str(maxclip) + '\n'
+        errormsg += "       Excluding pixel values below: " + str(minclip) + '\n'
+        errormsg += "#                                            #\n"
+        errormsg += "##############################################\n"
+        return errormsg
+
 
     def _computeStats(self):
         """ Compute all the basic statistics from the array object. """
@@ -176,28 +212,15 @@ peak by parabolic interpolation.
 
             if _npix <= 0:
                 # Compute Global minimum and maximum
-                errormsg =  "\n##############################################\n"
-                errormsg += "#                                            #\n"
-                errormsg += "# ERROR:                                     #\n"
-                errormsg += "#  Unable to compute image statistics.  No   #\n"
-                errormsg += "#  valid pixels exist within the defined     #\n"
-                errormsg += "#  pixel value range.                        #\n"
-                errormsg += "#                                            #\n"
-                errormsg += "  Image MIN pixel value: " + str(self.min) + '\n'
-                errormsg += "  Image MAX pixel value: " + str(self.max) + '\n\n'
-                errormsg += "# Current Clipping Range                     #\n"
-                errormsg += "       for iteration " + str(iter) + '\n'
-                errormsg += "       Excluding pixel values above: " + str(_clipmax) + '\n'
-                errormsg += "       Excluding pixel values below: " + str(_clipmin) + '\n'
-                errormsg += "#                                            #\n"
-                errormsg += "##############################################\n"
-                print errormsg
-                raise ValueError
+                errormsg = _error_no_valid_pixels(iter, self.min, self.max,
+                                                  _clipmin, _clipmax)
+                print(errormsg)
+                raise ValueError("Not enough data points to compute statistics.")
 
             if iter < self.nclip:
                 # Re-compute limits for iterations
-                _clipmin = _mean - self.lsig * _stddev
-                _clipmax = _mean + self.usig * _stddev
+                _clipmin = max(self.lower, _mean - self.lsig * _stddev)
+                _clipmax = min(self.upper, _mean + self.usig * _stddev)
 
         if self.fields.find('median') != -1:
             # Use the clip range to limit the data before computing
@@ -213,18 +236,18 @@ peak by parabolic interpolation.
         if ( (self.fields.find('mode') != -1) or (self.fields.find('midpt') != -1) ):
             # Populate the historgram
             _hwidth = self.binwidth * _stddev
-
-            # Special Case:  We never want the _hwidth to be smaller than the bin width.  If it is,
-            # we set the hwidth to be equal to the binwidth.
-            if _hwidth < self.binwidth:
-                _hwidth = self.binwidth
-
-            _nbins = int( (_max - _min) / _hwidth ) + 1
-            _dz = float(_nbins - 1) / max(self.binwidth,float(_max - _min))
-            if (_dz == 0):
+            _drange = _max - _min
+            _minfloatval = 10.0 * np.finfo(dtype=np.float32).eps
+            if _hwidth < _minfloatval or abs(_drange) < _minfloatval or \
+               _hwidth > _drange:
+                nbins = 1
+                _dz = _drange
                 print "! WARNING: Clipped data falls within 1 histogram bin"
-                _dz = 1 / self.binwidth
-            _hist = histogram1d(self.image,_nbins,1/_dz,_min)
+            else:
+                _nbins = int( (_max - _min) / _hwidth ) + 1
+                _dz = float(_max - _min) / float(_nbins - 1)
+
+            _hist = histogram1d(self.image, _nbins, _dz, _min)
             self._hist = _hist
             _bins = _hist.histogram
 
