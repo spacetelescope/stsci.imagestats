@@ -240,7 +240,7 @@ peak by parabolic interpolation.
             _minfloatval = 10.0 * np.finfo(dtype=np.float32).eps
             if _hwidth < _minfloatval or abs(_drange) < _minfloatval or \
                _hwidth > _drange:
-                nbins = 1
+                _nbins = 1
                 _dz = _drange
                 print "! WARNING: Clipped data falls within 1 histogram bin"
             else:
