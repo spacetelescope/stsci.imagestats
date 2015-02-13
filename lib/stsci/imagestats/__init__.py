@@ -212,8 +212,10 @@ peak by parabolic interpolation.
 
             if _npix <= 0:
                 # Compute Global minimum and maximum
-                errormsg = _error_no_valid_pixels(iter, self.min, self.max,
-                                                  _clipmin, _clipmax)
+                errormsg = self._error_no_valid_pixels(
+                    iter, self.min, self.max,
+                    _clipmin, _clipmax
+                )
                 print(errormsg)
                 raise ValueError("Not enough data points to compute statistics.")
 
