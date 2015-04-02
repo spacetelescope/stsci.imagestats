@@ -110,7 +110,36 @@ static PyMethodDef computeMean_methods[] =
     {0,            0}                             /* sentinel */
 };
 
-void initcomputeMean(void) {
-	Py_InitModule("computeMean", computeMean_methods);
-    import_array();
+#if PY_MAJOR_VERSION >= 3
+static struct PyModuleDef moduledef = {
+  PyModuleDef_HEAD_INIT,
+  "computeMean",           /* m_name */
+  "C compute mean module", /* m_doc */
+  -1,                      /* m_size */
+  computeMean_methods,     /* m_methods */
+  NULL,                    /* m_reload */
+  NULL,                    /* m_traverse */
+  NULL,                    /* m_clear */
+  NULL,                    /* m_free */
+};
+#endif
+
+PyMODINIT_FUNC
+#if PY_MAJOR_VERSION >= 3
+PyInit_computeMean(void)
+#else
+initcomputeMean(void)
+#endif
+{
+	PyObject* m;
+	import_array();
+
+#if PY_MAJOR_VERSION >= 3
+	m = PyModule_Create(&moduledef);
+	return m;
+#else
+	m = Py_InitModule3("computeMean", computeMean_methods, "C compute mean module");
+	if (m == NULL)
+		return;
+#endif
 }
