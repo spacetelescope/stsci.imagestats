@@ -47,11 +47,11 @@ class histogram1d:
                 self.minValue, self.maxValue, self.binWidth)
         except:
             if ( (self.__arrayInput.max() - self.__arrayInput.min() ) < self.binWidth ):
-                raise ValueError, "In histogram1d class, the binWidth is greater than the data \
-                range of the array object."
+                raise ValueError("In histogram1d class, the binWidth is greater than the data \
+                range of the array object.")
             else:
-                raise SystemError, "An error processing the array object information occured \
-                in the buildHistogram module of histogram1d."
+                raise SystemError("An error processing the array object information occured \
+                in the buildHistogram module of histogram1d.")
 
     def getCenters(self):
         return N.arange(len(self.histogram)) * self.binWidth + self.minValue

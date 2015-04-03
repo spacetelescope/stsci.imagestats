@@ -72,9 +72,36 @@ static PyMethodDef buildHistogram_methods[] =
     {0,            0}                             /* sentinel */
 };
 
-void initbuildHistogram(void) {
-    Py_InitModule("buildHistogram", buildHistogram_methods);
-    import_array();
+#if PY_MAJOR_VERSION >= 3
+static struct PyModuleDef moduledef = {
+  PyModuleDef_HEAD_INIT,
+  "buildHistogram",            /* m_name */
+  "C build histogram module",  /* m_doc */
+  -1,                          /* m_size */
+  buildHistogram_methods,      /* m_methods */
+  NULL,                        /* m_reload */
+  NULL,                        /* m_traverse */
+  NULL,                        /* m_clear */
+  NULL,                        /* m_free */
+};
+#endif
 
+PyMODINIT_FUNC
+#if PY_MAJOR_VERSION >= 3
+PyInit_buildHistogram(void)
+#else
+initbuildHistogram(void)
+#endif
+{
+	PyObject* m;
+    import_array();
+#if PY_MAJOR_VERSION >= 3
+	m = PyModule_Create(&moduledef);
+	return m;
+#else
+	m = Py_InitModule3("buildHistogram", buildHistogram_methods, "C build histogram module");
+	if (m == NULL)
+		return;
+#endif
 }
 

@@ -3,6 +3,7 @@
 # PURPOSE: Compute desired statistics values for input array objects.
 #
 #
+from __future__ import division, print_function
 import numpy as np
 from histogram1d import histogram1d
 import time
@@ -201,14 +202,14 @@ peak by parabolic interpolation.
         _clipmax = self.upper
 
         # Compute the clipped mean iterating the user specified numer of iterations
-        for iter in xrange(self.nclip+1):
+        for iter in range(self.nclip+1):
 
             try:
                 _npix,_mean,_stddev,_min,_max = computeMean(self.image,_clipmin,_clipmax)
-                #print "_npix,_mean,_stddev,_min,_max = ",_npix,_mean,_stddev,_min,_max
+                #print("_npix,_mean,_stddev,_min,_max = ",_npix,_mean,_stddev,_min,_max)
             except:
-                raise SystemError, "An error processing the array object information occured in \
-                                    the computeMean module of imagestats."
+                raise SystemError("An error processing the array object information occured in \
+                                    the computeMean module of imagestats.")
 
             if _npix <= 0:
                 # Compute Global minimum and maximum
@@ -244,7 +245,7 @@ peak by parabolic interpolation.
                _hwidth > _drange:
                 _nbins = 1
                 _dz = _drange
-                print "! WARNING: Clipped data falls within 1 histogram bin"
+                print("! WARNING: Clipped data falls within 1 histogram bin")
             else:
                 _nbins = int( (_max - _min) / _hwidth ) + 1
                 _dz = float(_max - _min) / float(_nbins - 1)
@@ -278,7 +279,7 @@ peak by parabolic interpolation.
                         if _denom == 0:
                             _mode = _min + (_peakindex + 0.5) * _hwidth
                         else:
-                            _mode = _peakindex + 1 + (0.5 * (long(_dh1) - long(_dh2))/_denom)
+                            _mode = _peakindex + 1 + (0.5 * (int(_dh1) - int(_dh2))/_denom)
                             _mode = _min + ((_mode - 0.5) * _hwidth)
                 # Return the mode
                 self.mode = _mode
@@ -322,21 +323,21 @@ peak by parabolic interpolation.
 
     def printStats(self):
         """ Print the requested statistics values for those fields specified on input. """
-        print "--- Imagestats Results ---"
+        print("--- Imagestats Results ---")
 
         if (self.fields.find('npix') != -1 ):
-            print "Number of pixels  :  ",self.npix
+            print("Number of pixels  :  ",self.npix)
         if (self.fields.find('min') != -1 ):
-            print "Minimum value     :  ",self.min
+            print("Minimum value     :  ",self.min)
         if (self.fields.find('max') != -1 ):
-            print "Maximum value     :  ",self.max
+            print("Maximum value     :  ",self.max)
         if (self.fields.find('stddev') != -1 ):
-            print "Standard Deviation:  ",self.stddev
+            print("Standard Deviation:  ",self.stddev)
         if (self.fields.find('mean') != -1 ):
-            print "Mean              :  ",self.mean
+            print("Mean              :  ",self.mean)
         if (self.fields.find('mode') != -1 ):
-            print "Mode              :  ",self.mode
+            print("Mode              :  ",self.mode)
         if (self.fields.find('median') != -1 ):
-            print "Median            :  ",self.median
+            print("Median            :  ",self.median)
         if (self.fields.find('midpt') != -1 ):
-            print "Midpt            :  ",self.midpt
+            print("Midpt            :  ",self.midpt)
