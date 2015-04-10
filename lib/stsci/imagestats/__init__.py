@@ -3,11 +3,11 @@
 # PURPOSE: Compute desired statistics values for input array objects.
 #
 #
-from __future__ import division, print_function
+from __future__ import absolute_import, division, print_function
 import numpy as np
-from histogram1d import histogram1d
+from .histogram1d import histogram1d
 import time
-from computeMean import computeMean
+from .computeMean import computeMean
 
 from .version import *
 

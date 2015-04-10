@@ -6,7 +6,7 @@
 from __future__ import division # confidence high
 
 import numpy as N
-import buildHistogram
+from . import buildHistogram
 
 __version__ = '1.0'
 
