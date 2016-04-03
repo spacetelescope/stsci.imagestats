@@ -32,6 +32,7 @@ setup(
     package_dir = {
         '':'lib',
     },
+    namespace_packages = ['stsci'],
     packages = find_packages(),
     package_data = {
         '': ['LICENSE.txt'],
