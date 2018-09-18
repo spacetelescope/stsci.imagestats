@@ -123,14 +123,19 @@ peak by parabolic interpolation.
             #Warning: Input array is being downcast to a float32 array
             image = image.astype(np.float32)
 
-        assert(nclip >= 0)
-        assert(lsig > 0.0)
-        assert(usig > 0.0)
-        assert(binwidth > 0.0)
+        if nclip < 0:
+            raise ValueError("'nclip' must be a non-negative integer.")
+
+        if lsig <= 0.0:
+            raise ValueError("'lsig' must be a positive number.")
+
+        if usig <= 0.0:
+            raise ValueError("'usig' must be a positive number.")
+
+        if binwidth <= 0.0:
+            raise ValueError("'binwidth' must be a positive number.")
 
         self.image = image
-        self.lower = lower
-        self.upper = upper
         self.nclip = nclip
         self.lsig = lsig
         self.usig = usig
@@ -151,21 +156,28 @@ peak by parabolic interpolation.
         self.max = np.maximum.reduce(np.ravel(image))
 
         # Apply initial mask to data: upper and lower limits
-        if self.lower == None:
-            self.lower = self.min
+        if lower is None:
+            lower = self.min
+
         elif lower > self.max:
-            raise ValueError("Not enough data points to compute statistics.\n"
-                             "Lower data cutoff is larger than maximum pixel value.")
+            raise ValueError("Lower data cutoff is larger than maximum pixel value.\n"
+                             "Not enough data points to compute statistics.")
+
         elif upper is not None and lower > upper:
             raise ValueError("Lower data cutoff must be smaller than upper cutoff limit.")
 
-        if self.upper == None:
-            self.upper = self.max
+        if upper is None:
+            upper = self.max
+
         elif upper < self.min:
-            raise ValueError("Not enough data points to compute statistics.\n"
-                             "Upper data cutoff is smaller than minimum pixel value.")
-        elif upper is not None and lower > upper:
-            raise ValueError("Upper data cutoff must be larger than lower cutoff limit.")
+            raise ValueError("Upper data cutoff is smaller than minimum pixel value.\n"
+                             "Not enough data points to compute statistics.")
+
+        elif lower > upper:
+            raise ValueError("Upper data cutoff cannot be smaller than the lower cutoff limit.")
+
+        self.lower = lower
+        self.upper = upper
 
         # Compute the image statistics
         self._computeStats()
