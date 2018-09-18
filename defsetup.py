@@ -23,12 +23,12 @@ ext = [ distutils.core.Extension('stsci.imagestats.buildHistogram',['src/buildHi
 
 pkg = "stsci.imagestats"
 
-setupargs = { 
-        'version' :		"1.1.0",
+setupargs = {
+        'version' :		"1.4.3",
         'description' :	"Compute desired statistics values for array objects",
         'author' :		"Warren Hack, Christopher Hanley",
-        'author_email' :	"help@stsci.edu",
-        'license' :		"http://www.stsci.edu/resources/software_hardware/pyraf/LICENSE",
+        'author_email' :	"https://hsthelp.stsci.edu",
+        'license' :		"LICENSE.txt",
         'platforms' :		["Linux","Solaris","Mac OS X", "Windows"],
         'data_files' :	[('stsci/imagestats',['LICENSE.txt'])],
         'ext_modules' :   ext,
