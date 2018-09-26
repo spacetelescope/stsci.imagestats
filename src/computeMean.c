@@ -3,11 +3,12 @@
     Author:     Christopher Hanley
     Purpose:    Compute the mean, stddev, max, and min for a nnumarray object
                 while applying some upper and lower pixel clipping values.
-		
+
     Updated May 9, 2008   Fixed standard deviation computation, Megan Sosey
-    
+
 */
 
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <Python.h>
 #include "numpy/arrayobject.h"
 
@@ -17,9 +18,9 @@
 #include <math.h>
 
 
-int computeMean_(float *image, int nelements, float clipmin, float clipmax, 
-                               int *numGoodPixels, float *mean, float *stddev, 
-                                float *minValue, float *maxValue)
+int computeMean_(float *image, int nelements, float clipmin, float clipmax,
+                 int *numGoodPixels, float *mean, float *stddev,
+				 float *minValue, float *maxValue)
 {
     int i;
     float tmpMinValue, tmpMaxValue;
@@ -29,8 +30,8 @@ int computeMean_(float *image, int nelements, float clipmin, float clipmax,
     sum = 0;
     sumsq = 0;
     sumdiff = 0;
-    
-    /*Initialize the tmpMinValue and tmpMaxValue so that we can find the 
+
+    /*Initialize the tmpMinValue and tmpMaxValue so that we can find the
       largest and smallest non-clipped values */
 
     tmpMinValue = (clipmin > image[0]) ? clipmin : image[0];
@@ -58,18 +59,18 @@ int computeMean_(float *image, int nelements, float clipmin, float clipmax,
             sumsq = sumsq + (image[i] * image[i]);
         }
     }
- 
+
     *minValue = tmpMinValue;
     *maxValue = tmpMaxValue;
     *mean = (float)(sum / *numGoodPixels);
-   
+
     for (i=0; i < nelements; i++) {
         if ( (image[i] >= *minValue) && (image[i] <= *maxValue) ) {
             sumdiff = sumdiff + ( (image[i] - *mean) * (image[i] - *mean) );
 	}
     }
-    
-    *stddev = (float)sqrt( sumdiff  / (*numGoodPixels - 1));    
+
+    *stddev = (float)sqrt( sumdiff  / (*numGoodPixels - 1));
 
     return 1;
 }
@@ -85,7 +86,7 @@ static PyObject * computeMean(PyObject *obj, PyObject *args)
     if (!PyArg_ParseTuple(args,"Off:computeMean",&oimage, &clipmin, &clipmax))
 	    return NULL;
 
-    image = (PyArrayObject *)PyArray_ContiguousFromObject(oimage, PyArray_FLOAT, 1, 2);
+    image = (PyArrayObject *)PyArray_ContiguousFromObject(oimage, NPY_FLOAT32, 1, 2);
 
     if (!image) return NULL;
 
@@ -95,17 +96,17 @@ static PyObject * computeMean(PyObject *obj, PyObject *args)
     minValue = 0;
     maxValue = 0;
 
-    status = computeMean_((float *)image->data, PyArray_Size((PyObject*)image), 
+    status = computeMean_((float *)PyArray_DATA(image), PyArray_Size((PyObject*)image),
 			  clipmin, clipmax,
 			  &numGoodPixels, &mean, &stddev, &minValue, &maxValue);
-    Py_XDECREF(image); 
+    Py_XDECREF(image);
 
     return Py_BuildValue("iffff",numGoodPixels,mean,stddev,minValue,maxValue);
 }
 
 static PyMethodDef computeMean_methods[] =
 {
-    {"computeMean",  computeMean, METH_VARARGS, 
+    {"computeMean",  computeMean, METH_VARARGS,
         "computeMean(image, clipmin, clipmax, numGoodPixels, mean, stddev, minValue, maxValue)"},
     {0,            0}                             /* sentinel */
 };
