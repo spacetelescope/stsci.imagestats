@@ -4,13 +4,15 @@
     Purpose:    Populate a 1 dimensional python object to create a histogram
 
 */
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <Python.h>
 #include "numpy/arrayobject.h"
 
 #include <string.h>
 #include <stdio.h>
 
-int populate1DHist_(float *image, int image_elements, 
+
+int populate1DHist_(float *image, int image_elements,
 		    unsigned int *histogram, int histogram_elements,
                     float minValue, float maxValue, float binWidth)
 {
@@ -30,9 +32,9 @@ int populate1DHist_(float *image, int image_elements,
             }
             /* Case 3: Normal Case - Population of histogram occurs as expected in valid index range */
             else {
-                histogram[ index ] += 1;    
+                histogram[ index ] += 1;
             }
-        } 
+        }
     }
     return 1;
 }
@@ -47,27 +49,27 @@ static PyObject * populate1DHist(PyObject *obj, PyObject *args)
     if (!PyArg_ParseTuple(args,"OOfff:populate1DHist",&oimage,&ohistogram,&minValue,&maxValue,&binWidth))
 	    return NULL;
 
-    image = (PyArrayObject *)PyArray_ContiguousFromObject(oimage, PyArray_FLOAT32, 1, 2);
+    image = (PyArrayObject *)PyArray_ContiguousFromObject(oimage, NPY_FLOAT32, 1, 2);
 
     if (!image) return NULL;
 
-	histogram = (PyArrayObject *)PyArray_ContiguousFromObject(ohistogram, PyArray_UINT32, 1, 1);
+	histogram = (PyArrayObject *)PyArray_ContiguousFromObject(ohistogram, NPY_UINT32, 1, 1);
 
     if (!histogram) return NULL;
-    
-    status = populate1DHist_((float *)image->data, PyArray_Size((PyObject*)image),
-			     (unsigned int *)histogram->data, PyArray_Size((PyObject*)histogram),
+
+    status = populate1DHist_((float *)PyArray_DATA(image), PyArray_Size((PyObject*)image),
+			     (unsigned int *)PyArray_DATA(histogram), PyArray_Size((PyObject*)histogram),
 			     minValue, maxValue, binWidth);
 
     Py_XDECREF(image);
     Py_XDECREF(histogram);
 
-    return Py_BuildValue("i",status);
+    return Py_BuildValue("i", status);
 }
 
 static PyMethodDef buildHistogram_methods[] =
 {
-    {"populate1DHist",  populate1DHist, METH_VARARGS, 
+    {"populate1DHist",  populate1DHist, METH_VARARGS,
         "populate1Dhist(image, histogram, minValue, maxValue, binWidth)"},
     {0,            0}                             /* sentinel */
 };
