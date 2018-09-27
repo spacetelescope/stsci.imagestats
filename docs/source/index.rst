@@ -1,17 +1,20 @@
-.. imagestats documentation master file, created by
-   sphinx-quickstart on Thu Oct 21 16:48:56 2010.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to imagestats's documentation!
 ======================================
 
-Contents:
+``stsci.imagestats`` is a package designed to compute various statistics
+on image data using sigma-clipping iterations. It is designed to replicate
+core behaviour of the ``IRAF``\ 's
+`imstatistics task <http://stsdas.stsci.edu/cgi-bin/gethelp.cgi?imstatistics>`_.
+
+Content
+=======
 
 .. toctree::
    :maxdepth: 2
 
    imagestats
+   histogram1d
+   LICENSE.rst
 
 Indices and tables
 ==================
