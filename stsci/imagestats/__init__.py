@@ -1,14 +1,18 @@
-# PROGRAM: imagestats.py
-# AUTHOR:  Warren Hack and Christopher Hanley
-# PURPOSE: Compute desired statistics values for input array objects.
-#
-#
+"""
+Compute desired statistics values for input array objects.
+
+:Author: Warren Hack, Christopher Hanley (for help, contact \
+`HST Help Desk <https://hsthelp.stsci.edu>`_)
+
+:License: :doc:`../LICENSE`
+
+"""
 from __future__ import absolute_import, division, print_function
+
+import time
 import numpy as np
 from .histogram1d import histogram1d
-import time
 from .computeMean import computeMean
-
 from .version import *
 
 class ImageStats:
