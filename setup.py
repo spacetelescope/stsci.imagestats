@@ -22,7 +22,7 @@ DESCRIPTION = metadata.get('description',
 LONG_DESCRIPTION = metadata.get('long_description', 'README.rst')
 LONG_DESCRIPTION_CONTENT_TYPE = metadata.get('long_description_content_type',
                                              'text/x-rst')
-AUTHOR = metadata.get('author', 'Christopher Hanley, Warren Hack')
+AUTHOR = metadata.get('author', 'Warren Hack, Christopher Hanley')
 AUTHOR_EMAIL = metadata.get('author_email', 'help@stsci.edu')
 URL = metadata.get('url', 'https://www.stsci.edu/')
 LICENSE = metadata.get('license', 'BSD-3-Clause')
