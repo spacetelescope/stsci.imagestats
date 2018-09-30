@@ -31,8 +31,8 @@ conf = ConfigParser()
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('../..'))
 sys.path.insert(0, os.path.abspath('../src'))
+sys.path.insert(0, os.path.abspath('../build/lib*'))
 sys.path.insert(0, os.path.abspath('../stsci/imagestats'))
-sys.path.insert(0, os.path.abspath('../.eggs'))
 
 # -- General configuration ------------------------------------------------
 conf.read([os.path.join(os.path.dirname(__file__), '../..', 'setup.cfg')])

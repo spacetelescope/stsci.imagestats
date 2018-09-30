@@ -66,6 +66,25 @@ if not version.date:
     )
 relic.release.write_template(version,  path.join(*PACKAGENAME.split('.')))
 
+class InstallCommand(install):
+    """Ensure drizzlepac's C extensions are available when imported relative
+    to the documentation, instead of relying on `site-packages`. What comes
+    from `site-packages` may not be the same drizzlepac that was *just*
+    compiled.
+    """
+    def run(self):
+        build_cmd = self.reinitialize_command('build_ext')
+        build_cmd.inplace = 1
+        self.run_command('build_ext')
+
+        # Explicit request for old-style install?  Just do it
+        if self.old_and_unmanageable or self.single_version_externally_managed:
+            install.run(self)
+        elif not self._called_from_setup(inspect.currentframe()):
+            # Run in backward-compatibility mode to support bdist_* commands.
+            install.run(self)
+        else:
+            self.do_egg_install()
 
 class PyTest(TestCommand):
     def finalize_options(self):
@@ -146,6 +165,7 @@ setup(
     ],
     cmdclass={
         'test': PyTest,
+        'install': InstallCommand,
     },
     project_urls={
         'Bug Reports': 'https://github.com/spacetelescope/stsci.imagestats/issues/',
