@@ -54,7 +54,7 @@ import relic.release
 version = relic.release.get_info()
 if not version.date:
     default_version = metadata.get('version', '')
-    default_version_date = metadata.get('version-date', '')
+    default_version_date = metadata.get('version_date', '')
     version = relic.git.GitVersion(
         pep386=default_version,
         short=default_version,
