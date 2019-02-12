@@ -5,18 +5,14 @@
                 while applying some upper and lower pixel clipping values.
 
     Updated May 9, 2008   Fixed standard deviation computation, Megan Sosey
-
 */
-
-#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-#include <Python.h>
-#include "numpy/arrayobject.h"
-
-
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
 
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#include <Python.h>
+#include "numpy/arrayobject.h"
 
 int computeMean_(float *image, int nelements, float clipmin, float clipmax,
                  int *numGoodPixels, float *mean, float *stddev,
@@ -67,7 +63,7 @@ int computeMean_(float *image, int nelements, float clipmin, float clipmax,
     for (i=0; i < nelements; i++) {
         if ( (image[i] >= *minValue) && (image[i] <= *maxValue) ) {
             sumdiff = sumdiff + ( (image[i] - *mean) * (image[i] - *mean) );
-	}
+	    }
     }
 
     *stddev = (float)sqrt( sumdiff  / (*numGoodPixels - 1));
@@ -111,7 +107,6 @@ static PyMethodDef computeMean_methods[] =
     {0,            0}                             /* sentinel */
 };
 
-#if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef moduledef = {
   PyModuleDef_HEAD_INIT,
   "computeMean",           /* m_name */
@@ -123,24 +118,11 @@ static struct PyModuleDef moduledef = {
   NULL,                    /* m_clear */
   NULL,                    /* m_free */
 };
-#endif
 
-PyMODINIT_FUNC
-#if PY_MAJOR_VERSION >= 3
-PyInit_computeMean(void)
-#else
-initcomputeMean(void)
-#endif
+PyMODINIT_FUNC PyInit_computeMean(void)
 {
 	PyObject* m;
 	import_array();
-
-#if PY_MAJOR_VERSION >= 3
 	m = PyModule_Create(&moduledef);
 	return m;
-#else
-	m = Py_InitModule3("computeMean", computeMean_methods, "C compute mean module");
-	if (m == NULL)
-		return;
-#endif
 }

@@ -1,15 +1,14 @@
 name: imagestats
 channels:
-    - http://ssb.stsci.edu/astroconda
-    - conda-forge
+    - defaults
 dependencies:
-    - python=3.5
-    - numpy
+    - "python>=3.5"
+    - setuptools
+    - "numpy>=1.13"
     - numpydoc
     - graphviz
-    - matplotlib
-    - sphinx
     - pip:
+      - sphinx
       - sphinx_rtd_theme
       - stsci_rtd_theme
       - sphinx_automodapi
