@@ -7,11 +7,9 @@ from an array object.
 :License: :doc:`../LICENSE`
 
 """
-from __future__ import division # confidence high
-
 import numpy as np
 from . import buildHistogram
-from .version import *
+from .version import __version__, __version_date__
 
 class histogram1d:
     """

@@ -2,15 +2,12 @@
     Program:    buildHistogram.c
     Author:     Christopher Hanley
     Purpose:    Populate a 1 dimensional python object to create a histogram
-
 */
+#include <string.h>
+#include <stdio.h>
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <Python.h>
 #include "numpy/arrayobject.h"
-
-#include <string.h>
-#include <stdio.h>
-
 
 int populate1DHist_(float *image, int image_elements,
 		    unsigned int *histogram, int histogram_elements,
@@ -74,7 +71,6 @@ static PyMethodDef buildHistogram_methods[] =
     {0,            0}                             /* sentinel */
 };
 
-#if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef moduledef = {
   PyModuleDef_HEAD_INIT,
   "buildHistogram",            /* m_name */
@@ -86,24 +82,11 @@ static struct PyModuleDef moduledef = {
   NULL,                        /* m_clear */
   NULL,                        /* m_free */
 };
-#endif
 
-PyMODINIT_FUNC
-#if PY_MAJOR_VERSION >= 3
-PyInit_buildHistogram(void)
-#else
-initbuildHistogram(void)
-#endif
+PyMODINIT_FUNC PyInit_buildHistogram(void)
 {
 	PyObject* m;
     import_array();
-#if PY_MAJOR_VERSION >= 3
 	m = PyModule_Create(&moduledef);
 	return m;
-#else
-	m = Py_InitModule3("buildHistogram", buildHistogram_methods, "C build histogram module");
-	if (m == NULL)
-		return;
-#endif
 }
-

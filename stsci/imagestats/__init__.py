@@ -7,118 +7,112 @@ Compute desired statistics values for input array objects.
 :License: :doc:`../LICENSE`
 
 """
-from __future__ import absolute_import, division, print_function
-
 import time
 import numpy as np
 from .histogram1d import histogram1d
 from .computeMean import computeMean
-from .version import *
+from .version import __version__, __version_date__
 
 class ImageStats:
     """
-Class to compute desired statistics from array objects.
+    Class to compute desired statistics from array objects.
 
 
-Examples
---------
-This class can can be instantiated using the following syntax::
+    Examples
+    --------
+    This class can can be instantiated using the following syntax::
 
-    >>> import stsci.imagestats as imagestats
-    >>> i = imagestats.ImageStats(image,
-                fields="npix,min,max,mean,stddev",
-                nclip=3,
-                lsig=3.0,
-                usig=3.0,
-                binwidth=0.1
-                )
-    >>> i.printStats()
-    >>> i.mean
+        >>> import stsci.imagestats as imagestats
+        >>> i = imagestats.ImageStats(image,
+                    fields="npix,min,max,mean,stddev",
+                    nclip=3,
+                    lsig=3.0,
+                    usig=3.0,
+                    binwidth=0.1
+                    )
+        >>> i.printStats()
+        >>> i.mean
 
-The statistical quantities specified by the parameter *fields* are
-computed and printed for the input *image* array. The results are available
-as attributes of the class object as well.
+    The statistical quantities specified by the parameter *fields* are
+    computed and printed for the input *image* array. The results are available
+    as attributes of the class object as well.
 
 
-Parameters
-----------
-image : str
-    input image data array.
+    Parameters
+    ----------
+    image : str
+        input image data array.
 
-fields : str
-    comma-separated list of values to be computed. The available fields are the following.
+    fields : str
+        comma-separated list of values to be computed. The following
+        are the available fields:
 
-    ======    ======
-    ======    ======
-    image     image data array
-    npix      the number of pixels used to do the statistics
-    mean      the mean of the pixel distribution
-    midpt     estimate of the median of the pixel distribution
-    mode      the mode of the pixel distribution
-    stddev    the standard deviation of the pixel distribution
-    min       the minimum pixel value
-    max       the maximum pixel value
-    ======    ======
+        ======    ======
+        ======    ======
+        image     image data array
+        npix      the number of pixels used to do the statistics
+        mean      the mean of the pixel distribution
+        midpt     estimate of the median of the pixel distribution
+        mode      the mode of the pixel distribution
+        stddev    the standard deviation of the pixel distribution
+        min       the minimum pixel value
+        max       the maximum pixel value
+        ======    ======
 
-    **WARNING**
-        Only those fields specified upon instantiation will be computed and available
-        as an output value.
+        **WARNING**
+            Only those fields specified upon instantiation will be computed
+            and available as an output value.
 
-lower : float
-    Lowest valid value in the input array to be used for computing the statistical values
+    lower : float
+        Lowest valid value in the input array to be used for computing the
+        statistical values
 
-upper : float
-    Largest valid value in the input array to be used in computing the statistical values
+    upper : float
+        Largest valid value in the input array to be used in computing the
+        statistical values
 
-nclip : int
-    Number of clipping iterations to apply in computing the results
+    nclip : int
+        Number of clipping iterations to apply in computing the results
 
-lsig : float
-    Lower sigma clipping limit (in sigma)
+    lsig : float
+        Lower sigma clipping limit (in sigma)
 
-usig : float
-    Upper sigma clipping limit (in sigma)
+    usig : float
+        Upper sigma clipping limit (in sigma)
 
-binwidth : float
-    Width of bins (in sigma) to use in generating histograms for computing
-    median-related values
+    binwidth : float
+        Width of bins (in sigma) to use in generating histograms for computing
+        median-related values
 
-NOTES
------
-The mean, standard deviation, min and max are computed in a
-single pass through the image using the expressions listed below.
-Only the quantities selected by the fields parameter are actually computed.
-::
+    NOTES
+    -----
+    The mean, standard deviation, min and max are computed in a
+    single pass through the image using the expressions listed below.
+    Only the quantities selected by the fields parameter are actually computed.
+    ::
 
-        mean = sum (x1,...,xN) / N
-           y = x - mean
-    variance = sum (y1 ** 2,...,yN ** 2) / (N-1)
-      stddev = sqrt (variance)
+            mean = sum (x1,...,xN) / N
+               y = x - mean
+        variance = sum (y1 ** 2,...,yN ** 2) / (N-1)
+          stddev = sqrt (variance)
 
-The midpoint and mode are computed in two passes through the image. In the
-first pass the standard deviation of the pixels is calculated and used
-with the *binwidth* parameter to compute the resolution of the data
-histogram. The midpoint is estimated by integrating the histogram and
-computing by interpolation the data value at which exactly half the
-pixels are below that data value and half are above it. The mode is
-computed by locating the maximum of the data histogram and fitting the
-peak by parabolic interpolation.
+    The midpoint and mode are computed in two passes through the image. In the
+    first pass the standard deviation of the pixels is calculated and used
+    with the *binwidth* parameter to compute the resolution of the data
+    histogram. The midpoint is estimated by integrating the histogram and
+    computing by interpolation the data value at which exactly half the
+    pixels are below that data value and half are above it. The mode is
+    computed by locating the maximum of the data histogram and fitting the
+    peak by parabolic interpolation.
 
-**Warning**
-    This data will be promoted down to float32 if provided as 64-bit datatype.
+    **Warning**
+        This data will be promoted down to float32 if provided as 64-bit
+        datatype.
 
     """
-    def __init__(self,
-                image,
-                fields="npix,min,max,mean,stddev",
-                lower=None,
-                upper=None,
-                nclip=0,
-                lsig=3.0,
-                usig=3.0,
-                binwidth=0.1
-                ):
-
+    def __init__(self, image, fields="npix,min,max,mean,stddev",
+                 lower=None, upper=None, nclip=0, lsig=3.0, usig=3.0,
+                 binwidth=0.1):
         #Initialize the start time of the program
         self.startTime = time.time()
 
@@ -190,7 +184,6 @@ peak by parabolic interpolation.
         self.stopTime = time.time()
         self.deltaTime = self.stopTime - self.startTime
 
-
     def _error_no_valid_pixels(self, clipiter, minval, maxval, minclip, maxclip):
         errormsg =  "\n##############################################\n"
         errormsg += "#                                            #\n"
@@ -208,7 +201,6 @@ peak by parabolic interpolation.
         errormsg += "#                                            #\n"
         errormsg += "##############################################\n"
         return errormsg
-
 
     def _computeStats(self):
         """ Compute all the basic statistics from the array object. """

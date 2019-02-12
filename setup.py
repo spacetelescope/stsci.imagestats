@@ -100,9 +100,8 @@ class PyTest(TestCommand):
 
 
 # Install packages required for this setup to proceed:
-SETUP_REQUIRES = [
-    'numpy'
-]
+SETUP_REQUIRES = ['numpy']
+INSTALL_REQUIRES = ['numpy>=1.13']
 
 _install_setup_requires(dict(setup_requires=SETUP_REQUIRES))
 
@@ -149,8 +148,9 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Development Status :: 7 - Inactive',
     ],
+    python_requires='>=3.5',
     setup_requires=SETUP_REQUIRES,
-    install_requires=SETUP_REQUIRES,
+    install_requires=INSTALL_REQUIRES,
     packages=find_packages(),
     package_data=PACKAGE_DATA,
     ext_modules=[
