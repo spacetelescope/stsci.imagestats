@@ -1,14 +1,11 @@
 #!/usr/bin/env python
-import inspect
+import numpy
 import pkgutil
-import shutil
 import sys
-from os import path
-import importlib
+from os import path, listdir
 from subprocess import check_call, CalledProcessError
 from configparser import ConfigParser
-from setuptools import setup, find_packages, Extension, _install_setup_requires
-from setuptools.command.install import install
+from setuptools import setup, find_packages, Extension
 from setuptools.command.test import test as TestCommand
 
 # get some config values
@@ -36,7 +33,7 @@ if not pkgutil.find_loader('relic'):
     relic_local = path.exists('relic')
     relic_submodule = (relic_local and
                        path.exists('.gitmodules') and
-                       not listdir('relic'))
+                       not os.listdir('relic'))
 
     try:
         if relic_submodule:
@@ -66,30 +63,11 @@ if not version.date:
     )
 relic.release.write_template(version,  path.join(*PACKAGENAME.split('.')))
 
-class InstallCommand(install):
-    """Ensure drizzlepac's C extensions are available when imported relative
-    to the documentation, instead of relying on `site-packages`. What comes
-    from `site-packages` may not be the same drizzlepac that was *just*
-    compiled.
-    """
-    def run(self):
-        build_cmd = self.reinitialize_command('build_ext')
-        build_cmd.inplace = 1
-        self.run_command('build_ext')
-
-        # Explicit request for old-style install?  Just do it
-        if self.old_and_unmanageable or self.single_version_externally_managed:
-            install.run(self)
-        elif not self._called_from_setup(inspect.currentframe()):
-            # Run in backward-compatibility mode to support bdist_* commands.
-            install.run(self)
-        else:
-            self.do_egg_install()
 
 class PyTest(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
-        self.test_args = ['subpixal/tests']
+        self.test_args = ['tests']
         self.test_suite = True
 
     def run_tests(self):
@@ -100,22 +78,9 @@ class PyTest(TestCommand):
 
 
 # Install packages required for this setup to proceed:
-SETUP_REQUIRES = ['numpy']
 INSTALL_REQUIRES = ['numpy>=1.13']
 
-_install_setup_requires(dict(setup_requires=SETUP_REQUIRES))
-
-for dep_pkg in SETUP_REQUIRES:
-    try:
-        importlib.import_module(dep_pkg)
-    except ImportError:
-        print("{0} is required in order to install '{1}'.\n"
-              "Please install {0} first.".format(dep_pkg, PACKAGENAME),
-              file=sys.stderr)
-        exit(1)
-
 # Setup C module include directories
-import numpy
 include_dirs = [numpy.get_include()]
 
 # Setup C module macros
@@ -128,7 +93,7 @@ if sys.platform == 'win32':
         ('__STDC__', 1)
     ]
 
-PACKAGE_DATA={'': ['README.md', 'LICENSE.txt']}
+PACKAGE_DATA = {'': ['README.md', 'LICENSE.txt']}
 
 setup(
     name=PACKAGENAME,
@@ -149,7 +114,6 @@ setup(
         'Development Status :: 7 - Inactive',
     ],
     python_requires='>=3.5',
-    setup_requires=SETUP_REQUIRES,
     install_requires=INSTALL_REQUIRES,
     packages=find_packages(),
     package_data=PACKAGE_DATA,
@@ -165,7 +129,6 @@ setup(
     ],
     cmdclass={
         'test': PyTest,
-        'install': InstallCommand,
     },
     project_urls={
         'Bug Reports': 'https://github.com/spacetelescope/stsci.imagestats/issues/',
