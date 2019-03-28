@@ -33,7 +33,7 @@ if not pkgutil.find_loader('relic'):
     relic_local = path.exists('relic')
     relic_submodule = (relic_local and
                        path.exists('.gitmodules') and
-                       not os.listdir('relic'))
+                       not listdir('relic'))
 
     try:
         if relic_submodule:
