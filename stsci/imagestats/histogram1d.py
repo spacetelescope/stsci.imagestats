@@ -9,7 +9,7 @@ from an array object.
 """
 import numpy as np
 from . import buildHistogram
-from .version import __version__, __version_date__
+
 
 class histogram1d:
     """
