@@ -6,7 +6,7 @@
 __pycache__
 
 # Other generated files
-stsci/imagestats/version.py
+stsci/imagestats/_version.py
 */cython_version.py
 htmlcov
 .coverage

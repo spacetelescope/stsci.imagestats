@@ -11,7 +11,7 @@ import time
 import numpy as np
 from .histogram1d import histogram1d
 from .computeMean import computeMean
-from .version import __version__, __version_date__
+from ._version import version as __version__
 
 class ImageStats:
     """
