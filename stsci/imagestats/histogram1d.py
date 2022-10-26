@@ -7,7 +7,9 @@ from an array object.
 :License: :doc:`../LICENSE`
 
 """
+
 import numpy as np
+
 from . import buildHistogram
 
 
@@ -31,6 +33,7 @@ class histogram1d:
         Zero value for the histogram range
 
     """
+
     def __init__(self, arrayInput, nbins, binWidth, zeroValue):
         # Initialize Object Attributes
         self._data = arrayInput.astype(np.float32)
@@ -54,9 +57,9 @@ class histogram1d:
 
     def _populateHistogram(self):
         """Call the C-code that actually populates the histogram"""
-        try :
+        try:
             buildHistogram.populate1DHist(self._data, self.histogram,
-                self.minValue, self.maxValue, self.binWidth)
+                                          self.minValue, self.maxValue, self.binWidth)
         except:
             if ((self._data.max() - self._data.min()) < self.binWidth):
                 raise ValueError("In histogram1d class, the binWidth is "
