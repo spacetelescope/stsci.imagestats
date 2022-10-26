@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-import numpy
 import sys
-from setuptools import setup, find_packages, Extension
 
+import numpy
+from setuptools import setup, Extension
 
 # Setup C module include directories
 include_dirs = [numpy.get_include()]
@@ -17,20 +17,17 @@ if sys.platform == 'win32':
         ('__STDC__', 1)
     ]
 
-PACKAGE_DATA = {'': ['README.md', 'LICENSE.txt']}
+ext_modules = [
+    Extension('stsci.imagestats.buildHistogram',
+              ['src/buildHistogram.c'],
+              include_dirs=include_dirs,
+              define_macros=define_macros),
+    Extension('stsci.imagestats.computeMean',
+              ['src/computeMean.c'],
+              include_dirs=include_dirs,
+              define_macros=define_macros),
+]
 
 setup(
-    use_scm_version={"write_to": "stsci/imagestats/_version.py"},
-    setup_requires=['setuptools_scm'],
-    package_data=PACKAGE_DATA,
-    ext_modules=[
-        Extension('stsci.imagestats.buildHistogram',
-                  ['src/buildHistogram.c'],
-                  include_dirs=include_dirs,
-                  define_macros=define_macros),
-        Extension('stsci.imagestats.computeMean',
-                  ['src/computeMean.c'],
-                  include_dirs=include_dirs,
-                  define_macros=define_macros),
-    ],
+    ext_modules=ext_modules,
 )
