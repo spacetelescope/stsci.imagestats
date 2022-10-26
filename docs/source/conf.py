@@ -14,7 +14,7 @@
 
 import os
 import sys
-import datetime
+from datetime import datetime
 import importlib
 import sphinx
 import stsci_rtd_theme
@@ -35,8 +35,9 @@ sys.path.insert(0, os.path.abspath('../build/lib*'))
 sys.path.insert(0, os.path.abspath('../stsci/imagestats'))
 
 # -- General configuration ------------------------------------------------
-conf.read([os.path.join(os.path.dirname(__file__), '../..', 'setup.cfg')])
-setup_cfg = dict(conf.items('metadata'))
+with open(Path(__file__).parent.parent.parent / "pyproject.toml", "rb") as configuration_file:
+    conf = tomli.load(configuration_file)
+setup_cfg = conf['project']
 
 # If your documentation needs a minimal Sphinx version, state it here.
 needs_sphinx = '1.3'
@@ -112,8 +113,9 @@ suppress_warnings = ['app.add_directive', ]
 
 # General information about the project
 project = setup_cfg['name']
-author = setup_cfg['author']
-copyright = u'{0}, {1}'.format(datetime.datetime.now().year, author)
+primary_author = setup_cfg["authors"][0]
+author = f'{primary_author["name"]} <{primary_author["email"]}>'
+copyright = f'{datetime.now().year}, {primary_author["name"]}'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
