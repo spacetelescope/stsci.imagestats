@@ -1,42 +1,53 @@
 [project]
-name = 'stsci.imagestats'
-description = 'Compute sigma-clipped statistics on data arrays'
-readme = 'README.md'
-requires-python = '>=3.6'
-license = { file = 'LICENSE' }
-authors = [{ name = 'Warren Hack', email = 'help@stsci.edu' }, { name = 'Christopher Hanley' }]
+name = "stsci.imagestats"
+description = "Compute sigma-clipped statistics on data arrays"
+requires-python = ">=3.6"
+authors = [
+    { name = "Warren Hack", email = "help@stsci.edu" },
+    { name = "Christopher Hanley" },
+]
 classifiers = [
-    'Intended Audience :: Science/Research',
-    'License :: OSI Approved :: BSD License',
-    'Operating System :: OS Independent',
-    'Programming Language :: Python',
-    'Topic :: Scientific/Engineering :: Astronomy',
-    'Topic :: Software Development :: Libraries :: Python Modules',
-    'Development Status :: 7 - Inactive',
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Scientific/Engineering :: Astronomy",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Development Status :: 7 - Inactive",
 ]
 dependencies = [
-    'numpy>=1.14',
+    "numpy>=1.14",
 ]
-dynamic = ['version']
+dynamic = [
+    "version",
+]
+
+[project.readme]
+file = "README.rst"
+content-type = "text/x-rst"
+
+[project.license]
+file = "LICENSE.txt"
+content-type = "text/plain"
+
+[project.urls]
+Homepage = "https://github.com/spacetelescope/stsci.imagestats"
+Tracker = "https://github.com/spacetelescope/stsci.imagestats/issues"
+Documentation = "https://stsciimagestats.readthedocs.io/en/stable/"
+"Source Code" = "https://github.com/spacetelescope/stsci.imagestats"
 
 [project.optional-dependencies]
 docs = [
-    'numpydoc',
-    'sphinx',
-    'sphinx-automodapi',
-    'sphinx-rtd-theme',
-    'stsci-rtd-theme',
-    'tomli; python_version <"3.11"',
+    "numpydoc",
+    "sphinx",
+    "sphinx-automodapi",
+    "sphinx-rtd-theme",
+    "stsci-rtd-theme",
 ]
-
-[project.urls]
-'Tracker' = 'https://github.com/spacetelescope/stsci.imagestats/issues'
-'Documentation' = 'https://stsciimagestats.readthedocs.io/en/stable/'
-'Source Code' = 'https://github.com/spacetelescope/stsci.imagestats'
 
 [build-system]
 requires = [
-    "setuptools >=61",
+    "setuptools>=61.2",
     "setuptools_scm[toml] >=3.4",
     "wheel",
     "oldest-supported-numpy",
@@ -48,9 +59,25 @@ write_to = "stsci/imagestats/_version.py"
 
 [tool.setuptools]
 zip-safe = false
+include-package-data = false
+namespace-packages = [
+    "stsci",
+]
 
 [tool.setuptools.packages.find]
-include = ['stsci']
+namespaces = false
 
 [tool.setuptools.package-data]
-'*' = ['README.md', 'LICENSE.txt']
+"*" = [
+    "README.md",
+    "LICENSE.txt",
+]
+
+[tool.build-sphinx]
+source-dir = "docs"
+build-dir = "docs"
+all_files = "1"
+
+[tool.distutils.upload_docs]
+upload-dir = "docs/_build/html"
+show-response = 1

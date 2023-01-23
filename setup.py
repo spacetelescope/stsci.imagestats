@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-import sys
-
 import numpy
+import sys
 from setuptools import setup, Extension
+
 
 # Setup C module include directories
 include_dirs = [numpy.get_include()]
