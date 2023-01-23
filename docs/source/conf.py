@@ -15,10 +15,14 @@
 import os
 import sys
 from datetime import datetime
-import importlib
+from pathlib import Path
+
 import sphinx
 import stsci_rtd_theme
 from distutils.version import LooseVersion
+
+import tomli
+
 try:
     from ConfigParser import ConfigParser
 except ImportError:
@@ -112,10 +116,11 @@ suppress_warnings = ['app.add_directive', ]
 
 
 # General information about the project
-project = setup_cfg['name']
-primary_author = setup_cfg["authors"][0]
-author = f'{primary_author["name"]} <{primary_author["email"]}>'
-copyright = f'{datetime.now().year}, {primary_author["name"]}'
+with open(Path(__file__).parent.parent.parent / "pyproject.toml", "rb") as metadata_file:
+    metadata = tomli.load(metadata_file)['project']
+project = metadata['name']
+author = f'{metadata["authors"][0]["name"]} <{metadata["authors"][0]["email"]}>'
+copyright = f'{datetime.today().year}, {author}'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
