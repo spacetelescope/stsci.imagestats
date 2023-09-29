@@ -1,10 +1,69 @@
+[project]
+name = "stsci.imagestats"
+dynamic = ["version"]
+description = "Compute sigma-clipped statistics on data arrays"
+readme = "README.rst"
+authors = [
+    {name = "Warren Hack", email = "help@stsci.edu"},
+    {name = "Christopher Hanley", email = "help@stsci.edu"},
+]
+license = { text = "BSD-3-Clause" }
+requires-python = ">=3.8"
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: C",
+    "Programming Language :: Cython",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Scientific/Engineering :: Astronomy",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Development Status :: 7 - Inactive",
+]
+dependencies = [
+    "numpy>=1.20",
+]
+
+[project.optional-dependencies]
+docs = [
+    "numpydoc",
+    "sphinx",
+    "sphinx-automodapi",
+    "sphinx-rtd-theme",
+    "stsci-rtd-theme",
+]
+test = [
+    "pytest>=7.0",
+]
+
+[project.urls]
+Tracker = "https://github.com/spacetelescope/stsci.imagestats/issues"
+Documentation = "https://stsciimagestats.readthedocs.io/en/stable/"
+"Source Code" = "https://github.com/spacetelescope/stsci.imagestats"
+
+
 [build-system]
 requires = [
     "setuptools>=38.2.5",
-    "setuptools_scm",
+    "setuptools_scm>=6.2",
     "wheel",
-    "oldest-supported-numpy",
+    "numpy>=1.25,<2",
 ]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+license-files = ["LICENSE.txt"]
+zip-safe = false
+
+[tool.setuptools.package-data]
+"*" = [
+    "README.md",
+]
+
+[tool.setuptools.packages.find]
+namespaces = true
+
+
 [tool.setuptools_scm]
+write_to = "stsci/imagestats/_version.py"

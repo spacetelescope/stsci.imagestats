@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import numpy
 import sys
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, Extension
 
 
 # Setup C module include directories
@@ -17,12 +17,8 @@ if sys.platform == 'win32':
         ('__STDC__', 1)
     ]
 
-PACKAGE_DATA = {'': ['README.md', 'LICENSE.txt']}
 
 setup(
-    use_scm_version={"write_to": "stsci/imagestats/_version.py"},
-    setup_requires=['setuptools_scm'],
-    package_data=PACKAGE_DATA,
     ext_modules=[
         Extension('stsci.imagestats.buildHistogram',
                   ['src/buildHistogram.c'],

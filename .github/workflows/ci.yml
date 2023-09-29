@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - main
+    - 'v*'
+    tags:
+    - '*'
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
+    with:
+      envs: |
+        - linux: py311-test
+        - linux: py39-test
+        - windows: py310-test
+        - macos: py310-test
