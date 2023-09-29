@@ -1,8 +1,7 @@
 """
 Compute desired statistics values for input array objects.
 
-:Author: Warren Hack, Christopher Hanley (for help, contact \
-`HST Help Desk <https://hsthelp.stsci.edu>`_)
+:Author: Warren Hack, Christopher Hanley
 
 :License: :doc:`../LICENSE`
 

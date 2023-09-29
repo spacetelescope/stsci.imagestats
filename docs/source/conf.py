@@ -14,10 +14,11 @@
 
 import os
 import sys
-import datetime
-import importlib
+from datetime import datetime
+from pathlib import Path
 import sphinx
 import stsci_rtd_theme
+import tomllib
 from distutils.version import LooseVersion
 try:
     from ConfigParser import ConfigParser
@@ -35,8 +36,9 @@ sys.path.insert(0, os.path.abspath('../build/lib*'))
 sys.path.insert(0, os.path.abspath('../stsci/imagestats'))
 
 # -- General configuration ------------------------------------------------
-conf.read([os.path.join(os.path.dirname(__file__), '../..', 'setup.cfg')])
-setup_cfg = dict(conf.items('metadata'))
+with open(Path(__file__).parent.parent.parent / "pyproject.toml", "rb") as ppt:
+    conf = tomllib.load(ppt)
+setup_cfg = conf['project']
 
 # If your documentation needs a minimal Sphinx version, state it here.
 needs_sphinx = '1.3'
@@ -111,9 +113,12 @@ suppress_warnings = ['app.add_directive', ]
 
 
 # General information about the project
-project = setup_cfg['name']
-author = setup_cfg['author']
-copyright = u'{0}, {1}'.format(datetime.datetime.now().year, author)
+with open(Path(__file__).parent.parent.parent / "pyproject.toml", "rb") as ppt:
+    metadata = tomllib.load(ppt)['project']
+project = metadata['name']
+author = f'{metadata["authors"][0]["name"]} and {metadata["authors"][1]["name"]} <{metadata["authors"][0]["email"]}>'
+copyright = f'{datetime.today().year}, Space Telescope Science Institute'
+
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
