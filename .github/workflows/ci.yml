@@ -19,6 +19,6 @@ jobs:
     with:
       envs: |
         - linux: py311-test
-        - linux: py39-test
+        - linux: py39-numpy120-test
         - windows: py310-test
         - macos: py310-test
