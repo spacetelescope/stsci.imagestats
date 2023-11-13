@@ -14,11 +14,18 @@
 
 import os
 import sys
-import datetime
-import importlib
+from datetime import datetime
+from pathlib import Path
+
 import sphinx
 import stsci_rtd_theme
 from distutils.version import LooseVersion
+
+if sys.version_info < (3, 11):
+     import tomli as tomllib
+ else:
+     import tomllib
+
 try:
     from ConfigParser import ConfigParser
 except ImportError:
@@ -35,8 +42,9 @@ sys.path.insert(0, os.path.abspath('../build/lib*'))
 sys.path.insert(0, os.path.abspath('../stsci/imagestats'))
 
 # -- General configuration ------------------------------------------------
-conf.read([os.path.join(os.path.dirname(__file__), '../..', 'setup.cfg')])
-setup_cfg = dict(conf.items('metadata'))
+with open(Path(__file__).parent.parent.parent / "pyproject.toml", "rb") as configuration_file:
+    conf = tomllib.load(configuration_file)
+setup_cfg = conf['project']
 
 # If your documentation needs a minimal Sphinx version, state it here.
 needs_sphinx = '1.3'
@@ -111,9 +119,11 @@ suppress_warnings = ['app.add_directive', ]
 
 
 # General information about the project
-project = setup_cfg['name']
-author = setup_cfg['author']
-copyright = u'{0}, {1}'.format(datetime.datetime.now().year, author)
+with open(Path(__file__).parent.parent.parent / "pyproject.toml", "rb") as metadata_file:
+    metadata = tomli.load(metadata_file)['project']
+project = metadata['name']
+author = f'{metadata["authors"][0]["name"]} <{metadata["authors"][0]["email"]}>'
+copyright = f'{datetime.today().year}, {author}'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
