@@ -17,7 +17,6 @@ if sys.platform == 'win32':
         ('__STDC__', 1)
     ]
 
-
 setup(
     ext_modules=[
         Extension('stsci.imagestats.buildHistogram',

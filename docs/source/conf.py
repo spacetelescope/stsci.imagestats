@@ -16,10 +16,17 @@ import os
 import sys
 from datetime import datetime
 from pathlib import Path
+
 import sphinx
 import stsci_rtd_theme
 import tomllib
 from distutils.version import LooseVersion
+
+if sys.version_info < (3, 11):
+     import tomli as tomllib
+ else:
+     import tomllib
+
 try:
     from ConfigParser import ConfigParser
 except ImportError:
@@ -36,8 +43,8 @@ sys.path.insert(0, os.path.abspath('../build/lib*'))
 sys.path.insert(0, os.path.abspath('../stsci/imagestats'))
 
 # -- General configuration ------------------------------------------------
-with open(Path(__file__).parent.parent.parent / "pyproject.toml", "rb") as ppt:
-    conf = tomllib.load(ppt)
+with open(Path(__file__).parent.parent.parent / "pyproject.toml", "rb") as configuration_file:
+    conf = tomllib.load(configuration_file)
 setup_cfg = conf['project']
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -113,8 +120,8 @@ suppress_warnings = ['app.add_directive', ]
 
 
 # General information about the project
-with open(Path(__file__).parent.parent.parent / "pyproject.toml", "rb") as ppt:
-    metadata = tomllib.load(ppt)['project']
+with open(Path(__file__).parent.parent.parent / "pyproject.toml", "rb") as metadata_file:
+    metadata = tomli.load(metadata_file)['project']
 project = metadata['name']
 author = f'{metadata["authors"][0]["name"]} and {metadata["authors"][1]["name"]} <{metadata["authors"][0]["email"]}>'
 copyright = f'{datetime.today().year}, Space Telescope Science Institute'

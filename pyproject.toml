@@ -1,14 +1,12 @@
 [project]
 name = "stsci.imagestats"
-dynamic = ["version"]
 description = "Compute sigma-clipped statistics on data arrays"
-readme = "README.rst"
+requires-python = ">=3.7"
 authors = [
-    {name = "Warren Hack", email = "help@stsci.edu"},
-    {name = "Christopher Hanley", email = "help@stsci.edu"},
+    { name = "Warren Hack", email = "help@stsci.edu" },
+    { name = "Christopher Hanley" },
 ]
 license = { text = "BSD-3-Clause" }
-requires-python = ">=3.8"
 classifiers = [
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: BSD License",
@@ -24,6 +22,19 @@ classifiers = [
 dependencies = [
     "numpy>=1.20",
 ]
+dynamic = [
+    "version",
+]
+
+[project.readme]
+file = "README.rst"
+content-type = "text/x-rst"
+
+[project.urls]
+Homepage = "https://github.com/spacetelescope/stsci.imagestats"
+Tracker = "https://github.com/spacetelescope/stsci.imagestats/issues"
+Documentation = "https://stsciimagestats.readthedocs.io/en/stable/"
+"Source Code" = "https://github.com/spacetelescope/stsci.imagestats"
 
 [project.optional-dependencies]
 docs = [
@@ -37,33 +48,40 @@ test = [
     "pytest>=7.0",
 ]
 
-[project.urls]
-Tracker = "https://github.com/spacetelescope/stsci.imagestats/issues"
-Documentation = "https://stsciimagestats.readthedocs.io/en/stable/"
-"Source Code" = "https://github.com/spacetelescope/stsci.imagestats"
-
-
 [build-system]
 requires = [
-    "setuptools>=38.2.5",
-    "setuptools_scm>=6.2",
+    "setuptools>=61.2",
+    "setuptools_scm[toml] >=6.2",
     "wheel",
     "numpy>=1.25,<2",
 ]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-license-files = ["LICENSE.txt"]
 zip-safe = false
-
-[tool.setuptools.package-data]
-"*" = [
-    "README.md",
+license-files = ["LICENSE.txt"]
+namespace-packages = [
+    "stsci",
 ]
 
 [tool.setuptools.packages.find]
 namespaces = true
 
+[tool.setuptools.package-data]
+"*" = [
+    "README.md",
+    "LICENSE.txt",
+]
 
 [tool.setuptools_scm]
 write_to = "stsci/imagestats/_version.py"
+
+[tool.build-sphinx]
+source-dir = "docs"
+build-dir = "docs"
+all_files = "1"
+
+[tool.distutils.upload_docs]
+upload-dir = "docs/_build/html"
+show-response = 1
+
