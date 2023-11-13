@@ -19,6 +19,7 @@ from pathlib import Path
 
 import sphinx
 import stsci_rtd_theme
+import tomllib
 from distutils.version import LooseVersion
 
 if sys.version_info < (3, 11):
@@ -122,8 +123,9 @@ suppress_warnings = ['app.add_directive', ]
 with open(Path(__file__).parent.parent.parent / "pyproject.toml", "rb") as metadata_file:
     metadata = tomli.load(metadata_file)['project']
 project = metadata['name']
-author = f'{metadata["authors"][0]["name"]} <{metadata["authors"][0]["email"]}>'
-copyright = f'{datetime.today().year}, {author}'
+author = f'{metadata["authors"][0]["name"]} and {metadata["authors"][1]["name"]} <{metadata["authors"][0]["email"]}>'
+copyright = f'{datetime.today().year}, Space Telescope Science Institute'
+
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

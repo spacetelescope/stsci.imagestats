@@ -17,17 +17,15 @@ if sys.platform == 'win32':
         ('__STDC__', 1)
     ]
 
-ext_modules = [
-    Extension('stsci.imagestats.buildHistogram',
-              ['src/buildHistogram.c'],
-              include_dirs=include_dirs,
-              define_macros=define_macros),
-    Extension('stsci.imagestats.computeMean',
-              ['src/computeMean.c'],
-              include_dirs=include_dirs,
-              define_macros=define_macros),
-]
-
 setup(
-    ext_modules=ext_modules,
+    ext_modules=[
+        Extension('stsci.imagestats.buildHistogram',
+                  ['src/buildHistogram.c'],
+                  include_dirs=include_dirs,
+                  define_macros=define_macros),
+        Extension('stsci.imagestats.computeMean',
+                  ['src/computeMean.c'],
+                  include_dirs=include_dirs,
+                  define_macros=define_macros),
+    ],
 )
