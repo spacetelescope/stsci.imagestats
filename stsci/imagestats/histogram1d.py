@@ -54,18 +54,20 @@ class histogram1d:
 
     def _populateHistogram(self):
         """Call the C-code that actually populates the histogram"""
-        try :
+        try:
             buildHistogram.populate1DHist(self._data, self.histogram,
                 self.minValue, self.maxValue, self.binWidth)
         except:
             if ((self._data.max() - self._data.min()) < self.binWidth):
-                raise ValueError("In histogram1d class, the binWidth is "
-                                 "greater than the data range of the array "
-                                 "object.")
+                raise ValueError(
+                    "In histogram1d class, the binWidth is greater than the "
+                    "data range of the array object."
+                )
             else:
-                raise SystemError("An error processing the array object "
-                                  "information occured in the buildHistogram "
-                                  "module of histogram1d.")
+                raise SystemError(
+                    "An error processing the array object information occured "
+                    "in the buildHistogram module of histogram1d."
+                )
 
     def getCenters(self):
         """ Returns histogram's centers. """
