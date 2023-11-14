@@ -19,7 +19,6 @@ from pathlib import Path
 
 import sphinx
 import stsci_rtd_theme
-import tomllib
 from distutils.version import LooseVersion
 
 if sys.version_info < (3, 11):
