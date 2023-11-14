@@ -42,6 +42,7 @@ docs = [
     "sphinx",
     "sphinx-automodapi",
     "sphinx-rtd-theme",
+    "stsci_rtd_theme",
     "graphviz",
 ]
 test = [

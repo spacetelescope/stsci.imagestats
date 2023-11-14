@@ -24,7 +24,7 @@ from distutils.version import LooseVersion
 
 if sys.version_info < (3, 11):
      import tomli as tomllib
- else:
+else:
      import tomllib
 
 try:
@@ -121,7 +121,7 @@ suppress_warnings = ['app.add_directive', ]
 
 # General information about the project
 with open(Path(__file__).parent.parent.parent / "pyproject.toml", "rb") as metadata_file:
-    metadata = tomli.load(metadata_file)['project']
+    metadata = tomllib.load(metadata_file)['project']
 project = metadata['name']
 author = f'{metadata["authors"][0]["name"]} and {metadata["authors"][1]["name"]} <{metadata["authors"][0]["email"]}>'
 copyright = f'{datetime.today().year}, Space Telescope Science Institute'
