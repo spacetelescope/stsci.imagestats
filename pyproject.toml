@@ -21,7 +21,6 @@ classifiers = [
 ]
 dependencies = [
     "numpy>=1.16",
-    "packaging>=19.0",
 ]
 dynamic = [
     "version",
@@ -43,19 +42,16 @@ docs = [
     "sphinx",
     "sphinx-automodapi",
     "sphinx-rtd-theme",
-    "stsci-rtd-theme",
     "graphviz",
 ]
 test = [
     "pytest>=6.0",
-    "pytest-cov",
 ]
 
 [build-system]
 requires = [
     "setuptools>=30.3",
     "setuptools_scm[toml]>=3.4",
-    "wheel",
     "oldest-supported-numpy; python_version>='3.7'",
 ]
 build-backend = "setuptools.build_meta"
@@ -78,12 +74,3 @@ namespaces = true
 
 [tool.setuptools_scm]
 write_to = "stsci/imagestats/_version.py"
-
-[tool.build-sphinx]
-source-dir = "docs"
-build-dir = "docs"
-all_files = "1"
-
-[tool.distutils.upload_docs]
-upload-dir = "docs/_build/html"
-show-response = 1

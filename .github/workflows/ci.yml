@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-    - main
+    - master
     - 'v*'
     tags:
     - '*'
@@ -62,12 +62,13 @@ jobs:
           posargs: -v
 
         - name: Python 3.12 (OSX)
-          macos: py311-test
+          macos: py312-test
           posargs: -v
 
-        - name: Python 3.12
-          linux: py311-test-cov
+        - name: Python 3.12 with coverage
+          linux: py312-test-cov
           posargs: -v
+          coverage: codecov
 
         - name: Python 3.12 with dev version of dependencies
           linux: py312-test-devdeps
