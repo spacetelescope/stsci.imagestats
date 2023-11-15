@@ -137,7 +137,7 @@ def test_limits(gaussian_image):
 
 
 def test_print(gaussian_image, capsys):
-    result = ImageStats(gaussian_image)
+    result = ImageStats(gaussian_image, "npix,min,max,mean,midpt,median,stddev")
     result.printStats()
     captured = capsys.readouterr()
     assert captured.out.startswith("--- Imagestats Results ---")
@@ -184,3 +184,9 @@ def test_invalid_args():
 
     with pytest.raises(ValueError) as e:
         ImageStats(data, lower=4.0, upper=2.0)
+
+    with pytest.raises(ValueError) as e:
+        ImageStats(data, lower=6.0)
+
+    with pytest.raises(ValueError) as e:
+        ImageStats(data, upper=0.0)
