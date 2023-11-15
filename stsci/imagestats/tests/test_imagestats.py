@@ -190,3 +190,16 @@ def test_invalid_args():
 
     with pytest.raises(ValueError) as e:
         ImageStats(data, upper=0.0)
+
+def test_large_bin(gaussian_image):
+    mean = gaussian_image.meta['mean']
+    stddev = gaussian_image.meta['stddev']
+    minv = gaussian_image.meta['min']
+    maxv = gaussian_image.meta['max']
+
+    binwidth = 2.0 * (maxv - minv) / stddev
+    result = ImageStats(
+        gaussian_image,
+        "npix,min,max,mean,midpt,median,mode,stddev",
+        binwidth=binwidth,
+    )
