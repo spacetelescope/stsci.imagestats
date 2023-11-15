@@ -308,24 +308,27 @@ class ImageStats:
 
             if (self.fields.find('midpt') != -1):
                 # Compute a pseudo-Median Value using IRAF's algorithm
-                _binSum = np.cumsum(_bins).astype(np.float32)
-                _binSum = _binSum / _binSum[-1]
-                _lo = np.where(_binSum >= 0.5)[0][0]
-                _hi = _lo + 1
+                if _bins.size > 1:
+                    _binSum = np.cumsum(_bins).astype(np.float32)
+                    _binSum = _binSum / _binSum[-1]
+                    _lo = np.where(_binSum >= 0.5)[0][0]
+                    _hi = _lo + 1
 
-                _h1 = _min + _lo * _hwidth
-                if (_lo == 0):
-                    _hdiff = _binSum[_hi - 1]
-                else:
-                    _hdiff = _binSum[_hi - 1] - _binSum[_lo - 1]
+                    _h1 = _min + _lo * _hwidth
+                    if (_lo == 0):
+                        _hdiff = _binSum[_hi - 1]
+                    else:
+                        _hdiff = _binSum[_hi - 1] - _binSum[_lo - 1]
 
-                if (_hdiff == 0):
-                    _midpt = _h1
-                elif (_lo == 0):
-                    _midpt = _h1 + 0.5 / _hdiff * _hwidth
+                    if (_hdiff == 0):
+                        _midpt = _h1
+                    elif (_lo == 0):
+                        _midpt = _h1 + 0.5 / _hdiff * _hwidth
+                    else:
+                        _midpt = _h1 + (0.5 - _binSum[_lo - 1]) / _hdiff * _hwidth
+                    self.midpt = _midpt
                 else:
-                    _midpt = _h1 + (0.5 - _binSum[_lo - 1]) / _hdiff * _hwidth
-                self.midpt = _midpt
+                    self.midpt = _bins[0]
 
             # These values will only be returned if the histogram is computed.
             self.hmin = _min + 0.5 * _hwidth
