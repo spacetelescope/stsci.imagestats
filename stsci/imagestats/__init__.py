@@ -114,9 +114,12 @@ class ImageStats:
                  binwidth=0.1):
         #Initialize the start time of the program
         self.startTime = time.time()
+        self._hist = None
+
+        image = np.asanyarray(image)
 
         # Input Value
-        if image.dtype > np.float32:
+        if image.dtype != np.float32:
             #Warning: Input array is being downcast to a float32 array
             image = image.astype(np.float32)
 
@@ -344,7 +347,8 @@ class ImageStats:
 
     def getCenters(self):
         """ Compute the array of bin center positions."""
-        return self._hist.getCenters()
+        if self._hist is not None:
+            return self._hist.getCenters()
 
     def printStats(self):
         """ Print the requested statistics values for those fields specified on input. """

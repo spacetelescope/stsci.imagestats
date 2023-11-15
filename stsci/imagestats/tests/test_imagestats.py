@@ -102,3 +102,85 @@ def test_all_values_in_one_bin(constant_image, nclip, capsys):
     assert np.allclose(result.midpt, mean, rtol=0, atol=atol)
     assert np.allclose(result.median, mean, rtol=0, atol=atol)
     assert np.allclose(result.stddev, stddev, rtol=0, atol=atol)
+
+
+def test_limits(gaussian_image):
+    binwidth = 0.05
+    q = 0.2
+    minv = gaussian_image.meta['min']
+    maxv = gaussian_image.meta['max']
+    r = maxv - minv
+
+    lower = minv + q * r
+    upper = maxv - q * r
+
+    result = ImageStats(
+        gaussian_image,
+        "npix,min,max,mean,midpt,median,mode,stddev",
+        binwidth=binwidth,
+        lower=lower,
+        upper=upper,
+    )
+    mean = gaussian_image.meta['mean']
+    stddev = gaussian_image.meta['stddev']
+
+    atol = 10 * np.finfo(np.float32).eps
+    n = np.sqrt(result.npix)
+    atol_population = stddev / ((1.0 - 2 * q) * n)
+    atol_binned = binwidth * stddev
+
+    assert np.allclose(result.mean, mean, rtol=0, atol=atol_population)
+    assert np.allclose(result.mode, mean, rtol=0, atol=atol_binned)
+    assert np.allclose(result.midpt, mean, rtol=0, atol=atol_binned)
+    assert result.min >= lower
+    assert result.max <= upper
+
+
+def test_print(gaussian_image, capsys):
+    result = ImageStats(gaussian_image)
+    result.printStats()
+    captured = capsys.readouterr()
+    assert captured.out.startswith("--- Imagestats Results ---")
+
+
+def test_no_data_after_clipping():
+    data = np.array([0, 10], dtype=np.float32)
+    with pytest.raises(ValueError) as e:
+        ImageStats(data, nclip=1, lsig=0.1, usig=0.1)
+
+
+def test_get_centers(uniform_image):
+    binwidth = 0.1
+    minv = uniform_image.meta['min']
+    maxv = uniform_image.meta['max']
+    stddev = uniform_image.meta['stddev']
+    result = ImageStats(uniform_image, "midpt", nclip=0, binwidth=binwidth)
+    assert (
+        result.getCenters().size == int((maxv - minv) / (stddev * binwidth)) + 1
+    )
+    result = ImageStats(uniform_image, nclip=0, binwidth=binwidth)
+    assert result.getCenters() is None
+
+
+def test_invalid_args():
+    data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+    with pytest.raises(ValueError) as e:
+        ImageStats(data, nclip=-1)
+
+    with pytest.raises(ValueError) as e:
+        ImageStats(data, lsig=0.0)
+
+    with pytest.raises(ValueError) as e:
+        ImageStats(data, usig=-1.0)
+
+    with pytest.raises(ValueError) as e:
+        ImageStats(data, binwidth=-0.1)
+
+    with pytest.raises(ValueError) as e:
+        ImageStats(data, lower=6.0)
+
+    with pytest.raises(ValueError) as e:
+        ImageStats(data, upper=-1.0)
+
+    with pytest.raises(ValueError) as e:
+        ImageStats(data, lower=4.0, upper=2.0)

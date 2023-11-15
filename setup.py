@@ -2,7 +2,7 @@
 import numpy
 import sys
 from setuptools import setup, Extension
-
+import sysconfig
 
 # Setup C module include directories
 include_dirs = [numpy.get_include()]
@@ -19,13 +19,17 @@ if sys.platform == 'win32':
 
 setup(
     ext_modules=[
-        Extension('stsci.imagestats.buildHistogram',
-                  ['src/buildHistogram.c'],
-                  include_dirs=include_dirs,
-                  define_macros=define_macros),
-        Extension('stsci.imagestats.computeMean',
-                  ['src/computeMean.c'],
-                  include_dirs=include_dirs,
-                  define_macros=define_macros),
+        Extension(
+            'stsci.imagestats.buildHistogram',
+            ['src/buildHistogram.c'],
+            include_dirs=include_dirs,
+            define_macros=define_macros,
+        ),
+        Extension(
+            'stsci.imagestats.computeMean',
+            ['src/computeMean.c'],
+            include_dirs=include_dirs,
+            define_macros=define_macros,
+        ),
     ],
 )
