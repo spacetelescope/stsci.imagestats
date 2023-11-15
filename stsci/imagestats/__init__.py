@@ -114,9 +114,12 @@ class ImageStats:
                  binwidth=0.1):
         #Initialize the start time of the program
         self.startTime = time.time()
+        self._hist = None
+
+        image = np.asanyarray(image)
 
         # Input Value
-        if image.dtype > np.float32:
+        if image.dtype != np.float32:
             #Warning: Input array is being downcast to a float32 array
             image = image.astype(np.float32)
 
@@ -308,24 +311,27 @@ class ImageStats:
 
             if (self.fields.find('midpt') != -1):
                 # Compute a pseudo-Median Value using IRAF's algorithm
-                _binSum = np.cumsum(_bins).astype(np.float32)
-                _binSum = _binSum / _binSum[-1]
-                _lo = np.where(_binSum >= 0.5)[0][0]
-                _hi = _lo + 1
+                if _bins.size > 1:
+                    _binSum = np.cumsum(_bins).astype(np.float32)
+                    _binSum = _binSum / _binSum[-1]
+                    _lo = np.where(_binSum >= 0.5)[0][0]
+                    _hi = _lo + 1
 
-                _h1 = _min + _lo * _hwidth
-                if (_lo == 0):
-                    _hdiff = _binSum[_hi - 1]
-                else:
-                    _hdiff = _binSum[_hi - 1] - _binSum[_lo - 1]
+                    _h1 = _min + _lo * _hwidth
+                    if (_lo == 0):
+                        _hdiff = _binSum[_hi - 1]
+                    else:
+                        _hdiff = _binSum[_hi - 1] - _binSum[_lo - 1]
 
-                if (_hdiff == 0):
-                    _midpt = _h1
-                elif (_lo == 0):
-                    _midpt = _h1 + 0.5 / _hdiff * _hwidth
+                    if (_hdiff == 0):
+                        _midpt = _h1
+                    elif (_lo == 0):
+                        _midpt = _h1 + 0.5 / _hdiff * _hwidth
+                    else:
+                        _midpt = _h1 + (0.5 - _binSum[_lo - 1]) / _hdiff * _hwidth
+                    self.midpt = _midpt
                 else:
-                    _midpt = _h1 + (0.5 - _binSum[_lo - 1]) / _hdiff * _hwidth
-                self.midpt = _midpt
+                    self.midpt = _bins[0]
 
             # These values will only be returned if the histogram is computed.
             self.hmin = _min + 0.5 * _hwidth
@@ -341,7 +347,8 @@ class ImageStats:
 
     def getCenters(self):
         """ Compute the array of bin center positions."""
-        return self._hist.getCenters()
+        if self._hist is not None:
+            return self._hist.getCenters()
 
     def printStats(self):
         """ Print the requested statistics values for those fields specified on input. """
