@@ -2,7 +2,6 @@
 import numpy
 import sys
 from setuptools import setup, Extension
-import sysconfig
 
 # Setup C module include directories
 include_dirs = [numpy.get_include()]
