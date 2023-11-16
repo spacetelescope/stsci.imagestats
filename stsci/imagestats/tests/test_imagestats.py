@@ -137,7 +137,7 @@ def test_limits(gaussian_image):
 
 
 def test_print(gaussian_image, capsys):
-    result = ImageStats(gaussian_image, "npix,min,max,mean,midpt,median,stddev")
+    result = ImageStats(gaussian_image, "npix,min,max,mean,mode,midpt,median,stddev")
     result.printStats()
     captured = capsys.readouterr()
     assert captured.out.startswith("--- Imagestats Results ---")
