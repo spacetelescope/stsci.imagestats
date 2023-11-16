@@ -137,7 +137,7 @@ def test_limits(gaussian_image):
 
 
 def test_print(gaussian_image, capsys):
-    result = ImageStats(gaussian_image, "npix,min,max,mean,midpt,median,stddev")
+    result = ImageStats(gaussian_image, "npix,min,max,mean,mode,midpt,median,stddev")
     result.printStats()
     captured = capsys.readouterr()
     assert captured.out.startswith("--- Imagestats Results ---")
@@ -190,6 +190,100 @@ def test_invalid_args():
 
     with pytest.raises(ValueError) as e:
         ImageStats(data, upper=0.0)
+
+
+def test_no_data():
+    with pytest.raises(ValueError) as e:
+        ImageStats([])
+    assert e.value.args[0] == "Not enough data points to compute statistics."
+
+
+def test_invalid_data():
+    with pytest.raises(ValueError) as e:
+        ImageStats([np.nan])
+    assert e.value.args[0] == "Not enough data points to compute statistics."
+
+
+def test_no_data_after_clip():
+    with pytest.raises(ValueError) as e:
+        ImageStats(
+            [0.0, 0.1, 0.2],
+            lower=0.05,
+            upper=0.05,
+            nclip=3,
+            lsig=0.0001,
+            usig=0.0001
+        )
+    assert e.value.args[0] == "Not enough data points to compute statistics."
+
+
+def test_mode_2_bins():
+    eps = np.finfo(np.float32).eps
+
+    data = [0.0, 0.2]
+    stddev = np.std(data) * np.sqrt(len(data) / (len(data) - 1.0))
+    h = ImageStats(
+        data,
+        fields='mode',
+        binwidth=0.1 * (1 + eps) / stddev,
+    )
+    assert abs(h.mode - 0.1) < 2.0 * eps
+
+    data = [0.0, 0.0, 0.2]
+    stddev = np.std(data) * np.sqrt(len(data) / (len(data) - 1.0))
+    h = ImageStats(
+        data,
+        fields='mode',
+        binwidth=0.1 * (1 + eps) / stddev,
+    )
+    assert abs(h.mode - 0.05) < 2.0 * eps
+
+    data = [0.0, 0.2, 0.2]
+    stddev = np.std(data) * np.sqrt(len(data) / (len(data) - 1.0))
+    h = ImageStats(
+        data,
+        fields='mode',
+        binwidth=0.1 * (1 + eps) / stddev,
+    )
+    assert abs(h.mode - 0.15) < 2.0 * eps
+
+
+def test_mode_at_edges():
+    eps = np.finfo(np.float32).eps
+
+    data = [0.0, 0.0, 0.0, 0.05, 0.1, 0.15, 0.2]
+    stddev = np.std(data) * np.sqrt(len(data) / (len(data) - 1.0))
+    h = ImageStats(
+        data,
+        fields='mode',
+        binwidth=0.05 * (1 + eps) / stddev,
+    )
+    assert abs(h.mode - 0.025) < 2.0 * eps
+
+    data = [0.0, 0.05, 0.1, 0.15, 0.19, 0.19, 0.19]
+    stddev = np.std(data) * np.sqrt(len(data) / (len(data) - 1.0))
+    h = ImageStats(
+        data,
+        fields='mode',
+        binwidth=0.045 * (1 + eps) / stddev,
+    )
+    assert abs(h.mode - 0.2025) < 2.0 * eps
+
+
+@pytest.mark.skip(reason="improve detection of _peakindex for mode - see TODO")
+def test_mode_uniform():
+    eps = np.finfo(np.float32).eps
+
+    data = [0.0, 0.08, 0.08, 0.08, 0.13, 0.13, 0.13, 0.19, 0.19, 0.19, 0.20001]
+    stddev = np.std(data) * np.sqrt(len(data) / (len(data) - 1.0))
+    h = ImageStats(
+        data,
+        fields='mode',
+        binwidth=0.05 * (1 + eps) / stddev,
+    )
+    assert abs(h.mode - 0.075) < 2.0 * eps
+
+
 
 def test_large_bin(gaussian_image):
     mean = gaussian_image.meta['mean']
