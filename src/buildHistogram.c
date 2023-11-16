@@ -40,7 +40,7 @@ static PyObject * populate1DHist(PyObject *obj, PyObject *args)
     PyObject *oimage, *ohistogram;
     PyArrayObject *image, *histogram;
     float minValue, maxValue, binWidth;
-    int status=0;
+    int status;
 
     if (!PyArg_ParseTuple(args,"OOfff:populate1DHist",&oimage,&ohistogram,&minValue,&maxValue,&binWidth))
 	    return NULL;
