@@ -31,15 +31,15 @@ def test_histogram(gaussian_image):
     assert np.sum(h.histogram) == data.size
 
     # compare to numpy:
-    nph, npedges = np.histogram(data, nbins, (minv, maxv))
+    nph, npedges = np.histogram(data[(data < maxv)], nbins, (minv, maxv))
     # ideally the following should pass:
     # assert np.all(nph == h.histogram)
     # However, it fails with minor errors on Linux, likely due to
     # floating point rounding errors. Therefore we replace this with a set of
     # less strict tests:
-    diff = np.abs(nph - h.histogram)
+    diff = nph - h.histogram
     assert diff.sum() == 0
-    assert max(diff) <= 1
+    assert max(np.abs(diff)) <= 1
     assert np.flatnonzero(diff).size < 4
 
     assert np.allclose(h.edges, npedges, rtol=0.0, atol=10.0 * _EPS32)
