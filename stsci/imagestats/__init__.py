@@ -118,6 +118,11 @@ class ImageStats:
 
         image = np.asanyarray(image)
 
+        if image.size == 0:
+            raise ValueError(
+                "Not enough data points to compute statistics."
+            )
+
         # Input Value
         if image.dtype != np.float32:
             #Warning: Input array is being downcast to a float32 array
@@ -179,12 +184,6 @@ class ImageStats:
                 "Not enough data points to compute statistics."
             )
 
-        elif lower > upper:
-            raise ValueError(
-                "Upper data cutoff cannot be smaller than the lower cutoff "
-                "limit."
-            )
-
         self.lower = lower
         self.upper = upper
 
@@ -229,7 +228,7 @@ class ImageStats:
                     _clipmax
                 )
             except:
-                raise SystemError(
+                raise RuntimeError(
                     "An error processing the array object information occured "
                     "in the computeMean module of imagestats."
                 )
@@ -264,6 +263,7 @@ class ImageStats:
         if ((self.fields.find('mode') != -1) or (self.fields.find('midpt') != -1)):
             # Populate the historgram
             _hwidth = self.binwidth * _stddev
+
             _drange = _max - _min
             _minfloatval = 10.0 * np.finfo(dtype=np.float32).eps
             if _hwidth < _minfloatval or abs(_drange) < _minfloatval or \
@@ -291,8 +291,9 @@ class ImageStats:
                     else:
                         _mode = _min + _hwidth
                 else:
+                    # TODO: perform a better analysis and pick the middle when
+                    # there are multiple picks:
                     _peakindex = np.where(_bins == np.maximum.reduce(_bins))[0].tolist()[0]
-
                     if _peakindex == 0:
                         _mode = _min + 0.5 * _hwidth
                     elif _peakindex == (_nbins - 1):
