@@ -17,9 +17,13 @@ if sys.platform == 'win32':
         ('__STDC__', 1)
     ]
 
-extra_compile_args = sysconfig.get_config_var('CFLAGS').split()
-extra_compile_args += ["-Wall", "-Wextra"]
-extra_compile_args += ["-DNDEBUG", "-O2"]
+cflags = sysconfig.get_config_var('CFLAGS')
+if cflags:
+    extra_compile_args = cflags.split()
+    extra_compile_args += ["-Wall", "-Wextra"]
+    extra_compile_args += ["-DNDEBUG", "-O2"]
+else:
+    extra_compile_args = None
 
 setup(
     ext_modules=[
