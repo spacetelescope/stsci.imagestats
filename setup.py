@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 import numpy
 import sys
-from setuptools import setup, Extension
+from setuptools import Extension, find_packages, setup
 import sysconfig
+
 
 # Setup C module include directories
 include_dirs = [numpy.get_include()]
@@ -26,6 +27,7 @@ else:
     extra_compile_args = None
 
 setup(
+    packages=find_packages(),
     ext_modules=[
         Extension(
             'stsci.imagestats.buildHistogram',
