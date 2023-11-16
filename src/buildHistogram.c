@@ -13,24 +13,23 @@ int populate1DHist_(float *image, int image_elements,
 		    unsigned int *histogram, int histogram_elements,
                     float minValue, float maxValue, float binWidth)
 {
-    int i, index=0;
-    for (i = 0; i < image_elements; i++) {
-        if ( (image[i] >= minValue) && (image[i] < maxValue) ) {
-            index = (int)((double)(image[i] - minValue) / binWidth );
+    int i, idx;
+    float f, hist_edge, v;
+    unsigned int *last_bin;
 
-            /* Handle histogram population for floating point errors at end points */
-            /* Case 1: Populating below index 0.*/
-            if ( index < 0 ) {
-                histogram[0] += 1;
-            }
-            /* Case 2: Populating above the maximum index value*/
-            else if (index >= histogram_elements ) {
-                histogram[histogram_elements - 1] +=1;
-            }
-            /* Case 3: Normal Case - Population of histogram occurs as expected in valid index range */
-            else {
-                histogram[ index ] += 1;
-            }
+    f = 1.0f / binWidth;
+    hist_edge = minValue + binWidth * histogram_elements;
+    last_bin = histogram + (histogram_elements - 1);
+
+    if (maxValue > hist_edge) {
+        maxValue = hist_edge;
+    }
+
+    for (i = 0; i < image_elements; ++i) {
+        v = image[i];
+        if ((v >= minValue) && (v < maxValue)) {
+            idx = (int)(f * (v - minValue));
+            ++histogram[idx];
         }
     }
     return 1;
