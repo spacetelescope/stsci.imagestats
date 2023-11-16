@@ -2,6 +2,7 @@
 import numpy
 import sys
 from setuptools import setup, Extension
+import sysconfig
 
 # Setup C module include directories
 include_dirs = [numpy.get_include()]
@@ -16,6 +17,14 @@ if sys.platform == 'win32':
         ('__STDC__', 1)
     ]
 
+cflags = sysconfig.get_config_var('CFLAGS')
+if cflags:
+    extra_compile_args = cflags.split()
+    extra_compile_args += ["-Wall", "-Wextra"]
+    extra_compile_args += ["-DNDEBUG", "-O2"]
+else:
+    extra_compile_args = None
+
 setup(
     ext_modules=[
         Extension(
@@ -23,12 +32,14 @@ setup(
             ['src/buildHistogram.c'],
             include_dirs=include_dirs,
             define_macros=define_macros,
+            extra_compile_args=extra_compile_args,
         ),
         Extension(
             'stsci.imagestats.computeMean',
             ['src/computeMean.c'],
             include_dirs=include_dirs,
             define_macros=define_macros,
+            extra_compile_args=extra_compile_args,
         ),
     ],
 )
