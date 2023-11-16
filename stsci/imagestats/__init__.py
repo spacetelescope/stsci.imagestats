@@ -348,7 +348,7 @@ class ImageStats:
     def getCenters(self):
         """ Compute the array of bin center positions."""
         if self._hist is not None:
-            return self._hist.getCenters()
+            return self._hist.centers
 
     def printStats(self):
         """ Print the requested statistics values for those fields specified on input. """
