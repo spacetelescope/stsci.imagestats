@@ -60,18 +60,6 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools]
 zip-safe = false
 license-files = ["LICENSE.txt"]
-namespace-packages = [
-    "stsci",
-]
-
-[tool.coverage.run]
-omit = [
-    "stsci/imagestats/_version.py",
-    "stsci/imagestats/tests/*.py",
-]
-
-[tool.setuptools.packages.find]
-namespaces = true
 
 [tool.setuptools.package-data]
 "*" = [
@@ -81,3 +69,9 @@ namespaces = true
 
 [tool.setuptools_scm]
 write_to = "stsci/imagestats/_version.py"
+
+[tool.coverage.run]
+omit = [
+    "stsci/imagestats/_version.py",
+    "stsci/imagestats/tests/*.py",
+]
