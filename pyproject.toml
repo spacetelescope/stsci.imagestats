@@ -69,3 +69,9 @@ license-files = ["LICENSE.txt"]
 
 [tool.setuptools_scm]
 write_to = "stsci/imagestats/_version.py"
+
+[tool.coverage.run]
+omit = [
+    "stsci/imagestats/_version.py",
+    "stsci/imagestats/tests/*.py",
+]

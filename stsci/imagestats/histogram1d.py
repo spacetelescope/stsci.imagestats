@@ -2,7 +2,8 @@
 A module that provides functionality to construct a 1-dimentional histogram
 from an array object.
 
-:Author: Christopher Hanley (for help, contact `HST Help Desk <https://hsthelp.stsci.edu>`_)
+:Author: Christopher Hanley (for help, contact
+    `HST Help Desk <https://hsthelp.stsci.edu>`_)
 
 :License: :doc:`../LICENSE`
 
@@ -55,7 +56,7 @@ class histogram1d:
                 self.maxValue,
                 self.binWidth
             )
-        except:
+        except Exception:
             if ((self._data.max() - self._data.min()) < self.binWidth):
                 raise ValueError(
                     "In histogram1d class, the binWidth is greater than the "
