@@ -64,6 +64,12 @@ namespace-packages = [
     "stsci",
 ]
 
+[tool.coverage.run]
+omit = [
+    "stsci/imagestats/_version.py",
+    "stsci/imagestats/tests/*.py",
+]
+
 [tool.setuptools.packages.find]
 namespaces = true
 
