@@ -10,7 +10,8 @@ import time
 import numpy as np
 from .histogram1d import histogram1d
 from .computeMean import computeMean
-from ._version import version as __version__
+from ._version import version as __version__  # noqa F401
+
 
 class ImageStats:
     """
@@ -112,7 +113,7 @@ class ImageStats:
     def __init__(self, image, fields="npix,min,max,mean,stddev",
                  lower=None, upper=None, nclip=0, lsig=3.0, usig=3.0,
                  binwidth=0.1):
-        #Initialize the start time of the program
+        # Initialize the start time of the program
         self.startTime = time.time()
         self._hist = None
 
@@ -125,7 +126,7 @@ class ImageStats:
 
         # Input Value
         if image.dtype != np.float32:
-            #Warning: Input array is being downcast to a float32 array
+            # Warning: Input array is being downcast to a float32 array
             image = image.astype(np.float32)
 
         if nclip < 0:
@@ -153,7 +154,7 @@ class ImageStats:
         self.mean = None
         self.mode = None
         self.bins = None
-        self.median = None # numpy computed median with clipping
+        self.median = None  # numpy computed median with clipping
         self.midpt = None  # IRAF-based pseudo-median using bins
 
         # Compute Global minimum and maximum
@@ -227,7 +228,7 @@ class ImageStats:
                     _clipmin,
                     _clipmax
                 )
-            except:
+            except Exception:
                 raise RuntimeError(
                     "An error processing the array object information occured "
                     "in the computeMean module of imagestats."
@@ -293,7 +294,9 @@ class ImageStats:
                 else:
                     # TODO: perform a better analysis and pick the middle when
                     # there are multiple picks:
-                    _peakindex = np.where(_bins == np.maximum.reduce(_bins))[0].tolist()[0]
+                    _peakindex = np.where(
+                        _bins == np.maximum.reduce(_bins)
+                    )[0].tolist()[0]
                     if _peakindex == 0:
                         _mode = _min + 0.5 * _hwidth
                     elif _peakindex == (_nbins - 1):
@@ -305,7 +308,9 @@ class ImageStats:
                         if _denom == 0:
                             _mode = _min + (_peakindex + 0.5) * _hwidth
                         else:
-                            _mode = _peakindex + 1 + (0.5 * (int(_dh1) - int(_dh2)) / _denom)
+                            _mode = _peakindex + 1 + (
+                                0.5 * (int(_dh1) - int(_dh2)) / _denom
+                            )
                             _mode = _min + ((_mode - 0.5) * _hwidth)
                 # Return the mode
                 self.mode = _mode
@@ -329,7 +334,9 @@ class ImageStats:
                     elif (_lo == 0):
                         _midpt = _h1 + 0.5 / _hdiff * _hwidth
                     else:
-                        _midpt = _h1 + (0.5 - _binSum[_lo - 1]) / _hdiff * _hwidth
+                        _midpt = _h1 + (
+                            (0.5 - _binSum[_lo - 1]) / _hdiff * _hwidth
+                        )
                     self.midpt = _midpt
                 else:
                     self.midpt = _bins[0]
@@ -339,7 +346,7 @@ class ImageStats:
             self.hwidth = _hwidth
             self.histogram = _bins
 
-        #Return values
+        # Return values
         self.stddev = _stddev
         self.mean = _mean
         self.npix = _npix
@@ -352,7 +359,9 @@ class ImageStats:
             return self._hist.centers
 
     def printStats(self):
-        """ Print the requested statistics values for those fields specified on input. """
+        """ Print the requested statistics values for those fields specified
+            on input.
+        """
         print("--- Imagestats Results ---")
 
         if (self.fields.find('npix') != -1):

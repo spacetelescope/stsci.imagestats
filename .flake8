@@ -1,5 +1,6 @@
-# flake8 does not support pyproject.toml (https://github.com/PyCQA/flake8/issues/234)
-
 [flake8]
-select = E101,E111,E112,E113,E101,E111,E112,E113,E201,E202,E203,E211,E221,E222,E223,E224,E225,E226,E227,E228,E231,E241,E242,E251,E271,E272,E273,E274,E901,E902,W191,W291,W292,W293,W391
-exclude = extern,sphinx,*parsetab.py,build
+max-line-length = 89
+exclude = conftest.py, schemas, tags, .git, __pycache__, docs, build, dist, .tox, .eggs, _version.py
+# F403: unable to detect undefined names
+# F405: may be defined from * imports
+ignore = F403,F405,W503,W504
