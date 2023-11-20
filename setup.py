@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import numpy
 import sys
-from setuptools import Extension, find_packages, setup
+from setuptools import Extension, find_namespace_packages, setup
 import sysconfig
 
 
@@ -27,7 +27,11 @@ else:
     extra_compile_args = None
 
 setup(
-    packages=find_packages(),
+    name='stsci.imagestats',
+    packages=find_namespace_packages(
+        where='.',
+        include=['stsci', 'stsci.imagestats']
+    ),
     ext_modules=[
         Extension(
             'stsci.imagestats.buildHistogram',
