@@ -1,0 +1,51 @@
+name: test with development versions
+
+on:
+  push:
+    branches:
+      - main
+      - '*x'
+    tags:
+      - '*'
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - labeled
+      - unlabeled
+      - synchronize
+  schedule:
+    # Weekly Monday 9AM build
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    if: (github.repository == 'spacetelescope/stsci.imagestats' && (github.event_name == 'schedule' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'run devdeps tests')))
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
+    with:
+      envs: |
+        - linux: py39-devdeps
+        - linux: py39-devdeps
+        - macos: py39-devdeps
+        - macos: py39-devdeps
+        - linux: py310-devdeps
+        - linux: py310-devdeps
+        - macos: py310-devdeps
+        - macos: py310-devdeps
+        - linux: py311-devdeps
+        - linux: py311-devdeps
+        - macos: py311-devdeps
+        - macos: py311-devdeps
+        - linux: py3-devdeps
+          pytest-results-summary: true
+        - linux: py3-devdeps
+          pytest-results-summary: true
+        - macos: py3-devdeps
+          pytest-results-summary: true
+        - macos: py3-devdeps
+          pytest-results-summary: true

@@ -66,6 +66,3 @@ jobs:
           posargs: -v
           coverage: codecov
 
-        - name: Python 3.12 with dev version of dependencies
-          linux: py312-test-devdeps
-          posargs: -v
