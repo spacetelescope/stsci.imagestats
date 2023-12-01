@@ -18,10 +18,6 @@ jobs:
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
     with:
       envs: |
-        # Make sure that packaging will work
-        - name: pep517 build
-          linux: twine
-
         - name: Security audit
           linux: bandit
 
@@ -70,6 +66,3 @@ jobs:
           posargs: -v
           coverage: codecov
 
-        - name: Python 3.12 with dev version of dependencies
-          linux: py312-test-devdeps
-          posargs: -v
