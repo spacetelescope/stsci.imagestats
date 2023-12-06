@@ -5,7 +5,7 @@ from an array object.
 :Author: Christopher Hanley (for help, contact
     `HST Help Desk <https://hsthelp.stsci.edu>`_)
 
-:License: :doc:`../LICENSE`
+:License: :doc:`LICENSE`
 
 """
 import numpy as np

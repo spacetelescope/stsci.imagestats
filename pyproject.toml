@@ -1,7 +1,7 @@
 [project]
 name = "stsci.imagestats"
 description = "Compute sigma-clipped statistics on data arrays"
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 authors = [
     { name = "Warren Hack", email = "help@stsci.edu" },
     { name = "Christopher Hanley" },
@@ -20,7 +20,7 @@ classifiers = [
     "Development Status :: 7 - Inactive",
 ]
 dependencies = [
-    "numpy>=1.16",
+    "numpy",
 ]
 dynamic = [
     "version",
@@ -51,9 +51,10 @@ test = [
 
 [build-system]
 requires = [
-    "setuptools>=30.3",
-    "setuptools_scm[toml]>=3.4",
-    "oldest-supported-numpy; python_version>='3.7'",
+    "setuptools>=61.2",
+    "setuptools_scm[toml]>=3.6",
+    "numpy>=1.25",
+    "wheel",
 ]
 build-backend = "setuptools.build_meta"
 
@@ -62,7 +63,7 @@ zip-safe = false
 license-files = ["LICENSE.txt"]
 
 [tool.setuptools.package-data]
-"*" = [
+"stsci.imagestats" = [
     "README.md",
     "LICENSE.txt",
 ]
@@ -74,4 +75,6 @@ write_to = "stsci/imagestats/_version.py"
 omit = [
     "stsci/imagestats/_version.py",
     "stsci/imagestats/tests/*.py",
+    "_version.py",
+    "tests/*.py",
 ]

@@ -3,7 +3,7 @@ Compute desired statistics values for input array objects.
 
 :Author: Warren Hack, Christopher Hanley
 
-:License: :doc:`../LICENSE`
+:License: :doc:`LICENSE`
 
 """
 import time
