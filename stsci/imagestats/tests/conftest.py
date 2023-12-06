@@ -27,6 +27,7 @@ def gaussian_image():
     }
     return NDArrayMeta(gauss2d, meta)
 
+
 @pytest.fixture(scope='module')
 def uniform_image():
     np.random.seed(2)
@@ -38,6 +39,7 @@ def uniform_image():
         'max': uniform2d.max(),
     }
     return NDArrayMeta(uniform2d, meta)
+
 
 @pytest.fixture(scope='module')
 def constant_image():

@@ -1,6 +1,6 @@
 [flake8]
 max-line-length = 89
-exclude = conftest.py, schemas, tags, .git, __pycache__, docs, build, dist, .tox, .eggs, _version.py
+exclude = _version.py
 # F403: unable to detect undefined names
 # F405: may be defined from * imports
 ignore = F403,F405,W503,W504

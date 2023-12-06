@@ -18,18 +18,13 @@ from datetime import datetime
 from pathlib import Path
 
 import sphinx
-import stsci_rtd_theme
-from distutils.version import LooseVersion
 
 if sys.version_info < (3, 11):
-     import tomli as tomllib
+    import tomli as tomllib
 else:
-     import tomllib
+    import tomllib
 
-try:
-    from ConfigParser import ConfigParser
-except ImportError:
-    from configparser import ConfigParser
+from configparser import ConfigParser
 conf = ConfigParser()
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -50,27 +45,15 @@ author = f'{metadata["authors"][0]["name"]} and {metadata["authors"][1]["name"]}
 copyright = f'{datetime.today().year}, Space Telescope Science Institute'
 
 # If your documentation needs a minimal Sphinx version, state it here.
-needs_sphinx = '1.3'
+#needs_sphinx = '1.3'
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-
-def check_sphinx_version(expected_version):
-    sphinx_version = LooseVersion(sphinx.__version__)
-    expected_version = LooseVersion(expected_version)
-    if sphinx_version < expected_version:
-        raise RuntimeError(
-            "At least Sphinx version {0} is required to build this "
-            "documentation.  Found {1}.".format(
-                expected_version, sphinx_version))
 
 # Configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
     'python': ('http://docs.python.org/3/', None),
     'numpy': ('http://docs.scipy.org/doc/numpy/', None),
 }
-
-if sys.version_info[0] == 2:
-    intersphinx_mapping['python'] = ('http://docs.python.org/2/', None)
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -85,17 +68,12 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.doctest',
     'sphinx.ext.coverage',
-    'numpydoc'
+    'numpydoc',
+    'sphinx.ext.imgmath'
 ]
 
 if on_rtd:
     extensions.append('sphinx.ext.mathjax')
-
-elif LooseVersion(sphinx.__version__) < LooseVersion('1.4'):
-    extensions.append('sphinx.ext.pngmath')
-
-else:
-    extensions.append('sphinx.ext.imgmath')
 
 # Add any paths that contain templates here, relative to this directory.
 # templates_path = ['_templates']
@@ -203,7 +181,7 @@ html_theme = 'sphinx_rtd_theme'
 # documentation.
 html_theme_options = {
     "collapse_navigation": True
-    }
+}
 #        "nosidebar": "false",
 #        "sidebarbgcolor": "#4db8ff",
 #        "sidebartextcolor": "black",
@@ -212,7 +190,7 @@ html_theme_options = {
 #        }
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = [stsci_rtd_theme.get_html_theme_path()]
+#html_theme_path = []
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -304,8 +282,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'imagestats.tex', u'stsci.imagestats Documentation',
-   author, 'manual'),
+    ('index', 'imagestats.tex', u'stsci.imagestats Documentation',
+     author, 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -348,9 +326,9 @@ man_show_urls = True
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'imagestats.tex', u'stsci.imagestats Documentation',
-   author, 'index', 'stsci.imagestats Documentation',
-   'Miscellaneous'),
+    ('index', 'imagestats.tex', u'stsci.imagestats Documentation',
+     author, 'index', 'stsci.imagestats Documentation',
+     'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.

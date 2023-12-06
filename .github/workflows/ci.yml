@@ -24,16 +24,16 @@ jobs:
         - name: PEP 8
           linux: codestyle
 
-        - name: Python 3.9
+        - name: Python 3.9 (OSX)
           macos: py39-test-xdist
           posargs: -v
 
-        - name: Python 3.9 (numpy 1.20)
-          linux: py39-test-xdist-numpy120
+        - name: Python 3.9 (numpy 1.22)
+          linux: py39-test-xdist-numpy122
           posargs: -v
 
-        - name: Python 3.9 (numpy 1.21)
-          macos: py39-test-xdist-numpy121
+        - name: Python 3.9 (OSX, numpy 1.25)
+          macos: py39-test-xdist-numpy125
           posargs: -v
 
         - name: Python 3.10
@@ -66,15 +66,7 @@ jobs:
           posargs: -v
           coverage: codecov
 
-        - name: Python 3.12 (Windows with dev dependencies)
-          windows: py312-test-xdist-devdeps
-          posargs: -v
-
-        - name: Python 3.12 (OSX with dev dependencies)
-          macos: py312-test-xdist-devdeps
-          posargs: -v
-
-        - name: Python 3.12 (Linux with dev dependencies)
+        - name: Python 3.12 (dev dependencies)
           linux: py312-test-xdist-devdeps
           posargs: -v
           pytest-results-summary: true

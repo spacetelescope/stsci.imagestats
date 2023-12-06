@@ -1,5 +1,12 @@
+include README.rst
+include LICENSE.txt
+include pyproject.toml
+
+recursive-include src *.c
 recursive-include docs *
-global-include *.py *.md *.notes *.yml *.rst *.toml
-global-include *.c *.h
-prune .eggs
-prune .git
+
+prune build
+prune docs/_build
+prune docs/api
+
+global-exclude *.pyc *.o

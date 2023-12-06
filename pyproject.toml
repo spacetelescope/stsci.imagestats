@@ -20,7 +20,7 @@ classifiers = [
     "Development Status :: 7 - Inactive",
 ]
 dependencies = [
-    "numpy",
+    "numpy>=1.22",
 ]
 dynamic = [
     "version",
@@ -42,8 +42,8 @@ docs = [
     "sphinx",
     "sphinx-automodapi",
     "sphinx-rtd-theme",
-    "stsci_rtd_theme",
     "graphviz",
+    "tomli; python_version < '3.11'",
 ]
 test = [
     "pytest>=6.0",
@@ -54,19 +54,12 @@ requires = [
     "setuptools>=61.2",
     "setuptools_scm[toml]>=3.6",
     "numpy>=1.25",
-    "wheel",
 ]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 zip-safe = false
 license-files = ["LICENSE.txt"]
-
-[tool.setuptools.package-data]
-"stsci.imagestats" = [
-    "README.md",
-    "LICENSE.txt",
-]
 
 [tool.setuptools_scm]
 write_to = "stsci/imagestats/_version.py"
@@ -77,4 +70,8 @@ omit = [
     "stsci/imagestats/tests/*.py",
     "_version.py",
     "tests/*.py",
+    "*/stsci/imagestats/_version.py",
+    "*/stsci/imagestats/tests/*.py",
+    "*/_version.py",
+    "*/tests/*.py",
 ]
