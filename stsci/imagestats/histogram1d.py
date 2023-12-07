@@ -2,14 +2,14 @@
 A module that provides functionality to construct a 1-dimentional histogram
 from an array object.
 
-:Author: Christopher Hanley (for help, contact
-    `HST Help Desk <https://hsthelp.stsci.edu>`_)
-
-:License: :doc:`../LICENSE`
+For help, contact `HST Help Desk <https://hsthelp.stsci.edu>`_.
 
 """
 import numpy as np
+
 from . import buildHistogram
+
+__all__ = ["histogram1d"]
 
 
 class histogram1d:

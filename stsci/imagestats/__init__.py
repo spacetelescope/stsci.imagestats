@@ -1,16 +1,16 @@
 """
 Compute desired statistics values for input array objects.
-
-:Author: Warren Hack, Christopher Hanley
-
-:License: :doc:`../LICENSE`
-
 """
 import time
+
 import numpy as np
+
 from .histogram1d import histogram1d
 from .computeMean import computeMean
 from ._version import version as __version__  # noqa F401
+
+
+__all__ = ["histogram1d", "computeMean", "ImageStats"]
 
 
 class ImageStats:

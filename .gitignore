@@ -36,6 +36,8 @@ dist/
 build/
 eggs/
 .eggs/
+.tmp/
+.tox/
 parts
 bin
 var

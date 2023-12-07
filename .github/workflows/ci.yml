@@ -24,19 +24,19 @@ jobs:
         - name: PEP 8
           linux: codestyle
 
-        - name: Python 3.7
-          linux: py37-test-numpy116
-          posargs: -v
-
-        - name: Python 3.8
-          linux: py38-test
-          posargs: -v
-
-        - name: Python 3.9
+        - name: Python 3.9 (Linux)
           linux: py39-test
           posargs: -v
 
-        - name: Python 3.10
+        - name: Python 3.9 (Linux; numpy 1.22)
+          linux: py39-test-numpy122
+          posargs: -v
+
+        - name: Python 3.9 (Linux; numpy 1.25)
+          linux: py39-test-numpy122
+          posargs: -v
+
+        - name: Python 3.10 (Linux)
           linux: py310-test
           posargs: -v
 
@@ -48,11 +48,6 @@ jobs:
           macos: py311-test
           posargs: -v
 
-        - name: Python 3.11 with coverage
-          linux: py311-test-cov
-          posargs: -v
-          coverage: codecov
-
         - name: Python 3.12 (Windows)
           windows: py312-test
           posargs: -v
@@ -61,8 +56,12 @@ jobs:
           macos: py312-test
           posargs: -v
 
-        - name: Python 3.12 with coverage
+        - name: Python 3.12 (Linux) with coverage
           linux: py312-test-cov
           posargs: -v
           coverage: codecov
 
+        - name: Python 3.12 (Linux with dev dependencies)
+          linux: py312-test-devdeps
+          posargs: -v
+          pytest-results-summary: true

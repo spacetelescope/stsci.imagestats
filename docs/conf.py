@@ -18,59 +18,42 @@ from datetime import datetime
 from pathlib import Path
 
 import sphinx
-import stsci_rtd_theme
-from distutils.version import LooseVersion
 
 if sys.version_info < (3, 11):
-     import tomli as tomllib
+    import tomli as tomllib
 else:
-     import tomllib
+    import tomllib
 
-try:
-    from ConfigParser import ConfigParser
-except ImportError:
-    from configparser import ConfigParser
+from configparser import ConfigParser
 conf = ConfigParser()
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('..'))
-sys.path.insert(0, os.path.abspath('../src'))
-sys.path.insert(0, os.path.abspath('../build/lib*'))
-sys.path.insert(0, os.path.abspath('../stsci/imagestats'))
+# sys.path.insert(0, os.path.abspath('..'))
+# sys.path.insert(0, os.path.abspath('../src'))
+# sys.path.insert(0, os.path.abspath('../build/lib*'))
+# sys.path.insert(0, os.path.abspath('../stsci/imagestats'))
 
 # -- General configuration ------------------------------------------------
-with open(Path(__file__).parent.parent.parent / "pyproject.toml", "rb") as configuration_file:
-    conf = tomllib.load(configuration_file)
-setup_cfg = conf['project']
+with open(Path(__file__).parent.parent / "pyproject.toml", "rb") as cf:
+    config = tomllib.load(cf)
+metadata = config['project']
+
+# General information about the project
+author = f'{metadata["authors"][0]["name"]} and {metadata["authors"][1]["name"]} <{metadata["authors"][0]["email"]}>'
+copyright = f'{datetime.today().year}, Space Telescope Science Institute'
 
 # If your documentation needs a minimal Sphinx version, state it here.
-needs_sphinx = '1.3'
+#needs_sphinx = '1.3'
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-
-def check_sphinx_version(expected_version):
-    sphinx_version = LooseVersion(sphinx.__version__)
-    expected_version = LooseVersion(expected_version)
-    if sphinx_version < expected_version:
-        raise RuntimeError(
-            "At least Sphinx version {0} is required to build this "
-            "documentation.  Found {1}.".format(
-                expected_version, sphinx_version))
 
 # Configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
     'python': ('http://docs.python.org/3/', None),
     'numpy': ('http://docs.scipy.org/doc/numpy/', None),
 }
-
-if sys.version_info[0] == 2:
-    intersphinx_mapping['python'] = ('http://docs.python.org/2/', None)
-    #intersphinx_mapping['pythonloc'] = (
-        #'http://docs.python.org/',
-        #os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                     #'local/python2_local_links.inv')))
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -85,17 +68,12 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.doctest',
     'sphinx.ext.coverage',
-    'numpydoc'
+    'numpydoc',
+    'sphinx.ext.imgmath'
 ]
 
 if on_rtd:
     extensions.append('sphinx.ext.mathjax')
-
-elif LooseVersion(sphinx.__version__) < LooseVersion('1.4'):
-    extensions.append('sphinx.ext.pngmath')
-
-else:
-    extensions.append('sphinx.ext.imgmath')
 
 # Add any paths that contain templates here, relative to this directory.
 # templates_path = ['_templates']
@@ -116,21 +94,10 @@ master_doc = 'index'
 # Suppress the warnings requires Sphinx v1.4.2
 suppress_warnings = ['app.add_directive', ]
 
-
-# General information about the project
-with open(Path(__file__).parent.parent.parent / "pyproject.toml", "rb") as metadata_file:
-    metadata = tomllib.load(metadata_file)['project']
-project = metadata['name']
-author = f'{metadata["authors"][0]["name"]} and {metadata["authors"][1]["name"]} <{metadata["authors"][0]["email"]}>'
-copyright = f'{datetime.today().year}, Space Telescope Science Institute'
-
-
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # build documents.
 #
-#package = importlib.import_module(setup_cfg['package_name'])
-#release = "{:s} ({:s})".format(package.__version__, package.__version_date__)
 import stsci.imagestats
 release = "{:s}".format(stsci.imagestats.__version__)
 
@@ -214,7 +181,7 @@ html_theme = 'sphinx_rtd_theme'
 # documentation.
 html_theme_options = {
     "collapse_navigation": True
-    }
+}
 #        "nosidebar": "false",
 #        "sidebarbgcolor": "#4db8ff",
 #        "sidebartextcolor": "black",
@@ -223,7 +190,7 @@ html_theme_options = {
 #        }
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = [stsci_rtd_theme.get_html_theme_path()]
+#html_theme_path = []
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -240,7 +207,7 @@ html_theme_path = [stsci_rtd_theme.get_html_theme_path()]
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['../_static']
+html_static_path = ['_static']
 html_context = {
     'css_files': [
         '_static/css/custom.css',
@@ -249,7 +216,7 @@ html_context = {
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = '../_static/stsci_pri_combo_mark_white.png'
+html_logo = '_static/stsci_pri_combo_mark_white.png'
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
@@ -315,13 +282,13 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'imagestats.tex', u'stsci.imagestats Documentation',
-   author, 'manual'),
+    ('index', 'imagestats.tex', u'stsci.imagestats Documentation',
+     author, 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
-latex_logo = '../_static/stsci_pri_combo_mark_white.png'
+latex_logo = '_static/stsci_pri_combo_mark_white.png'
 
 # For "manual" documents, if this is true, then toplevel headings are parts,
 # not chapters.
@@ -359,9 +326,9 @@ man_show_urls = True
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'imagestats.tex', u'stsci.imagestats Documentation',
-   author, 'index', 'stsci.imagestats Documentation',
-   'Miscellaneous'),
+    ('index', 'imagestats.tex', u'stsci.imagestats Documentation',
+     author, 'index', 'stsci.imagestats Documentation',
+     'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.

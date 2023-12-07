@@ -12,9 +12,9 @@ Content
 .. toctree::
    :maxdepth: 2
 
-   imagestats
-   histogram1d
-   LICENSE.rst
+   source/imagestats
+   source/histogram1d
+   source/LICENSE.rst
 
 Indices and tables
 ==================
@@ -22,4 +22,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

@@ -27,7 +27,6 @@ else:
     extra_compile_args = None
 
 setup(
-    name='stsci.imagestats',
     packages=find_namespace_packages(
         where='.',
         include=['stsci', 'stsci.imagestats']
