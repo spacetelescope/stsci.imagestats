@@ -25,11 +25,11 @@ jobs:
           linux: codestyle
 
         - name: Python 3.9 (Linux)
-          macos: py39-test
+          linux: py39-test
           posargs: -v
 
         - name: Python 3.9 (Linux; numpy 1.22)
-          macos: py39-test-numpy122
+          linux: py39-test-numpy122
           posargs: -v
 
         - name: Python 3.10 (Linux)
