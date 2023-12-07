@@ -10,3 +10,4 @@ Primary User Interface: ImageStats
 .. automodule:: stsci.imagestats
    :members:
    :undoc-members:
+   :no-index: histogram1d

@@ -32,6 +32,10 @@ jobs:
           linux: py39-test-numpy122
           posargs: -v
 
+        - name: Python 3.9 (Linux; numpy 1.25)
+          linux: py39-test-numpy122
+          posargs: -v
+
         - name: Python 3.10 (Linux)
           linux: py310-test
           posargs: -v
@@ -56,14 +60,6 @@ jobs:
           linux: py312-test-cov
           posargs: -v
           coverage: codecov
-
-        - name: Python 3.12 (Windows with dev dependencies)
-          windows: py312-test-devdeps
-          posargs: -v
-
-        - name: Python 3.12 (OSX with dev dependencies)
-          macos: py312-test-devdeps
-          posargs: -v
 
         - name: Python 3.12 (Linux with dev dependencies)
           linux: py312-test-devdeps

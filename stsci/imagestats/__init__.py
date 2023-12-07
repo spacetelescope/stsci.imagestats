@@ -9,7 +9,8 @@ from .histogram1d import histogram1d
 from .computeMean import computeMean
 from ._version import version as __version__  # noqa F401
 
-__all__ = ["histogram1d", "computeMean", "__version__", "ImageStats"]
+
+__all__ = ["histogram1d", "computeMean", "ImageStats"]
 
 
 class ImageStats:
