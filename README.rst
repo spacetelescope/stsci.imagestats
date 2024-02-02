@@ -2,11 +2,11 @@
     :target: https://stsciimagestats.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-.. image:: https://github.com/spacetelescope/stsci.imagestats/actions/workflows/ci.yml/badge.svg?branch=master
+.. image:: https://github.com/spacetelescope/stsci.imagestats/actions/workflows/ci.yml/badge.svg?branch=main
     :target: https://github.com/spacetelescope/stsci.imagestats/actions/workflows/ci.yml
     :alt: CI Status
 
-.. image:: https://codecov.io/gh/spacetelescope/stsci.imagestats/branch/master/graph/badge.svg
+.. image:: https://codecov.io/gh/spacetelescope/stsci.imagestats/branch/main/graph/badge.svg
     :target: https://codecov.io/gh/spacetelescope/stsci.imagestats
     :alt: Test Coverage Status
 
