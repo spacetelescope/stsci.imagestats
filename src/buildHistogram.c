@@ -5,6 +5,7 @@
 */
 #include <string.h>
 #include <stdio.h>
+#include <float.h>
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <Python.h>
 #include "numpy/arrayobject.h"
@@ -14,23 +15,37 @@ populate1DHist_(float *image, int image_elements, unsigned int *histogram,
                 int histogram_elements, float minValue, float maxValue,
                 float binWidth)
 {
-    int i, idx;
+    int i, idx, allow_max_eq = 0;
     float f, hist_edge, v;
 
     f = 1.0f / binWidth;
     hist_edge = minValue + binWidth * histogram_elements;
-
+    if ((int) (f * (hist_edge - minValue)) == histogram_elements) {
+        hist_edge *= (1.0f - FLT_EPSILON);
+        allow_max_eq = 1;
+    }
     if (maxValue > hist_edge) {
         maxValue = hist_edge;
     }
 
-    for (i = 0; i < image_elements; ++i) {
-        v = image[i];
-        if ((v >= minValue) && (v < maxValue)) {
-            idx = (int)(f * (v - minValue));
-            ++histogram[idx];
+    if (allow_max_eq) {
+        for (i = 0; i < image_elements; ++i) {
+            v = image[i];
+            if ((v >= minValue) && (v <= maxValue)) {
+                idx = (int)(f * (v - minValue));
+                ++histogram[idx];
+            }
+        }
+    } else {
+        for (i = 0; i < image_elements; ++i) {
+            v = image[i];
+            if ((v >= minValue) && (v < maxValue)) {
+                idx = (int)(f * (v - minValue));
+                ++histogram[idx];
+            }
         }
     }
+
     return 1;
 }
 
