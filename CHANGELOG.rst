@@ -4,8 +4,14 @@
 Release Notes
 =============
 
-.. 1.8.1 (unreleased)
+.. 1.8.2 (unreleased)
    ==================
+
+1.8.1 (22-March-2024)
+=====================
+
+- Bug Fix: Improve handling of floating point accuracy issues that can lead to
+  memory violation on some systems. [#58]
 
 1.8.0 (07-December-2023)
 ========================
