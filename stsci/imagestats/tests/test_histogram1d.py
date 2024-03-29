@@ -45,6 +45,27 @@ def test_histogram(gaussian_image):
     assert np.allclose(h.edges, npedges, rtol=0.0, atol=10.0 * _EPS32)
 
 
+def test_histogram_upper_bin_flt_roundoff(gaussian_image):
+    """ Similar data (limit, binwidth, and nbins => upper histogram edge
+        are relevant) were causing segfault on some Linux machines due to
+        bin index exceeding allocated memory.
+    """
+    mean = gaussian_image.meta['mean']
+    data = 4.0 * (gaussian_image.astype(np.float32).ravel() - mean) + 0.5
+    data[0] = 1.0441159009933472  # data from reported failure
+    minv = -0.380480386316776276
+
+    h = histogram1d(
+        arrayInput=data,
+        nbins=87,
+        binWidth=0.01637466996908188,
+        zeroValue=minv
+    )
+    assert np.sum(h.histogram) == np.sum(
+        np.logical_and(data >= minv, data < 1.0441159009933472)
+    )
+
+
 @pytest.mark.parametrize(
     'value,truth',
     [
