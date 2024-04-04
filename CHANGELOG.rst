@@ -5,7 +5,7 @@ Release Notes
 =============
 
 
-1.8.2 (29-March-2024)
+1.8.2 (04-April-2024)
 =====================
 
 - Bug Fix: Improve handling of floating point accuracy issues that can lead to
