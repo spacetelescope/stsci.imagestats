@@ -4,6 +4,12 @@
 Release Notes
 =============
 
+1.8.3 (12-June-2024)
+====================
+
+- rename ``master`` branch to ``main`` [#57]
+- build on macOS ARM64 [#62]
+- build with Numpy 2.0 release candidate [#63]
 
 1.8.2 (04-April-2024)
 =====================
