@@ -65,3 +65,5 @@ jobs:
           linux: py312-test-devdeps
           posargs: -v
           pytest-results-summary: true
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
