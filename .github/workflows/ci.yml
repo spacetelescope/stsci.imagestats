@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   tests:
-    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@924441154cf3053034c6513d5e06c69d262fb9a6  # v1.13.0
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@8c0fde6f7e926df6ed7057255d29afa9c1ad5320  # v1.16.0
     with:
       envs: |
         - name: Security audit
@@ -56,14 +56,17 @@ jobs:
           macos: py312-test
           posargs: -v
 
-        - name: Python 3.12 (Linux) with coverage
-          linux: py312-test-cov
+        # `tox` does not currently respect `requires-python` versions when creating testing environments;
+        # if this breaks, add an upper pin to `requires-python` and revert this py3 to the latest working version
+
+        - name: Python 3 (Linux) with coverage
+          linux: py3-test-cov
           posargs: -v
           coverage: codecov
-
-        - name: Python 3.12 (Linux with dev dependencies)
-          linux: py312-test-devdeps
-          posargs: -v
           pytest-results-summary: true
+
+        - name: Python 3 (Linux with dev dependencies)
+          linux: py3-test-devdeps
+          posargs: -v
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
