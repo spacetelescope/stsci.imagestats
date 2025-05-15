@@ -6,10 +6,9 @@ authors = [
     { name = "Warren Hack", email = "help@stsci.edu" },
     { name = "Christopher Hanley" },
 ]
-license = { text = "BSD-3-Clause" }
+license-files = ["LICENSE.txt"]
 classifiers = [
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
     "Programming Language :: C",
     "Programming Language :: Cython",
