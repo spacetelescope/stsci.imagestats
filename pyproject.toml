@@ -6,10 +6,9 @@ authors = [
     { name = "Warren Hack", email = "help@stsci.edu" },
     { name = "Christopher Hanley" },
 ]
-license = { text = "BSD-3-Clause" }
+license-files = ["LICENSE.txt"]
 classifiers = [
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
     "Programming Language :: C",
     "Programming Language :: Cython",
@@ -59,7 +58,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 zip-safe = false
-license-files = ["LICENSE.txt"]
 
 [tool.setuptools_scm]
 write_to = "stsci/imagestats/_version.py"
