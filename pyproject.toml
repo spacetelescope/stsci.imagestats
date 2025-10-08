@@ -3,7 +3,7 @@ name = "stsci.imagestats"
 description = "Compute sigma-clipped statistics on data arrays"
 requires-python = ">=3.9"
 authors = [
-    { name = "Warren Hack", email = "help@stsci.edu" },
+    { name = "Warren Hack" },
     { name = "Christopher Hanley" },
 ]
 license-files = ["LICENSE.txt"]
