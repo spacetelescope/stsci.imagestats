@@ -4,7 +4,7 @@
 Release Notes
 =============
 
-1.9.0 (03-November-2025)
+1.8.4 (03-November-2025)
 ========================
 
 - Added support for Python 3.13 and 3.14. Package maintenance.
