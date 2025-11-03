@@ -41,7 +41,7 @@ with open(Path(__file__).parent.parent / "pyproject.toml", "rb") as cf:
 metadata = config['project']
 
 # General information about the project
-author = f'{metadata["authors"][0]["name"]} and {metadata["authors"][1]["name"]} <{metadata["authors"][0]["email"]}>'
+author = f'{metadata["authors"][0]["name"]} and {metadata["authors"][1]["name"]}'
 copyright = f'{datetime.today().year}, Space Telescope Science Institute'
 
 # If your documentation needs a minimal Sphinx version, state it here.
