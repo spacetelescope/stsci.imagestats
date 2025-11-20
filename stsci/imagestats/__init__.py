@@ -1,22 +1,21 @@
 """
 Compute desired statistics values for input array objects.
 """
+
 import time
 
 import numpy as np
 
-from .histogram1d import histogram1d
+from ._version import version as __version__  # noqa: F401
 from .computeMean import computeMean
-from ._version import version as __version__  # noqa F401
+from .histogram1d import histogram1d
 
-
-__all__ = ["histogram1d", "computeMean", "ImageStats"]
+__all__ = ["ImageStats", "computeMean", "histogram1d"]
 
 
 class ImageStats:
     """
     Class to compute desired statistics from array objects.
-
 
     Examples
     --------
@@ -84,7 +83,7 @@ class ImageStats:
         Width of bins (in sigma) to use in generating histograms for computing
         median-related values
 
-    NOTES
+    Notes
     -----
     The mean, standard deviation, min and max are computed in a
     single pass through the image using the expressions listed below.
@@ -110,9 +109,18 @@ class ImageStats:
         datatype.
 
     """
-    def __init__(self, image, fields="npix,min,max,mean,stddev",
-                 lower=None, upper=None, nclip=0, lsig=3.0, usig=3.0,
-                 binwidth=0.1):
+
+    def __init__(
+        self,
+        image,
+        fields="npix,min,max,mean,stddev",
+        lower=None,
+        upper=None,
+        nclip=0,
+        lsig=3.0,
+        usig=3.0,
+        binwidth=0.1,
+    ):
         # Initialize the start time of the program
         self.startTime = time.time()
         self._hist = None
@@ -120,9 +128,7 @@ class ImageStats:
         image = np.asanyarray(image)
 
         if image.size == 0:
-            raise ValueError(
-                "Not enough data points to compute statistics."
-            )
+            raise ValueError("Not enough data points to compute statistics.")
 
         # Input Value
         if image.dtype != np.float32:
@@ -172,9 +178,7 @@ class ImageStats:
             )
 
         elif upper is not None and lower > upper:
-            raise ValueError(
-                "Lower data cutoff must be smaller than upper cutoff limit."
-            )
+            raise ValueError("Lower data cutoff must be smaller than upper cutoff limit.")
 
         if upper is None:
             upper = self.max
@@ -203,54 +207,44 @@ class ImageStats:
         errormsg += "#  valid pixels exist within the defined     #\n"
         errormsg += "#  pixel value range.                        #\n"
         errormsg += "#                                            #\n"
-        errormsg += "  Image MIN pixel value: " + str(minval) + '\n'
-        errormsg += "  Image MAX pixel value: " + str(maxval) + '\n\n'
+        errormsg += "  Image MIN pixel value: " + str(minval) + "\n"
+        errormsg += "  Image MAX pixel value: " + str(maxval) + "\n\n"
         errormsg += "# Current Clipping Range                     #\n"
-        errormsg += "       for iteration " + str(clipiter) + '\n'
-        errormsg += "       Excluding pixel values above: " + str(maxclip) + '\n'
-        errormsg += "       Excluding pixel values below: " + str(minclip) + '\n'
+        errormsg += "       for iteration " + str(clipiter) + "\n"
+        errormsg += "       Excluding pixel values above: " + str(maxclip) + "\n"
+        errormsg += "       Excluding pixel values below: " + str(minclip) + "\n"
         errormsg += "#                                            #\n"
         errormsg += "##############################################\n"
         return errormsg
 
     def _computeStats(self):
-        """ Compute all the basic statistics from the array object. """
-
+        """Compute all the basic statistics from the array object."""
         # Initialize the local max and min
         _clipmin = self.lower
         _clipmax = self.upper
 
-        # Compute the clipped mean iterating the user specified numer of iterations
+        # Compute the clipped mean iterating the user specified number of iterations
         for iter in range(self.nclip + 1):
             try:
-                _npix, _mean, _stddev, _min, _max = computeMean(
-                    self.image,
-                    _clipmin,
-                    _clipmax
-                )
+                _npix, _mean, _stddev, _min, _max = computeMean(self.image, _clipmin, _clipmax)
             except Exception:
                 raise RuntimeError(
-                    "An error processing the array object information occured "
+                    "An error processing the array object information occurred "
                     "in the computeMean module of imagestats."
                 )
 
             if _npix <= 0:
                 # Compute Global minimum and maximum
-                errormsg = self._error_no_valid_pixels(
-                    iter, self.min, self.max,
-                    _clipmin, _clipmax
-                )
+                errormsg = self._error_no_valid_pixels(iter, self.min, self.max, _clipmin, _clipmax)
                 print(errormsg)
-                raise ValueError(
-                    "Not enough data points to compute statistics."
-                )
+                raise ValueError("Not enough data points to compute statistics.")
 
             if iter < self.nclip:
                 # Re-compute limits for iterations
                 _clipmin = max(self.lower, _mean - self.lsig * _stddev)
                 _clipmax = min(self.upper, _mean + self.usig * _stddev)
 
-        if self.fields.find('median') != -1:
+        if self.fields.find("median") != -1:
             # Use the clip range to limit the data before computing
             #  the median value using numpy
             if self.nclip > 0:
@@ -261,14 +255,13 @@ class ImageStats:
             # clean-up intermediate product since it is no longer needed
             del _image
 
-        if ((self.fields.find('mode') != -1) or (self.fields.find('midpt') != -1)):
-            # Populate the historgram
+        if (self.fields.find("mode") != -1) or (self.fields.find("midpt") != -1):
+            # Populate the histogram
             _hwidth = self.binwidth * _stddev
 
             _drange = _max - _min
             _minfloatval = 10.0 * np.finfo(dtype=np.float32).eps
-            if _hwidth < _minfloatval or abs(_drange) < _minfloatval or \
-               _hwidth > _drange:
+            if _hwidth < _minfloatval or abs(_drange) < _minfloatval or _hwidth > _drange:
                 _nbins = 1
                 _dz = _drange
                 print("! WARNING: Clipped data falls within 1 histogram bin")
@@ -280,7 +273,7 @@ class ImageStats:
             self._hist = _hist
             _bins = _hist.histogram
 
-            if (self.fields.find('mode') != -1):
+            if self.fields.find("mode") != -1:
                 # Compute the mode, taking into account special cases
                 if _nbins == 1:
                     _mode = _min + 0.5 * _hwidth
@@ -294,9 +287,7 @@ class ImageStats:
                 else:
                     # TODO: perform a better analysis and pick the middle when
                     # there are multiple picks:
-                    _peakindex = np.where(
-                        _bins == np.maximum.reduce(_bins)
-                    )[0].tolist()[0]
+                    _peakindex = np.where(_bins == np.maximum.reduce(_bins))[0].tolist()[0]
                     if _peakindex == 0:
                         _mode = _min + 0.5 * _hwidth
                     elif _peakindex == (_nbins - 1):
@@ -308,14 +299,12 @@ class ImageStats:
                         if _denom == 0:
                             _mode = _min + (_peakindex + 0.5) * _hwidth
                         else:
-                            _mode = _peakindex + 1 + (
-                                0.5 * (int(_dh1) - int(_dh2)) / _denom
-                            )
+                            _mode = _peakindex + 1 + (0.5 * (int(_dh1) - int(_dh2)) / _denom)
                             _mode = _min + ((_mode - 0.5) * _hwidth)
                 # Return the mode
                 self.mode = _mode
 
-            if (self.fields.find('midpt') != -1):
+            if self.fields.find("midpt") != -1:
                 # Compute a pseudo-Median Value using IRAF's algorithm
                 if _bins.size > 1:
                     _binSum = np.cumsum(_bins).astype(np.float32)
@@ -324,19 +313,17 @@ class ImageStats:
                     _hi = _lo + 1
 
                     _h1 = _min + _lo * _hwidth
-                    if (_lo == 0):
+                    if _lo == 0:
                         _hdiff = _binSum[_hi - 1]
                     else:
                         _hdiff = _binSum[_hi - 1] - _binSum[_lo - 1]
 
-                    if (_hdiff == 0):
+                    if _hdiff == 0:
                         _midpt = _h1
-                    elif (_lo == 0):
+                    elif _lo == 0:
                         _midpt = _h1 + 0.5 / _hdiff * _hwidth
                     else:
-                        _midpt = _h1 + (
-                            (0.5 - _binSum[_lo - 1]) / _hdiff * _hwidth
-                        )
+                        _midpt = _h1 + ((0.5 - _binSum[_lo - 1]) / _hdiff * _hwidth)
                     self.midpt = _midpt
                 else:
                     self.midpt = _bins[0]
@@ -354,29 +341,29 @@ class ImageStats:
         self.max = _max
 
     def getCenters(self):
-        """ Compute the array of bin center positions."""
+        """Compute the array of bin center positions."""
         if self._hist is not None:
             return self._hist.centers
 
     def printStats(self):
-        """ Print the requested statistics values for those fields specified
-            on input.
+        """Print the requested statistics values for those fields specified
+        on input.
         """
         print("--- Imagestats Results ---")
 
-        if (self.fields.find('npix') != -1):
+        if self.fields.find("npix") != -1:
             print("Number of pixels  :  ", self.npix)
-        if (self.fields.find('min') != -1):
+        if self.fields.find("min") != -1:
             print("Minimum value     :  ", self.min)
-        if (self.fields.find('max') != -1):
+        if self.fields.find("max") != -1:
             print("Maximum value     :  ", self.max)
-        if (self.fields.find('stddev') != -1):
+        if self.fields.find("stddev") != -1:
             print("Standard Deviation:  ", self.stddev)
-        if (self.fields.find('mean') != -1):
+        if self.fields.find("mean") != -1:
             print("Mean              :  ", self.mean)
-        if (self.fields.find('mode') != -1):
+        if self.fields.find("mode") != -1:
             print("Mode              :  ", self.mode)
-        if (self.fields.find('median') != -1):
+        if self.fields.find("median") != -1:
             print("Median            :  ", self.median)
-        if (self.fields.find('midpt') != -1):
+        if self.fields.find("midpt") != -1:
             print("Midpt            :  ", self.midpt)
