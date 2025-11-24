@@ -17,6 +17,7 @@ class ImageStats:
     """
     Class to compute desired statistics from array objects.
 
+
     Examples
     --------
     This class can can be instantiated using the following syntax::
