@@ -80,7 +80,6 @@ lint.extend-select = [
     "COM",
 ]
 exclude = [
-    "docs",
     ".tox",
     ".eggs",
     "build",
