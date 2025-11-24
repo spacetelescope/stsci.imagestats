@@ -11,9 +11,9 @@
 #include "numpy/arrayobject.h"
 
 int
-populate1DHist_(float *image, int image_elements, unsigned int *histogram,
-                int histogram_elements, float minValue, float maxValue,
-                float binWidth)
+populate1DHist_(
+    float *image, int image_elements, unsigned int *histogram, int histogram_elements,
+    float minValue, float maxValue, float binWidth)
 {
     int i, idx;
     float f, hist_edge, v;
@@ -26,7 +26,7 @@ populate1DHist_(float *image, int image_elements, unsigned int *histogram,
     for (i = 0; i < image_elements; ++i) {
         v = image[i];
         if ((v >= minValue) && (v < maxValue)) {
-            idx = (int)(f * (v - minValue));
+            idx = (int) (f * (v - minValue));
             ++histogram[idx];
         }
     }
@@ -43,37 +43,38 @@ populate1DHist(PyObject *obj, PyObject *args)
     unsigned int *p, *hdata;
     int status, size, i;
 
-    (void)obj;
+    (void) obj;
 
-    if (!PyArg_ParseTuple(args, "OOfff:populate1DHist", &oimage, &ohistogram,
-                          &minValue, &maxValue, &binWidth))
+    if (!PyArg_ParseTuple(
+            args, "OOfff:populate1DHist", &oimage, &ohistogram, &minValue, &maxValue, &binWidth)) {
         return NULL;
+    }
 
-    image = (PyArrayObject *)PyArray_ContiguousFromObject(oimage, NPY_FLOAT32,
-                                                          1, 2);
+    image = (PyArrayObject *) PyArray_ContiguousFromObject(oimage, NPY_FLOAT32, 1, 2);
 
-    if (!image) return NULL;
+    if (!image) {
+        return NULL;
+    }
 
-    histogram = (PyArrayObject *)PyArray_ContiguousFromObject(
-        ohistogram, NPY_UINT32, 1, 1);
+    histogram = (PyArrayObject *) PyArray_ContiguousFromObject(ohistogram, NPY_UINT32, 1, 1);
     if (!histogram) {
         Py_XDECREF(image);
         return NULL;
     }
 
-    size = PyArray_Size((PyObject *)histogram);
-    p = (unsigned int *)calloc(size + 1, sizeof(unsigned int));
+    size = PyArray_Size((PyObject *) histogram);
+    p = (unsigned int *) calloc(size + 1, sizeof(unsigned int));
     if (!p) {
         Py_XDECREF(image);
         Py_XDECREF(histogram);
         return NULL;
     }
 
-    status = populate1DHist_((float *)PyArray_DATA(image),
-                             PyArray_Size((PyObject *)image), p, size,
-                             minValue, maxValue, binWidth);
+    status = populate1DHist_(
+        (float *) PyArray_DATA(image), PyArray_Size((PyObject *) image), p, size, minValue,
+        maxValue, binWidth);
 
-    hdata = (unsigned int *)PyArray_DATA(histogram);
+    hdata = (unsigned int *) PyArray_DATA(histogram);
     for (i = 0; i < size; ++i) {
         hdata[i] += p[i];
     }
