@@ -315,43 +315,53 @@ small {
 }
 
 @media print {
+
     html,
     body,
     section {
         background: none !important
     }
+
     * {
         box-shadow: none !important;
         text-shadow: none !important;
         filter: none !important;
         -ms-filter: none !important
     }
+
     a,
     a:visited {
         text-decoration: underline
     }
+
     .ir a:after,
     a[href^="javascript:"]:after,
     a[href^="#"]:after {
         content: ""
     }
+
     pre,
     blockquote {
         page-break-inside: avoid
     }
+
     thead {
         display: table-header-group
     }
+
     tr,
     img {
         page-break-inside: avoid
     }
+
     img {
         max-width: 100% !important
     }
+
     @page {
         margin: 0.5cm
     }
+
     p,
     h2,
     .rst-content .toctree-wrapper p.caption,
@@ -359,6 +369,7 @@ small {
         orphans: 3;
         widows: 3
     }
+
     h2,
     .rst-content .toctree-wrapper p.caption,
     h3 {
@@ -587,6 +598,7 @@ textarea,
         -webkit-transform: rotate(0deg);
         transform: rotate(0deg)
     }
+
     100% {
         -webkit-transform: rotate(359deg);
         transform: rotate(359deg)
@@ -598,6 +610,7 @@ textarea,
         -webkit-transform: rotate(0deg);
         transform: rotate(0deg)
     }
+
     100% {
         -webkit-transform: rotate(359deg);
         transform: rotate(359deg)
@@ -3336,6 +3349,7 @@ a .icon {
         top: 0;
         width: 100%
     }
+
     .wy-tray-container li {
         width: 100%
     }
@@ -4323,6 +4337,7 @@ input[type="checkbox"][disabled] {
     .wy-form button[type="submit"] {
         margin: 0.7em 0 0
     }
+
     .wy-form input[type="text"],
     .wy-form input[type="password"],
     .wy-form input[type="email"],
@@ -4340,10 +4355,12 @@ input[type="checkbox"][disabled] {
         margin-bottom: 0.3em;
         display: block
     }
+
     .wy-form label {
         margin-bottom: 0.3em;
         display: block
     }
+
     .wy-form input[type="password"],
     .wy-form input[type="email"],
     .wy-form input[type="url"],
@@ -4359,15 +4376,18 @@ input[type="checkbox"][disabled] {
     .wy-form input[type="color"] {
         margin-bottom: 0
     }
+
     .wy-form-aligned .wy-control-group label {
         margin-bottom: 0.3em;
         text-align: left;
         display: block;
         width: 100%
     }
+
     .wy-form-aligned .wy-control {
         margin: 1.5em 0 0 0
     }
+
     .wy-form .wy-help-inline,
     .wy-form-message-inline,
     .wy-form-message {
@@ -4901,6 +4921,7 @@ div[class^='highlight'] pre {
 }
 
 @media print {
+
     .codeblock,
     pre.literal-block,
     .rst-content .literal-block,
@@ -5225,6 +5246,7 @@ div[class^='highlight'] pre {
     .wy-breadcrumbs-extra {
         display: none
     }
+
     .wy-breadcrumbs li.wy-breadcrumbs-aside {
         display: none
     }
@@ -5758,31 +5780,40 @@ footer span.commit .rst-content tt,
     .wy-body-for-nav {
         background: #fcfcfc
     }
+
     .wy-nav-top {
         display: block
     }
+
     .wy-nav-side {
         left: -300px
     }
+
     .wy-nav-side.shift {
         width: 85%;
         left: 0
     }
+
     .wy-side-scroll {
         width: auto
     }
+
     .wy-side-nav-search {
         width: auto
     }
+
     .wy-menu.wy-menu-vertical {
         width: auto
     }
+
     .wy-nav-content-wrap {
         margin-left: 0
     }
+
     .wy-nav-content-wrap .wy-nav-content {
         padding: 1.618em
     }
+
     .wy-nav-content-wrap.shift {
         position: fixed;
         min-width: 100%;
@@ -5797,6 +5828,7 @@ footer span.commit .rst-content tt,
     .wy-nav-content-wrap {
         background: rgba(0, 0, 0, 0.05)
     }
+
     .wy-nav-content {
         margin: 0;
         background: #fcfcfc
@@ -5804,11 +5836,13 @@ footer span.commit .rst-content tt,
 }
 
 @media print {
+
     .rst-versions,
     footer,
     .wy-nav-side {
         display: none
     }
+
     .wy-nav-content-wrap {
         margin-left: 0
     }
@@ -5980,9 +6014,11 @@ footer span.commit .rst-content tt,
         width: 85%;
         display: none
     }
+
     .rst-versions.shift {
         display: block
     }
+
     img {
         width: 100%;
         height: auto

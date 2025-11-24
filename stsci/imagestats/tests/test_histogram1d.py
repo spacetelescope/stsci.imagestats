@@ -72,18 +72,12 @@ def test_small_data(value, truth):
 def test_bad_input_large_bin():
     with pytest.raises(ValueError):
         histogram1d(
-            arrayInput=np.array(1.0).astype(np.float32),
-            nbins=2,
-            binWidth=0.1,
-            zeroValue=0.1,
+            arrayInput=np.array(1.0).astype(np.float32), nbins=2, binWidth=0.1, zeroValue=0.1
         )
 
 
 def test_bad_input_small_bin():
     with pytest.raises(RuntimeError):
         histogram1d(
-            arrayInput=np.array(np.nan).astype(np.float32),
-            nbins=2,
-            binWidth=0.1,
-            zeroValue=0.1,
+            arrayInput=np.array(np.nan).astype(np.float32), nbins=2, binWidth=0.1, zeroValue=0.1
         )
