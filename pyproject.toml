@@ -83,6 +83,7 @@ exclude = [
     ".tox",
     ".eggs",
     "build",
+    "docs/exts",
 ]
 
 lint.ignore = [
@@ -155,11 +156,6 @@ lint.ignore = [
 "conftest.py" = ["INP001"]  # Part of configuration, not a package.
 "docs/*.py" = [
     "INP001",  # implicit-namespace-package. The examples are not a package.
-]
-"examples/*.py" = [
-    "E402",   # Imports are done as needed.
-    "INP001", # implicit-namespace-package. The examples are not a package.
-    "T203"    # pprint found
 ]
 
 [tool.ruff.lint.flake8-annotations]
