@@ -21,7 +21,7 @@ jobs:
         - name: Security audit
           linux: bandit
 
-        - name: PEP 8
+        - name: Code style check
           linux: codestyle
 
         - name: Python 3.9 (Linux)
