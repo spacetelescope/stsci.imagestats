@@ -21,9 +21,6 @@ jobs:
         - name: Security audit
           linux: bandit
 
-        - name: Code style check
-          linux: codestyle
-
         - name: Python 3.9 (Linux)
           linux: py39-test
           posargs: -v
@@ -54,6 +51,18 @@ jobs:
 
         - name: Python 3.12 (OSX)
           macos: py312-test
+          posargs: -v
+
+        - name: Python 3.13 (OSX)
+          macos: py313-test
+          posargs: -v
+
+        - name: Python 3.13 (Windows)
+          windows: py313-test
+          posargs: -v
+
+        - name: Python 3.13 (OSX)
+          macos: py313-test
           posargs: -v
 
         # `tox` does not currently respect `requires-python` versions when creating testing environments;

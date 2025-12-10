@@ -38,6 +38,8 @@ eggs/
 .eggs/
 .tmp/
 .tox/
+.pytest_cache/
+.ruff_cache/
 parts
 bin
 var
