@@ -7,9 +7,7 @@ from setuptools import Extension, find_namespace_packages, setup
 
 # Setup C module include directories
 include_dirs = [numpy.get_include()]
-
-# Setup C module macros
-define_macros = [("NUMPY", "1")]
+define_macros = []
 
 # Handle MSVC `wcsset` redefinition
 if sys.platform == "win32":
