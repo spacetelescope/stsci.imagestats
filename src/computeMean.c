@@ -15,9 +15,9 @@
 #include "numpy/arrayobject.h"
 
 int
-computeMean_(float *image, int nelements, float clipmin, float clipmax,
-             int *numGoodPixels, float *mean, float *stddev, float *minValue,
-             float *maxValue)
+computeMean_(
+    float *image, int nelements, float clipmin, float clipmax, int *numGoodPixels, float *mean,
+    float *stddev, float *minValue, float *maxValue)
 {
     int i;
     float tmpMinValue, tmpMaxValue;
@@ -59,7 +59,7 @@ computeMean_(float *image, int nelements, float clipmin, float clipmax,
 
     *minValue = tmpMinValue;
     *maxValue = tmpMaxValue;
-    *mean = (float)(sum / *numGoodPixels);
+    *mean = (float) (sum / *numGoodPixels);
 
     for (i = 0; i < nelements; i++) {
         if ((image[i] >= *minValue) && (image[i] <= *maxValue)) {
@@ -67,7 +67,7 @@ computeMean_(float *image, int nelements, float clipmin, float clipmax,
         }
     }
 
-    *stddev = (float)sqrt(sumdiff / (*numGoodPixels - 1));
+    *stddev = (float) sqrt(sumdiff / (*numGoodPixels - 1));
 
     return 1;
 }
@@ -80,16 +80,17 @@ computeMean(PyObject *obj, PyObject *args)
     int numGoodPixels;
     float clipmin, clipmax, mean, stddev, minValue, maxValue;
 
-    (void)obj;
+    (void) obj;
 
-    if (!PyArg_ParseTuple(args, "Off:computeMean", &oimage, &clipmin,
-                          &clipmax))
+    if (!PyArg_ParseTuple(args, "Off:computeMean", &oimage, &clipmin, &clipmax)) {
         return NULL;
+    }
 
-    image = (PyArrayObject *)PyArray_ContiguousFromObject(oimage, NPY_FLOAT32,
-                                                          1, 2);
+    image = (PyArrayObject *) PyArray_ContiguousFromObject(oimage, NPY_FLOAT32, 1, 2);
 
-    if (!image) return NULL;
+    if (!image) {
+        return NULL;
+    }
 
     mean = 0;
     stddev = 0;
@@ -97,13 +98,12 @@ computeMean(PyObject *obj, PyObject *args)
     minValue = 0;
     maxValue = 0;
 
-    computeMean_((float *)PyArray_DATA(image), PyArray_Size((PyObject *)image),
-                 clipmin, clipmax, &numGoodPixels, &mean, &stddev, &minValue,
-                 &maxValue);
+    computeMean_(
+        (float *) PyArray_DATA(image), PyArray_Size((PyObject *) image), clipmin, clipmax,
+        &numGoodPixels, &mean, &stddev, &minValue, &maxValue);
     Py_XDECREF(image);
 
-    return Py_BuildValue("iffff", numGoodPixels, mean, stddev, minValue,
-                         maxValue);
+    return Py_BuildValue("iffff", numGoodPixels, mean, stddev, minValue, maxValue);
 }
 
 #pragma clang diagnostic push

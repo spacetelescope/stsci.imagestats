@@ -1,5 +1,5 @@
-import pytest
 import numpy as np
+import pytest
 
 from stsci.imagestats import ImageStats
 
@@ -23,8 +23,8 @@ def test_gaussian(gaussian_image):
         binwidth=binwidth,
     )
     result2 = ImageStats(gaussian_image.astype(np.float32))
-    mean = gaussian_image.meta['mean']
-    stddev = gaussian_image.meta['stddev']
+    mean = gaussian_image.meta["mean"]
+    stddev = gaussian_image.meta["stddev"]
 
     atol = 10 * np.finfo(np.float32).eps
     n = np.sqrt(gaussian_image.size)
@@ -45,13 +45,13 @@ def test_uniform(uniform_image):
         "npix,min,max,mean,midpt,median,stddev",
     )
     result2 = ImageStats(uniform_image.astype(np.float32))
-    mean = uniform_image.meta['mean']
-    stddev = uniform_image.meta['stddev']
+    mean = uniform_image.meta["mean"]
+    stddev = uniform_image.meta["stddev"]
 
     atol = 10 * np.finfo(np.float32).eps
     n = np.sqrt(uniform_image.size)
-    a = uniform_image.meta['max'] - uniform_image.meta['min']
-    atol_population = 10 * a * np.sqrt(n / ((n + 1)**2 * (n + 2)))
+    a = uniform_image.meta["max"] - uniform_image.meta["min"]
+    atol_population = 10 * a * np.sqrt(n / ((n + 1) ** 2 * (n + 2)))
 
     assert np.allclose(result1.mean, result2.mean, rtol=0, atol=atol)
 
@@ -70,8 +70,8 @@ def test_gaussian_clipping(gaussian_image):
         binwidth=binwidth,
         nclip=5,
     )
-    mean = gaussian_image.meta['mean']
-    stddev = gaussian_image.meta['stddev']
+    mean = gaussian_image.meta["mean"]
+    stddev = gaussian_image.meta["stddev"]
 
     atol_binned = binwidth * result.stddev
 
@@ -82,7 +82,7 @@ def test_gaussian_clipping(gaussian_image):
     assert result.stddev < stddev
 
 
-@pytest.mark.parametrize('nclip', [0, 1, 5])
+@pytest.mark.parametrize("nclip", [0, 1, 5])
 def test_all_values_in_one_bin(constant_image, nclip, capsys):
     result = ImageStats(
         constant_image,
@@ -92,8 +92,8 @@ def test_all_values_in_one_bin(constant_image, nclip, capsys):
     captured = capsys.readouterr()
     assert captured.out == "! WARNING: Clipped data falls within 1 histogram bin\n"
 
-    mean = constant_image.meta['mean']
-    stddev = constant_image.meta['stddev']
+    mean = constant_image.meta["mean"]
+    stddev = constant_image.meta["stddev"]
 
     atol = 10 * np.finfo(np.float32).eps
 
@@ -107,8 +107,8 @@ def test_all_values_in_one_bin(constant_image, nclip, capsys):
 def test_limits(gaussian_image):
     binwidth = 0.05
     q = 0.2
-    minv = gaussian_image.meta['min']
-    maxv = gaussian_image.meta['max']
+    minv = gaussian_image.meta["min"]
+    maxv = gaussian_image.meta["max"]
     r = maxv - minv
 
     lower = minv + q * r
@@ -121,8 +121,8 @@ def test_limits(gaussian_image):
         lower=lower,
         upper=upper,
     )
-    mean = gaussian_image.meta['mean']
-    stddev = gaussian_image.meta['stddev']
+    mean = gaussian_image.meta["mean"]
+    stddev = gaussian_image.meta["stddev"]
 
     n = np.sqrt(result.npix)
     atol_population = stddev / ((1.0 - 2 * q) * n)
@@ -150,13 +150,11 @@ def test_no_data_after_clipping():
 
 def test_get_centers(uniform_image):
     binwidth = 0.1
-    minv = uniform_image.meta['min']
-    maxv = uniform_image.meta['max']
-    stddev = uniform_image.meta['stddev']
+    minv = uniform_image.meta["min"]
+    maxv = uniform_image.meta["max"]
+    stddev = uniform_image.meta["stddev"]
     result = ImageStats(uniform_image, "midpt", nclip=0, binwidth=binwidth)
-    assert (
-        result.getCenters().size == int((maxv - minv) / (stddev * binwidth)) + 1
-    )
+    assert result.getCenters().size == int((maxv - minv) / (stddev * binwidth)) + 1
     result = ImageStats(uniform_image, nclip=0, binwidth=binwidth)
     assert result.getCenters() is None
 
@@ -205,14 +203,7 @@ def test_invalid_data():
 
 def test_no_data_after_clip():
     with pytest.raises(ValueError) as e:
-        ImageStats(
-            [0.0, 0.1, 0.2],
-            lower=0.05,
-            upper=0.05,
-            nclip=3,
-            lsig=0.0001,
-            usig=0.0001
-        )
+        ImageStats([0.0, 0.1, 0.2], lower=0.05, upper=0.05, nclip=3, lsig=0.0001, usig=0.0001)
     assert e.value.args[0] == "Not enough data points to compute statistics."
 
 
@@ -223,7 +214,7 @@ def test_mode_2_bins():
     stddev = np.std(data) * np.sqrt(len(data) / (len(data) - 1.0))
     h = ImageStats(
         data,
-        fields='mode,midpt',
+        fields="mode,midpt",
         binwidth=0.1 * (1 + eps) / stddev,
     )
     assert abs(h.mode - 0.1) < 2.0 * eps
@@ -233,7 +224,7 @@ def test_mode_2_bins():
     stddev = np.std(data) * np.sqrt(len(data) / (len(data) - 1.0))
     h = ImageStats(
         data,
-        fields='mode,midpt',
+        fields="mode,midpt",
         binwidth=0.1 * (1 + eps) / stddev,
     )
     assert abs(h.mode - 0.05) < 2.0 * eps
@@ -243,7 +234,7 @@ def test_mode_2_bins():
     stddev = np.std(data) * np.sqrt(len(data) / (len(data) - 1.0))
     h = ImageStats(
         data,
-        fields='mode,midpt',
+        fields="mode,midpt",
         binwidth=0.1 * (1 + eps) / stddev,
     )
     assert abs(h.mode - 0.15) < 2.0 * eps
@@ -257,7 +248,7 @@ def test_mode_at_edges():
     stddev = np.std(data) * np.sqrt(len(data) / (len(data) - 1.0))
     h = ImageStats(
         data,
-        fields='mode,midpt',
+        fields="mode,midpt",
         binwidth=0.05 * (1 + eps) / stddev,
     )
     assert abs(h.mode - 0.025) < 2.0 * eps
@@ -267,7 +258,7 @@ def test_mode_at_edges():
     stddev = np.std(data) * np.sqrt(len(data) / (len(data) - 1.0))
     h = ImageStats(
         data,
-        fields='mode,midpt',
+        fields="mode,midpt",
         binwidth=0.045 * (1 + eps) / stddev,
     )
     assert abs(h.mode - 0.2025) < 2.0 * eps
@@ -282,16 +273,16 @@ def test_mode_uniform():
     stddev = np.std(data) * np.sqrt(len(data) / (len(data) - 1.0))
     h = ImageStats(
         data,
-        fields='mode,midpt',
+        fields="mode,midpt",
         binwidth=0.05 * (1 + eps) / stddev,
     )
     assert abs(h.mode - 0.075) < 2.0 * eps
 
 
 def test_large_bin(gaussian_image):
-    stddev = gaussian_image.meta['stddev']
-    minv = gaussian_image.meta['min']
-    maxv = gaussian_image.meta['max']
+    stddev = gaussian_image.meta["stddev"]
+    minv = gaussian_image.meta["min"]
+    maxv = gaussian_image.meta["max"]
 
     binwidth = 2.0 * (maxv - minv) / stddev
     ImageStats(
