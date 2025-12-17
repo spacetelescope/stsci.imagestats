@@ -21,32 +21,16 @@ jobs:
         - name: Security audit
           linux: bandit
 
-        - name: Python 3.9 (Linux)
-          linux: py39-test
-          posargs: -v
-
         - name: Python 3.9 (Linux; numpy 1.22)
           linux: py39-test-numpy122
           posargs: -v
 
-        - name: Python 3.9 (Linux; numpy 1.25)
-          linux: py39-test-numpy122
-          posargs: -v
-
-        - name: Python 3.10 (Linux)
-          linux: py310-test
+        - name: Python 3.10 (Linux; numpy 1.25)
+          linux: py310-test-numpy125
           posargs: -v
 
         - name: Python 3.11 (Windows)
           windows: py311-test
-          posargs: -v
-
-        - name: Python 3.11 (OSX)
-          macos: py311-test
-          posargs: -v
-
-        - name: Python 3.12 (Windows)
-          windows: py312-test
           posargs: -v
 
         - name: Python 3.12 (OSX)
@@ -61,15 +45,11 @@ jobs:
           windows: py313-test
           posargs: -v
 
-        - name: Python 3.13 (OSX)
-          macos: py313-test
-          posargs: -v
-
         # `tox` does not currently respect `requires-python` versions when creating testing environments;
         # if this breaks, add an upper pin to `requires-python` and revert this py3 to the latest working version
 
-        - name: Python 3 (Linux) with coverage
-          linux: py3-test-cov
+        - name: Python 3.14 (Linux) with coverage
+          linux: py314-test-cov
           posargs: -v
           coverage: codecov
           pytest-results-summary: true
