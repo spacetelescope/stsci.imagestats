@@ -7,7 +7,7 @@ from setuptools import Extension, find_namespace_packages, setup
 
 # Setup C module include directories
 include_dirs = [numpy.get_include()]
-define_macros = []
+define_macros = [("Py_LIMITED_API", "0x03090000")]
 
 # Handle MSVC `wcsset` redefinition
 if sys.platform == "win32":
@@ -19,8 +19,7 @@ if cflags:
     extra_compile_args += ["-Wall", "-Wextra"]
     extra_compile_args += ["-DNDEBUG", "-O2"]
 else:
-    extra_compile_args = []
-extra_compile_args += ["-DPy_LIMITED_API=0x03090000"]
+    extra_compile_args = None
 
 setup(
     packages=find_namespace_packages(where=".", include=["stsci", "stsci.imagestats"]),
