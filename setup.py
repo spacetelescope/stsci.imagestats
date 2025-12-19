@@ -19,7 +19,8 @@ if cflags:
     extra_compile_args += ["-Wall", "-Wextra"]
     extra_compile_args += ["-DNDEBUG", "-O2"]
 else:
-    extra_compile_args = None
+    extra_compile_args = []
+extra_compile_args += ["-DPy_LIMITED_API=0x03090000"]
 
 setup(
     packages=find_namespace_packages(where=".", include=["stsci", "stsci.imagestats"]),
