@@ -32,6 +32,7 @@ setup(
             include_dirs=include_dirs,
             define_macros=define_macros,
             extra_compile_args=extra_compile_args,
+            py_limited_api=True,
         ),
         Extension(
             "stsci.imagestats.computeMean",
@@ -39,6 +40,8 @@ setup(
             include_dirs=include_dirs,
             define_macros=define_macros,
             extra_compile_args=extra_compile_args,
+            py_limited_api=True,
         ),
     ],
+    options={'bdist_wheel': {'py_limited_api': 'cp39'}},
 )

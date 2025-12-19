@@ -11,6 +11,7 @@
 #include <math.h>
 
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#define Py_LIMITED_API 0x03090000
 #include <Python.h>
 #include "numpy/arrayobject.h"
 
