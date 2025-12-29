@@ -12,9 +12,11 @@ concurrency:
 
 jobs:
   build:
-    uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish.yml@9f1fedda61294df4c004c05519a3fbf3b8e1f32f  # v2.3.1
+    #uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish.yml@9f1fedda61294df4c004c05519a3fbf3b8e1f32f  # v2.3.1
+    uses: braingram/github-actions-workflows/.github/workflows/publish.yml@bc525a26bd9187c42422d6e4942d18ea036e639e
     with:
       upload_to_pypi: ${{ (github.event_name == 'release') && (github.event.action == 'released') }}
+      upload_artifact: true
       targets: |
         # Linux wheels
         - cp39-manylinux_x86_64
@@ -28,3 +30,16 @@ jobs:
       test_command: python -c "from stsci.imagestats import buildHistogram, computeMean"
     secrets:
       pypi_token: ${{ secrets.PYPI_PASSWORD_STSCI_MAINTAINER }}
+  test_wheel:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          pattern: dist-*
+          path: dist
+          merge-multiple: true
+      - uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
+      - run: "pip install abi3audit"
+      - run: "abi3audit --strict --report dist/*.whl"
+        shell: sh
