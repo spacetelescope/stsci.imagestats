@@ -75,7 +75,7 @@ repair-wheel-command = [
 ]
 [tool.cibuildwheel.windows]
 repair-wheel-command = [
-#  "copy {wheel} {dest_dir}",
+  "copy {wheel} {dest_dir}",
   "pipx run abi3audit --strict --report {wheel}",
 ]
 
