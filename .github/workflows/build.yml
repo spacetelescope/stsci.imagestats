@@ -5,6 +5,7 @@ on:
     types: [released]
   pull_request:
   workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -27,6 +28,7 @@ jobs:
         - cp39-win_amd64
       sdist: true
       test_command: python -c "from stsci.imagestats import buildHistogram, computeMean"
+      save_artifacts: true
     secrets:
       pypi_token: ${{ secrets.PYPI_PASSWORD_STSCI_MAINTAINER }}
   test_wheel:
