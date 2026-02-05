@@ -28,7 +28,6 @@ jobs:
         - cp39-win_amd64
       sdist: true
       test_command: python -c "from stsci.imagestats import buildHistogram, computeMean"
-      save_artifacts: true
     secrets:
       pypi_token: ${{ secrets.PYPI_PASSWORD_STSCI_MAINTAINER }}
   test_wheel:
