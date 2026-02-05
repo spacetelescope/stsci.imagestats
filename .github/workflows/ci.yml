@@ -16,8 +16,8 @@ concurrency:
 jobs:
   build:
     uses: ./.github/workflows/build.yml
-  tests:
-    runs-on: ubuntu-latest
+
+  download:
     needs: [build]
     steps:
       - name: Download
@@ -27,54 +27,59 @@ jobs:
           path: dist
           merge-multiple: true
 
-      - name: Test
-        uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v2
-        with:
-          envs: |
-            - name: Limited API
-              linux: abi3
-              posargs: -v
-              setenv:
-                ABI3WHL: dist/*cp39*.whl
+  tests_abi3:
+    needs: [download]
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v2
+    with:
+      envs: |
+        - name: Limited API
+          linux: abi3
+          posargs: -v
+          setenv:
+            ABI3WHL: dist/*cp39*.whl
 
-            - name: Security audit
-              linux: bandit
+  tests:
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v2
+    with:
+      envs: |
+        - name: Security audit
+          linux: bandit
 
-            - name: Python 3.9 (Linux; numpy 1.22)
-              linux: py39-test-numpy122
-              posargs: -v
+        - name: Python 3.9 (Linux; numpy 1.22)
+          linux: py39-test-numpy122
+          posargs: -v
 
-            - name: Python 3.10 (Linux; numpy 1.25)
-              linux: py310-test-numpy125
-              posargs: -v
+        - name: Python 3.10 (Linux; numpy 1.25)
+          linux: py310-test-numpy125
+          posargs: -v
 
-            - name: Python 3.11 (Windows)
-              windows: py311-test
-              posargs: -v
+        - name: Python 3.11 (Windows)
+          windows: py311-test
+          posargs: -v
 
-            - name: Python 3.12 (OSX)
-              macos: py312-test
-              posargs: -v
+        - name: Python 3.12 (OSX)
+          macos: py312-test
+          posargs: -v
 
-            - name: Python 3.13 (OSX)
-              macos: py313-test
-              posargs: -v
+        - name: Python 3.13 (OSX)
+          macos: py313-test
+          posargs: -v
 
-            - name: Python 3.13 (Windows)
-              windows: py313-test
-              posargs: -v
+        - name: Python 3.13 (Windows)
+          windows: py313-test
+          posargs: -v
 
-            # `tox` does not currently respect `requires-python` versions when creating testing environments;
-            # if this breaks, add an upper pin to `requires-python` and revert this py3 to the latest working version
+        # `tox` does not currently respect `requires-python` versions when creating testing environments;
+        # if this breaks, add an upper pin to `requires-python` and revert this py3 to the latest working version
 
-            - name: Python 3.14 (Linux) with coverage
-              linux: py314-test-cov
-              posargs: -v
-              coverage: codecov
-              pytest-results-summary: true
+        - name: Python 3.14 (Linux) with coverage
+          linux: py314-test-cov
+          posargs: -v
+          coverage: codecov
+          pytest-results-summary: true
 
-            - name: Python 3 (Linux with dev dependencies)
-              linux: py3-test-devdeps
-              posargs: -v
+        - name: Python 3 (Linux with dev dependencies)
+          linux: py3-test-devdeps
+          posargs: -v
       secrets:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
