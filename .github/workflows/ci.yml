@@ -14,8 +14,33 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+
+  download:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: Download
+        uses: actions/download-artifact@v5
+        with:
+          pattern: dist-*
+          path: dist
+          merge-multiple: true
+
+  tests_abi3:
+    needs: [download]
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v2
+    with:
+      envs: |
+        - name: Limited API
+          linux: abi3
+          posargs: -v
+          setenv:
+            ABI3WHL: dist/*cp39*.whl
+
   tests:
-    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@9f1fedda61294df4c004c05519a3fbf3b8e1f32f  # v2.3.1
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v2
     with:
       envs: |
         - name: Security audit
@@ -57,5 +82,5 @@ jobs:
         - name: Python 3 (Linux with dev dependencies)
           linux: py3-test-devdeps
           posargs: -v
-    secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      secrets:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
