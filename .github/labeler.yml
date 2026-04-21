@@ -1,0 +1,28 @@
+documentation:
+  - changed-files:
+      - all-globs-to-any-file: ["*.rst"]
+      - any-glob-to-any-file:
+          - "docs/**/*"
+          - "*.md"
+          - ".readthedocs.yaml"
+          - "LICENSE"
+
+packaging:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "pyproject.toml"
+
+# --------------------------------------- testing ---------------------------------------
+
+automation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**"
+
+testing:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/tests/**"
+          - "**/regtest/**"
+          - ".github/workflows/test*.yml"
+          - "**/conftest.py"

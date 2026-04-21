@@ -1,0 +1,23 @@
+{
+  "template": "https://github.com/zacharyburnett/stsci-package-template",
+  "commit": "4503bbf380a0471fc60ea92118ca384407aa2ea0",
+  "checkout": "modernize",
+  "context": {
+    "cookiecutter": {
+      "project_name": "stsci.imagestats",
+      "package_name": "stsci.imagestats",
+      "repository_url": "https://github.com/spacetelescope/stsci.imagestats",
+      "project_description": "`stsci.imagestats` is a package designed to compute various statistics on image data using sigma-clipping iterations. It is designed to replicate core behaviour of the `IRAF`\\ 's `imstatistics` task.",
+      "manage_changelog_with_towncrier": false,
+      "publish_docs_to": "readthedocs.io",
+      "task_runner": "tox",
+      "python_version": ">=3.9",
+      "python_c_extensions": true,
+      "python_build_backend": "setuptools",
+      "crds_observatory": "none",
+      "_template": "https://github.com/zacharyburnett/stsci-package-template",
+      "_commit": "4503bbf380a0471fc60ea92118ca384407aa2ea0"
+    }
+  },
+  "directory": "python-package"
+}

@@ -1,161 +1,194 @@
 [project]
 name = "stsci.imagestats"
 description = "Compute sigma-clipped statistics on data arrays"
+readme = "README.md"
 requires-python = ">=3.9"
-authors = [
-    { name = "Warren Hack" },
-    { name = "Christopher Hanley" },
-]
 license-files = ["LICENSE.txt"]
+authors = [
+  { name = "Warren Hack" },
+  { name = "Christopher Hanley" },
+]
 classifiers = [
-    "Intended Audience :: Science/Research",
-    "Operating System :: OS Independent",
-    "Programming Language :: C",
-    "Programming Language :: Cython",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: Implementation :: CPython",
-    "Topic :: Scientific/Engineering :: Astronomy",
-    "Topic :: Scientific/Engineering :: Physics",
-    "Development Status :: 7 - Inactive",
+  "Development Status :: 7 - Inactive",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: C",
+  "Programming Language :: Cython",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Topic :: Scientific/Engineering :: Astronomy",
+  "Topic :: Scientific/Engineering :: Physics",
 ]
 dependencies = [
-    "numpy>=1.22",
+  "numpy>=1.22",
 ]
 dynamic = [
-    "version",
+  "version",
 ]
 
-[project.readme]
-file = "README.rst"
-content-type = "text/x-rst"
-
 [project.urls]
-Homepage = "https://github.com/spacetelescope/stsci.imagestats"
-Tracker = "https://github.com/spacetelescope/stsci.imagestats/issues"
-Documentation = "https://stsciimagestats.readthedocs.io/en/stable/"
-"Source Code" = "https://github.com/spacetelescope/stsci.imagestats"
+documentation = "https://stsciimagestats.readthedocs.io"
+repository = "https://github.com/spacetelescope/stsci.imagestats"
 
 [project.optional-dependencies]
 docs = [
-    "numpydoc",
-    "sphinx",
-    "sphinx-automodapi",
-    "sphinx-rtd-theme",
-    "graphviz",
-    "tomli; python_version < '3.11'",
+  "numpydoc",
+  "sphinx",
+  "sphinx-automodapi",
+  "sphinx-rtd-theme",
+  "graphviz",
+  "tomli; python_version < '3.11'",
 ]
 test = [
-    "pytest>=6.0",
+  "pytest>=9.0",
 ]
 
 [build-system]
 requires = [
-    "setuptools>=61.2",
-    "setuptools_scm[toml]>=3.6",
-    "numpy>=2.0.0",
+  "numpy>=2.0.0",
+  "setuptools>=61.2",
+  "setuptools_scm[toml]>=3.6",
 ]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-zip-safe = false
+[tool.cibuildwheel]
+test-requires = ["abi3audit"]
+test-command = "python -c 'from stsci.imagestats import buildHistogram, computeMean' && abi3audit --strict --report dist/*.whl"
 
-[tool.setuptools_scm]
-write_to = "stsci/imagestats/_version.py"
+[tool.codespell]
+ignore-words-list = "lsig,usig"
 
-[tool.pytest.ini_options]
-minversion = "6"
+[tool.coverage.run]
+omit = [
+  "stsci/imagestats/_version.py",
+  "stsci/imagestats/tests/*.py",
+  "_version.py",
+  "tests/*.py",
+  "*/stsci/imagestats/_version.py",
+  "*/stsci/imagestats/tests/*.py",
+  "*/_version.py",
+  "*/tests/*.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+  # Have to re-enable the standard pragma
+  "pragma: no cover",
+  # Don't complain about packages we have installed
+  "except ImportError",
+  # Don't complain if tests don't hit defensive assertion code:
+  "raise AssertionError",
+  "raise NotImplementedError",
+  # Don't complain about script hooks
+  "'def main(.*):'",
+  # Ignore branches that don't pertain to this version of Python
+  "pragma: py{ignore_python_version}",
+]
+
+[tool.cruft]
+skip = ["**/__init__.py", "tests/*"]
+
+[tool.numpydoc_validation]
+checks = [
+  "all",
+  "EX01",  # No examples section found
+  "SA01",  # See Also section not found
+  "ES01",  # No extended summary found
+  "GL08",  # Object does not have a docstring. Ruff catches these, and allows more granular ignores.
+  "PR01",  # Parameters not documented. Already caught by ruff.
+  "PR09",  # Parameter description should finish with a period
+  "RT02",  # First line of return should contain only the type
+  "RT05",  # Return value description should finish with a period
+]
+
+[tool.pytest]
+minversion = "9"
 norecursedirs = [
-    "build",
-    "docs/_build",
+  "build",
+  "docs/_build",
 ]
 
 [tool.ruff]
-lint.select = ["ALL"]
 line-length = 100
-lint.extend-select = [
-    "F",
-    "W",
-    "E",
-    "C4",
-    "COM",
-]
 exclude = [
-    ".tox",
-    ".eggs",
-    "build",
-    "docs/exts",
+  ".tox",
+  ".eggs",
+  "build",
+  "docs/exts",
 ]
 
-lint.ignore = [
-    # flake8-builtins (A) : shadowing a Python built-in.
-    # New ones should be avoided and is up to maintainers to enforce.
-    "A00",
+[tool.ruff.lint]
+select = ["ALL"]
+extend-select = [
+  "F",
+  "W",
+  "E",
+  "C4",
+  "COM",
+]
+ignore = [
+  # flake8-builtins (A) : shadowing a Python built-in.
+  # New ones should be avoided and is up to maintainers to enforce.
+  "A00",
 
-    # flake8-annotations (ANN)
-    "ANN101",  # No annotation for `self`.
-    "ANN102",  # No annotation for `cls`.
+  # flake8-bugbear (B)
+  "B008",  # FunctionCallArgumentDefault
 
-    # flake8-bugbear (B)
-    "B008",  # FunctionCallArgumentDefault
+  # flake8-commas (COM)
+  "COM812",  # TrailingCommaMissing
+  "COM819",  # TrailingCommaProhibited
 
-    # flake8-commas (COM)
-    "COM812",  # TrailingCommaMissing
-    "COM819",  # TrailingCommaProhibited
+  # pydocstyle (D)
+  # Missing Docstrings
+  "D102",  # Missing docstring in public method. Don't check b/c docstring inheritance.
+  "D105",  # Missing docstring in magic method. Don't check b/c class docstring.
+  # Whitespace Issues
+  "D200",  # FitsOnOneLine
+  # Docstring Content Issues
+  "D410",  # BlankLineAfterSection. Using D412 instead.
+  "D400",  # EndsInPeriod.  NOTE: might want to revisit this.
 
-    # pydocstyle (D)
-    # Missing Docstrings
-    "D102",  # Missing docstring in public method. Don't check b/c docstring inheritance.
-    "D105",  # Missing docstring in magic method. Don't check b/c class docstring.
-    # Whitespace Issues
-    "D200",  # FitsOnOneLine
-    # Docstring Content Issues
-    "D410",  # BlankLineAfterSection. Using D412 instead.
-    "D400",  # EndsInPeriod.  NOTE: might want to revisit this.
+  # pycodestyle (E, W)
+  "E711",  # NoneComparison  (see unfixable)
+  "E741",  # AmbiguousVariableName. Physics variables are often poor code variables
 
-    # pycodestyle (E, W)
-    "E711",  # NoneComparison  (see unfixable)
-    "E741",  # AmbiguousVariableName. Physics variables are often poor code variables
+  # flake8-fixme (FIX)
+  "FIX002",  # Line contains TODO | notes for improvements are OK iff the code works
 
-    # flake8-fixme (FIX)
-    "FIX002",  # Line contains TODO | notes for improvements are OK iff the code works
+  # pep8-naming (N)
+  "N803",  # invalid-argument-name. Physics variables are often poor code variables
+  "N806",  # non-lowercase-variable-in-function. Physics variables are often poor code variables
 
-    # pep8-naming (N)
-    "N803",  # invalid-argument-name. Physics variables are often poor code variables
-    "N806",  # non-lowercase-variable-in-function. Physics variables are often poor code variables
+  # pandas-vet (PD)
+  "PD",
 
-    # pandas-vet (PD)
-    "PD",
+  # flake8-self (SLF)
+  "SLF001",  # private member access
 
-    # flake8-self (SLF)
-    "SLF001", # private member access
+  # flake8-todos (TD)
+  "TD002",  # Missing author in TODO
 
-    # flake8-todos (TD)
-    "TD002",  # Missing author in TODO
+  # Ruff-specific rules (RUF)
+  "RUF005",  # unpack-instead-of-concatenating-to-collection-literal -- it's not clearly faster.
 
-    # Ruff-specific rules (RUF)
-    "RUF005",  # unpack-instead-of-concatenating-to-collection-literal -- it's not clearly faster.
-
-    "Q000",  # Single quotes found but double quotes preferred
-
-    "UP038",  # Use |-separated union of types instead of a tuple of types.
+  "Q000",  # Single quotes found but double quotes preferred
 ]
 
 [tool.ruff.lint.extend-per-file-ignores]
 "setup.py" = [
-    "INP001",  # Part of configuration, not a package.
-    "ICN001",
-    "UP018"
+  "INP001",  # Part of configuration, not a package.
+  "ICN001",
+  "UP018"
 ]
 "test_*.py" = [
-    "B018",  # UselessExpression
-    "D",  # pydocstyle
-    "PGH001",  # No builtin eval() allowed
-    "S101",  # Use of assert detected
+  "B018",  # UselessExpression
+  "D",  # pydocstyle
+  "S101",  # Use of assert detected
 ]
 ".pyinstaller/*.py" = ["INP001"]  # Not a package.
 "conftest.py" = ["INP001"]  # Part of configuration, not a package.
 "docs/*.py" = [
-    "INP001",  # implicit-namespace-package. The examples are not a package.
+  "INP001",  # implicit-namespace-package. The examples are not a package.
 ]
 
 [tool.ruff.lint.flake8-annotations]
@@ -177,32 +210,8 @@ convention = "numpy"
 [tool.ruff.lint.pep8-naming]
 ignore-names = ["usig", "lsig"]
 
-[tool.codespell]
-ignore-words-list = "lsig,usig"
+[tool.setuptools]
+zip-safe = false
 
-[tool.coverage.run]
-omit = [
-    "stsci/imagestats/_version.py",
-    "stsci/imagestats/tests/*.py",
-    "_version.py",
-    "tests/*.py",
-    "*/stsci/imagestats/_version.py",
-    "*/stsci/imagestats/tests/*.py",
-    "*/_version.py",
-    "*/tests/*.py",
-]
-
-[tool.coverage.report]
-exclude_lines = [
-    # Have to re-enable the standard pragma
-    "pragma: no cover",
-    # Don't complain about packages we have installed
-    "except ImportError",
-    # Don't complain if tests don't hit defensive assertion code:
-    "raise AssertionError",
-    "raise NotImplementedError",
-    # Don't complain about script hooks
-    "'def main(.*):'",
-    # Ignore branches that don't pertain to this version of Python
-    "pragma: py{ignore_python_version}",
-]
+[tool.setuptools_scm]
+version_file = "stsci/imagestats/_version.py"

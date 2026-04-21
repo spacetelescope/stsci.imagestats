@@ -1,61 +1,71 @@
-name: CI
+name: tests
 
 on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
   push:
     branches:
-    - main
-    - 'v*'
-    tags:
-    - '*'
-  pull_request:
+      - main
+  workflow_dispatch:
+
+permissions: {}
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  tests:
-    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@99401c364fa51c9c507d3cd6d272049278ac0b2c  # v2.4.0
+  test:
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@ccd2f9f4a24f34ea1165a717af125260d93bb5c1 # v2.6.1
     with:
       envs: |
         - name: Security audit
           linux: bandit
 
         - name: Python 3.9 (Linux; numpy 1.22)
-          linux: py39-test-numpy122
+          linux: py39-numpy122-xdist
           posargs: -v
 
         - name: Python 3.10 (Linux; numpy 1.25)
-          linux: py310-test-numpy125
+          linux: py310-numpy125-xdist
           posargs: -v
 
         - name: Python 3.11 (Windows)
-          windows: py311-test
+          windows: py311-xdist
           posargs: -v
 
         - name: Python 3.12 (OSX)
-          macos: py312-test
+          macos: py312-xdist
           posargs: -v
 
         - name: Python 3.13 (OSX)
-          macos: py313-test
+          macos: py313-xdist
           posargs: -v
 
         - name: Python 3.13 (Windows)
-          windows: py313-test
+          windows: py313-xdist
           posargs: -v
 
         # `tox` does not currently respect `requires-python` versions when creating testing environments;
         # if this breaks, add an upper pin to `requires-python` and revert this py3 to the latest working version
 
         - name: Python 3.14 (Linux) with coverage
-          linux: py314-test-cov
+          linux: py314-cov-xdist
           posargs: -v
           coverage: codecov
           pytest-results-summary: true
 
         - name: Python 3 (Linux with dev dependencies)
-          linux: py3-test-devdeps
+          linux: py3-devdeps-xdist
           posargs: -v
+      fill: true
+      fill_platforms: linux
+      fill_factors: xdist
+      artifact-path: |
+        results.xml
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
