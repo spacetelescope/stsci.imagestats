@@ -1,0 +1,75 @@
+requires = ["tox>=4.50"]
+env_list = [
+  { product = [
+    { prefix = "py3", start = 9, stop = 14 },
+    [
+      "numpy122",
+      "numpy125",
+      "devdeps",
+    ],
+    ["cov"],
+    ["xdist"],
+  ] },
+  "bandit"
+]
+
+[env_run_base]
+factors = [
+  [
+    "numpy122",
+    "numpy125",
+    "devdeps",
+  ],
+  ["cov"],
+  ["xdist"]
+]
+pass_env = [
+  "TOXENV",
+  "CI",
+  "CODECOV_*",
+  "HOME",
+  "STRICT_VALIDATION",
+  "PASS_INVALID_VALUES",
+  "VALIDATE_ON_ASSIGNMENT",
+  "CRDS_*",
+  "TEST_BIGDATA",
+  "LC_ALL",
+  "LC_CTYPE",
+  "CC",
+  "DISPLAY",
+]
+set_env.PIP_EXTRA_INDEX_URL = { replace = "if", condition = "factor.devdeps", then = "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple" }
+deps = [
+  "pytest>=9",
+  { replace = "if", condition = "factor.numpy122", then = ["numpy==1.22.*"], extend = true },
+  { replace = "if", condition = "factor.numpy125", then = ["numpy==1.22.*"], extend = true },
+  { replace = "if", condition = "factor.devdeps", then = ["numpy>=0.0.dev0"], extend = true },
+  { replace = "if", condition = "factor.xdist", then = ["pytest-xdist"], extend = true },
+]
+extras = ["test"]
+commands = [
+  [
+    "pytest",
+    "--pyargs",
+    "stsci.imagestats",
+    { replace = "if", condition = "factor.cov", then = [
+      "--cov={env_site_packages_dir}/stsci/imagestats/",
+      "--cov-report",
+      "xml:{toxinidir}/coverage.xml",
+      "--cov-report",
+      "term-missing",
+    ], extend = true },
+    { replace = "if", condition = "factor.xdist", then = [
+      "-n",
+      "auto",
+    ], extend = true },
+    { replace = "posargs", extend = true },
+  ],
+]
+
+[env.bandit]
+skip_install = true
+change_dir = "{toxinidir}"
+description = "Security audit with bandit"
+deps = ["bandit>=1.7"]
+commands = [["bandit", "stsci", "-r", "-x", "stsci/imagestats/tests"]]
