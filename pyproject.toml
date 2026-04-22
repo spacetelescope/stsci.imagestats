@@ -58,7 +58,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.cibuildwheel]
 test-requires = ["abi3audit"]
-test-command = "python -c 'from stsci.imagestats import buildHistogram, computeMean' && abi3audit --strict --report dist/*.whl"
+test-command = 'python -c "from stsci.imagestats import buildHistogram, computeMean" && abi3audit --strict --report dist/*.whl'
 
 [tool.setuptools]
 zip-safe = false
