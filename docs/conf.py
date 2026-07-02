@@ -48,6 +48,7 @@ with open(Path(__file__).parent.parent / "pyproject.toml", "rb") as cf:
 metadata = config["project"]
 
 # General information about the project
+project = metadata['name']
 author = f"{metadata['authors'][0]['name']} and {metadata['authors'][1]['name']}"
 copyright = f"{datetime.today().year}, Space Telescope Science Institute"  # noqa: DTZ002
 
@@ -208,11 +209,6 @@ html_theme_options = {"collapse_navigation": True}
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
-html_context = {
-    "css_files": [
-        "_static/css/custom.css",
-    ],
-}
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
