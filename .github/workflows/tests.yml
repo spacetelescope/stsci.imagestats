@@ -113,13 +113,13 @@ jobs:
         - linux: bandit
           python-version: ${{ needs.supported-pythons.outputs.latest }} 
         - name: run tests (oldest supported Python, ubuntu-latest)
-          linux: py3-test-oldestdeps-cov
+          linux: py3-test-cov
           python-version: ${{ needs.supported-pythons.outputs.oldest }}
         - name: run tests (oldest supported Python, macos-latest)
-          macos: py3-test-oldestdeps
+          macos: py3-test
           python-version: ${{ needs.supported-pythons.outputs.oldest }}
         - name: run tests (oldest supported Python, windows-latest)
-          windows: py3-test-oldestdeps
+          windows: py3-test
           python-version: ${{ needs.supported-pythons.outputs.oldest }}
         - name: Python 3.9 (Linux; numpy 1.22)
           linux: py39-test-numpy122
