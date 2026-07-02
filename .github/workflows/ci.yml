@@ -82,5 +82,5 @@ jobs:
         - name: Python 3 (Linux with dev dependencies)
           linux: py3-test-devdeps
           posargs: -v
-      secrets:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
