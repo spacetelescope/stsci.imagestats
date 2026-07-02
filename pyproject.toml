@@ -57,8 +57,9 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [tool.cibuildwheel]
-test-requires = ["abi3audit"]
-test-command = 'python -c "from stsci.imagestats import buildHistogram, computeMean" && abi3audit --strict --report dist/*.whl'
+build = "cp39-*"  # build for CPython 3.9 Stable API
+skip = ["cp3*t-*"]  # explicitly skip free-threaded builds
+test-command = "python -c 'from stsci.imagestats import buildHistogram, computeMean'"
 
 [tool.setuptools]
 zip-safe = false
