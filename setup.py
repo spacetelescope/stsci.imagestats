@@ -7,7 +7,7 @@ from setuptools import Extension, find_namespace_packages, setup
 
 # Setup C module include directories
 include_dirs = [numpy.get_include()]
-define_macros = [("Py_LIMITED_API", "0x03090000")]
+define_macros = [("Py_LIMITED_API", "0x030b0000")]  # PY_VERSION_HEX for 3.11
 
 # Handle MSVC `wcsset` redefinition
 if sys.platform == "win32":
