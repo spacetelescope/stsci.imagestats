@@ -56,6 +56,9 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
+[tool.cibuildwheel]
+test-command = 'python -c "from stsci.imagestats import buildHistogram, computeMean"'
+
 [tool.setuptools]
 zip-safe = false
 
