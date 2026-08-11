@@ -5,9 +5,13 @@ import sysconfig
 import numpy
 from setuptools import Extension, find_namespace_packages, setup
 
+FREE_THREADED_PYTHON = sysconfig.get_config_var("Py_GIL_DISABLED") == 1
+
 # Setup C module include directories
 include_dirs = [numpy.get_include()]
-define_macros = [("Py_LIMITED_API", "0x03090000")]
+define_macros = []
+if not FREE_THREADED_PYTHON:
+    define_macros.append(("Py_LIMITED_API", "0x03090000"))  # PY_VERSION_HEX for 3.9
 
 # Handle MSVC `wcsset` redefinition
 if sys.platform == "win32":
@@ -20,6 +24,10 @@ if cflags:
     extra_compile_args += ["-DNDEBUG", "-O2"]
 else:
     extra_compile_args = None
+
+SETUPTOOLS_OPTIONS = {}
+if not FREE_THREADED_PYTHON:
+    SETUPTOOLS_OPTIONS["bdist_wheel"] = {"py_limited_api": "cp39"}
 
 setup(
     packages=find_namespace_packages(where=".", include=["stsci", "stsci.imagestats"]),
@@ -43,5 +51,5 @@ setup(
             py_limited_api=True,
         ),
     ],
-    options={'bdist_wheel': {'py_limited_api': 'cp39'}},
+    options=SETUPTOOLS_OPTIONS,
 )
