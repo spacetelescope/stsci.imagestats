@@ -45,6 +45,7 @@ docs = [
     "tomli; python_version < '3.11'",
 ]
 test = [
+    "coverage",
     "pytest>=6.0",
 ]
 
