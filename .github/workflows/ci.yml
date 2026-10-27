@@ -16,6 +16,8 @@ concurrency:
 jobs:
   tests:
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@8d5ad7efc8e84a051639373f6ea0d10441eafee1  # v3.2.1
+    permissions:
+      id-token: write
     with:
       envs: |
         - name: Security audit
@@ -51,7 +53,7 @@ jobs:
         - name: Python 3.14 (Linux) with coverage
           linux: py314-test-cov
           posargs: -v
-          coverage: codecov
+          coverage: codecov-oidc
           pytest-results-summary: true
 
         - name: Python 3 (Linux with dev dependencies)
