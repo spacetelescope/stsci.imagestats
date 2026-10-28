@@ -11,7 +11,7 @@ FREE_THREADED_PYTHON = sysconfig.get_config_var("Py_GIL_DISABLED") == 1
 include_dirs = [numpy.get_include()]
 define_macros = []
 if not FREE_THREADED_PYTHON:
-    define_macros.append(("Py_LIMITED_API", "0x03090000"))  # PY_VERSION_HEX for 3.9
+    define_macros.append(("Py_LIMITED_API", "0x030B0000"))  # PY_VERSION_HEX for 3.11
 
 # Handle MSVC `wcsset` redefinition
 if sys.platform == "win32":
@@ -27,7 +27,7 @@ else:
 
 SETUPTOOLS_OPTIONS = {}
 if not FREE_THREADED_PYTHON:
-    SETUPTOOLS_OPTIONS["bdist_wheel"] = {"py_limited_api": "cp39"}
+    SETUPTOOLS_OPTIONS["bdist_wheel"] = {"py_limited_api": "cp311"}
 
 setup(
     packages=find_namespace_packages(where=".", include=["stsci", "stsci.imagestats"]),
