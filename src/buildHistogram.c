@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <float.h>
+#include <stdlib.h>
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <Python.h>
 #include "numpy/arrayobject.h"
@@ -58,15 +59,15 @@ populate1DHist(PyObject *obj, PyObject *args)
 
     histogram = (PyArrayObject *) PyArray_ContiguousFromObject(ohistogram, NPY_UINT32, 1, 1);
     if (!histogram) {
-        Py_XDECREF(image);
+        Py_XDECREF((PyObject *) image);
         return NULL;
     }
 
     size = PyArray_Size((PyObject *) histogram);
     p = (unsigned int *) calloc(size + 1, sizeof(unsigned int));
     if (!p) {
-        Py_XDECREF(image);
-        Py_XDECREF(histogram);
+        Py_XDECREF((PyObject *) image);
+        Py_XDECREF((PyObject *) histogram);
         return NULL;
     }
 
@@ -80,8 +81,8 @@ populate1DHist(PyObject *obj, PyObject *args)
     }
     free(p);
 
-    Py_XDECREF(image);
-    Py_XDECREF(histogram);
+    Py_XDECREF((PyObject *) image);
+    Py_XDECREF((PyObject *) histogram);
 
     return Py_BuildValue("i", status);
 }

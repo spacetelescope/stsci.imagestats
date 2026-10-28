@@ -19,7 +19,7 @@ classifiers = [
     "Development Status :: 7 - Inactive",
 ]
 dependencies = [
-    "numpy>=1.22",
+    "numpy",
 ]
 dynamic = [
     "version",
@@ -52,7 +52,7 @@ test = [
 requires = [
     "setuptools>=61.2",
     "setuptools_scm[toml]>=3.6",
-    "numpy>=2.0.0",
+    "numpy>=2.0.1",
 ]
 build-backend = "setuptools.build_meta"
 

@@ -4,6 +4,15 @@
 Release Notes
 =============
 
+
+
+1.8.5 (28-October-2026)
+=======================
+
+- Added support for Python 3.15. Dropped support for older Python versions 3.9
+  and 3.11. Package maintenance. [#104]
+
+
 1.8.4 (03-November-2025)
 ========================
 
