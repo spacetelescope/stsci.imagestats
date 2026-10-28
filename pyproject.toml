@@ -42,7 +42,6 @@ docs = [
     "sphinx-automodapi",
     "sphinx-rtd-theme",
     "graphviz",
-    "tomli; python_version < '3.11'",
 ]
 test = [
     "pytest>=6.0",
