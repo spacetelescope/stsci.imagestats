@@ -101,7 +101,7 @@ computeMean(PyObject *obj, PyObject *args)
     computeMean_(
         (float *) PyArray_DATA(image), PyArray_Size((PyObject *) image), clipmin, clipmax,
         &numGoodPixels, &mean, &stddev, &minValue, &maxValue);
-    Py_XDECREF(image);
+    Py_XDECREF((PyObject *) image);
 
     return Py_BuildValue("iffff", numGoodPixels, mean, stddev, minValue, maxValue);
 }

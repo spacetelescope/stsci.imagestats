@@ -1,7 +1,7 @@
 [project]
 name = "stsci.imagestats"
 description = "Compute sigma-clipped statistics on data arrays"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 authors = [
     { name = "Warren Hack" },
     { name = "Christopher Hanley" },
@@ -19,7 +19,7 @@ classifiers = [
     "Development Status :: 7 - Inactive",
 ]
 dependencies = [
-    "numpy>=1.22",
+    "numpy",
 ]
 dynamic = [
     "version",
@@ -42,7 +42,6 @@ docs = [
     "sphinx-automodapi",
     "sphinx-rtd-theme",
     "graphviz",
-    "tomli; python_version < '3.11'",
 ]
 test = [
     "coverage",
@@ -53,13 +52,13 @@ test = [
 requires = [
     "setuptools>=61.2",
     "setuptools_scm[toml]>=3.6",
-    "numpy>=2.0.0",
+    "numpy>=2.0.1",
 ]
 build-backend = "setuptools.build_meta"
 
 [tool.cibuildwheel]
 build = [
-    "cp39-*",  # build for CPython 3.9 Stable API
+    "cp311-*",  # build for CPython Stable API
     "cp3*t-*",  # build for free-threaded Python
 ]
 test-command = "python -c 'from stsci.imagestats import buildHistogram, computeMean'"
