@@ -121,10 +121,6 @@ jobs:
         - name: run tests (oldest supported Python, windows-latest)
           windows: py3-test
           python-version: ${{ needs.supported-pythons.outputs.oldest }}
-        - name: Python 3.9 (Linux; numpy 1.22)
-          linux: py39-test-numpy122
-        - name: Python 3.10 (Linux; numpy 1.25)
-          linux: py310-test-numpy125
         - linux: py*-test
         - name: run tests with coverage (latest supported Python, ubuntu-latest)
           linux: py3-test-cov
