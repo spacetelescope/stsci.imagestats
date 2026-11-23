@@ -135,6 +135,9 @@ jobs:
           python-version: ${{ needs.supported-pythons.outputs.latest }}
         - name: Python 3 (Linux with dev dependencies)
           linux: py3-test-devdeps
+        - name: Python 3 (Linux ARM64)
+          linux: py3-test
+          runs-on: ubuntu-26.04-arm
       artifact-path: |
         results.xml
     secrets:
