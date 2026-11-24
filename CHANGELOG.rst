@@ -11,6 +11,7 @@ Release Notes
 
 - Added support for Python 3.15. Dropped support for older Python versions 3.9
   and 3.11. Package maintenance. [#104]
+- build on Linux ARM64 [#106]
 
 
 1.8.4 (03-November-2025)
